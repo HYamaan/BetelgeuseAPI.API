@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,22 +39,17 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Azure
             return _blobContainerClient.GetBlobs().Any(b => b.Name == fileName);
         }
 
-        public async Task<List<(string fileName, string pathOrContainerName)>> UploadAsync(string containerName, IFormFileCollection files)
+        public async Task<(string fileName, string pathOrContainerName)> UploadAsync(string containerName, IFormFile file)
         {
             _blobContainerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             await _blobContainerClient.CreateIfNotExistsAsync();
             await _blobContainerClient.SetAccessPolicyAsync(PublicAccessType.BlobContainer);
-
-            List<(string fileName, string pathOrContainerName)> datas = new();
-            foreach (IFormFile file in files)
-            {
-                string fileNewName = await FileRenameAsync(containerName, file.Name, HasFile);
-
-                BlobClient blobClient = _blobContainerClient.GetBlobClient(fileNewName);
-                await blobClient.UploadAsync(file.OpenReadStream());
-                datas.Add((fileNewName, $"{containerName}/{fileNewName}"));
-            }
-            return datas;
+            
+            string fileNewName = await FileRenameAsync(containerName, file.Name, HasFile);
+        
+            BlobClient blobClient = _blobContainerClient.GetBlobClient(fileNewName);
+            await blobClient.UploadAsync(file.OpenReadStream());
+            return (fileNewName, $"{containerName}/{fileNewName}");
         }
     }
 }

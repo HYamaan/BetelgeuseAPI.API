@@ -18,17 +18,22 @@ namespace BetelgeuseAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload(IFormFileCollection file)
+        public async Task<IActionResult> Upload(IFormFile file)
         {
-            var datas = await _storageService.UploadAsync("files", file);
-            await _profileImageFileWriteRepository.AddRangeAsync(datas.Select(d => new UserProfileImage()
+            var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", file);
+
+            var userProfileImage = new UserProfileImage()
             {
-                FileName = d.fileName,
-                Path = d.pathOrContainerName,
+                FileName = fileName,
+                Path = pathOrContainerName,
                 Storage = _storageService.StorageName
-            }).ToList());
+            };
+
+            await _profileImageFileWriteRepository.AddAsync(userProfileImage);
             await _profileImageFileWriteRepository.SaveAsync();
+
             return Ok();
         }
+
     }
 }

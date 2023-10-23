@@ -44,22 +44,16 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
                 throw ex;
             }
         }
-        public async Task<List<(string fileName, string pathOrContainerName)>> UploadAsync(string path, IFormFileCollection files)
-        {
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
+public async Task<(string fileName, string pathOrContainerName)> UploadAsync(string path, IFormFile file)
+{
+    string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+    if (!Directory.Exists(uploadPath))
+        Directory.CreateDirectory(uploadPath);
 
-            List<(string fileName, string path)> datas = new();
-            foreach (IFormFile file in files)
-            {
-                string fileNewName = await FileRenameAsync(path, file.FileName, HasFile);
+    string fileNewName = await FileRenameAsync(path, file.FileName, HasFile);
+    await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
+    return (fileNewName, $"{path}\\{fileNewName}");
+}
 
-                await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
-                datas.Add((fileNewName, $"{path}\\{fileNewName}"));
-            }
-
-            return datas;
-        }
     }
 }
