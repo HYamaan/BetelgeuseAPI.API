@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/BetelgeuseAPI.API/wwwroot/files
+/BetelgeuseAPI.API/wwwroot/photo-images
+/BetelgeuseAPI.API/wwwroot/resource

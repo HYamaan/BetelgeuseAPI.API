@@ -1,8 +1,10 @@
 ﻿using BetelgeuseAPI.Application.Repositories;
 using BetelgeuseAPI.Application.Repositories.UserProfileImageFile;
+using BetelgeuseAPI.Application.Repositories.VideoUploadFile;
 using BetelgeuseAPI.Persistence.Context;
 using BetelgeuseAPI.Persistence.Repositories.File;
 using BetelgeuseAPI.Persistence.Repositories.UserProfileImageFile;
+using BetelgeuseAPI.Persistence.Repositories.VideoUploadFile;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +20,8 @@ namespace BetelgeuseAPI.Persistence
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IUserProfileImageFileWriteRepository, UserProfileImageFileWriteRepository>();
             services.AddScoped<IUserProfileImageFileReadRepository, UserProfileImageFileReadRepository>();
+            services.AddScoped<IVideoUploadFileWriteRepository, VideoUploadFileWriteRepository>();
+            services.AddScoped<IVideoUploadFileReadRepository, VideoUploadFileReadRepository>();
         }
     }
 }

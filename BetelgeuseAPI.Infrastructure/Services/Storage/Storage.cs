@@ -1,10 +1,15 @@
 ﻿
 using BetelgeuseAPI.Infrastructure.Operations;
+using System.Diagnostics;
+using Parallel = System.Threading.Tasks.Parallel;
+using Microsoft.AspNetCore.Http;
+using BetelgeuseAPI.Infrastructure.ffmpeg;
 
 namespace BetelgeuseAPI.Infrastructure.Services.Storage
 {
     public class Storage
     {
+
         protected delegate bool HasFile(string pathOrContainerName, string fileName);
         protected async Task<string> FileRenameAsync(string pathOrContainerName, string fileName, HasFile hasFileMethod, bool first = true)
         {
@@ -60,5 +65,13 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage
 
             return newFileName;
         }
+
+        protected async Task videoResolutionTask(string pathOrContainerName, string newFileName, IFormFile file, string rootPath)
+        {
+            await VideoResolutionFFMPEG.VideoResolution(pathOrContainerName, newFileName, file, rootPath);
+        }
+
     }
+
+
 }

@@ -3,6 +3,7 @@ using System;
 using BetelgeuseAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations
 {
     [DbContext(typeof(BetelgeuseAPIDbContext))]
-    partial class BetelgeuseAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103171753_videoUpload")]
+    partial class videoUpload
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,35 +60,6 @@ namespace BetelgeuseAPI.Persistence.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("File");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.VideoUploadModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Storage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VideoUploadFiles");
                 });
 
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserProfileImage", b =>
