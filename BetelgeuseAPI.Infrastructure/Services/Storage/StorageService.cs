@@ -17,7 +17,12 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage
             _storage = storage;
         }
 
-        public string StorageName { get => _storage.GetType().Name; }
+        public string StorageName
+        {
+            get => _storage.GetType().Name;
+        }
+
+
 
         public async Task DeleteAsync(string pathOrContainerName, string fileName)
             => await _storage.DeleteAsync(pathOrContainerName, fileName);
@@ -28,7 +33,12 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage
         public bool HasFile(string pathOrContainerName, string fileName)
             => _storage.HasFile(pathOrContainerName, fileName);
 
-        public Task<(string fileName, string pathOrContainerName)> UploadAsync(string pathOrContainerName, IFormFile file)
+        public Task<(string fileName, string pathOrContainerName)> UploadAsync(string pathOrContainerName,
+            IFormFile file)
             => _storage.UploadAsync(pathOrContainerName, file);
+
+        public Task<List<(string fileName, string pathOrContainerName)>> UploadVideoAsync(string pathOrContainerName,
+            IFormFile file)
+            => _storage.UploadVideoAsync(pathOrContainerName, file);
     }
 }

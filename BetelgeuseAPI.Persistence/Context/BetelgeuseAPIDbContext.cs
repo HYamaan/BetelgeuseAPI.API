@@ -5,16 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BetelgeuseAPI.Persistence.Context
 {
-    public class BetelgeuseAPIDbContext:DbContext
+    public class BetelgeuseAPIDbContext : DbContext
     {
         public BetelgeuseAPIDbContext(DbContextOptions options) : base(options) { }
         public DbSet<Domain.Entities.File> Files { get; set; }
         public DbSet<UserProfileImage> ProductImageFiles { get; set; }
+        public DbSet<VideoUploadModel> VideoUploadFiles { get; set; }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             //ChangeTracker : Entityler üzerinden yapılan değişiklerin ya da yeni eklenen verinin yakalanmasını sağlayan propertydir. Update operasyonlarında Track edilen verileri yakalayıp elde etmemizi sağlar.
             var datas = ChangeTracker
-                 .Entries<BaseEntity>();
+                .Entries<BaseEntity>();
             foreach (var data in datas)
             {
                 _ = data.State switch
@@ -28,4 +29,3 @@ namespace BetelgeuseAPI.Persistence.Context
         }
     }
 }
-

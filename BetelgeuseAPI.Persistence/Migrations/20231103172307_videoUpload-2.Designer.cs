@@ -3,6 +3,7 @@ using System;
 using BetelgeuseAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations
 {
     [DbContext(typeof(BetelgeuseAPIDbContext))]
-    partial class BetelgeuseAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231103172307_videoUpload-2")]
+    partial class videoUpload2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,40 +62,18 @@ namespace BetelgeuseAPI.Persistence.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.VideoUploadModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Storage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VideoUploadFiles");
-                });
-
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserProfileImage", b =>
                 {
                     b.HasBaseType("BetelgeuseAPI.Domain.Entities.File");
 
                     b.HasDiscriminator().HasValue("UserProfileImage");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.VideoUploadModel", b =>
+                {
+                    b.HasBaseType("BetelgeuseAPI.Domain.Entities.File");
+
+                    b.HasDiscriminator().HasValue("VideoUploadModel");
                 });
 #pragma warning restore 612, 618
         }
