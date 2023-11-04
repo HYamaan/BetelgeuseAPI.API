@@ -5,7 +5,7 @@
 namespace BetelgeuseAPI.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class videoUpload2 : Migration
+    public partial class user_created_model : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -4,14 +4,17 @@ using BetelgeuseAPI.Infrastructure.Services.Storage;
 using BetelgeuseAPI.Infrastructure.Services.Storage.Azure;
 using BetelgeuseAPI.Infrastructure.Services.Storage.Local;
 using BetelgeuseAPI.Persistence;
+using ETicaretAPI.Application;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddInfrastructureServices();
 builder.Services.AddPersistenceServices();
+builder.Services.AddApplicationServices();
 builder.Services.AddStorage<LocalStorage>();
-
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()
 ));

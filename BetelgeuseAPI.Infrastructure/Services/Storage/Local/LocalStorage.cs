@@ -2,6 +2,7 @@
 using BetelgeuseAPI.Infrastructure.ffmpeg;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+
 using System.IO;
 
 namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
@@ -25,7 +26,7 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
             return directory.GetFiles().Select(f => f.Name).ToList();
         }
 
-        public bool HasFile(string path, string fileName)
+        public new bool HasFile(string path, string fileName)
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
             string filePath = Path.Combine(webRootPath, path, fileName);
@@ -57,8 +58,6 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
 
             string fileNewName = await FileRenameAsync(path, file.FileName, HasFile);
             await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
-
-            ;
             return (fileNewName, $"{path}\\{fileNewName}");
         }
 
@@ -69,7 +68,7 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
 
-            string fileNewName = System.Guid.NewGuid().ToString();
+            string fileNewName = Guid.NewGuid().ToString();
             await videoResolutionTask(uploadPath, fileNewName, file, _webHostEnvironment.WebRootPath);
             List<(string fileName, string pathOrContainerName)> transformedFilePaths = VideoResolutionFFMPEG.TransformedFilePaths;
             return transformedFilePaths;
