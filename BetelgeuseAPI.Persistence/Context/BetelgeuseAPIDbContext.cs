@@ -9,8 +9,15 @@ namespace BetelgeuseAPI.Persistence.Context
     {
         public BetelgeuseAPIDbContext(DbContextOptions options) : base(options) { }
         public DbSet<Domain.Entities.File> Files { get; set; }
-        public DbSet<UserProfileImage> ProductImageFiles { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserProfileImage> UserImageFiles { get; set; }
         public DbSet<VideoUploadModel> VideoUploadFiles { get; set; }
+
+        public DbSet<CourseParentSubTopic> CourseParentSubTopics { get; set; }
+        public DbSet<CourseChildSubTopic> CourseChildSubTopics { get; set; }
+        public DbSet<CourseVideoSubTopic> CourseVideoSubTopics { get; set; }
+
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             //ChangeTracker : Entityler üzerinden yapılan değişiklerin ya da yeni eklenen verinin yakalanmasını sağlayan propertydir. Update operasyonlarında Track edilen verileri yakalayıp elde etmemizi sağlar.
@@ -18,14 +25,17 @@ namespace BetelgeuseAPI.Persistence.Context
                 .Entries<BaseEntity>();
             foreach (var data in datas)
             {
+                var currentTime = DateTime.UtcNow;
+
                 _ = data.State switch
                 {
-                    EntityState.Added => data.Entity.CreatedDate = DateTime.UtcNow,
-                    EntityState.Modified => data.Entity.UpdatedDate = DateTime.UtcNow,
-                    _ => DateTime.UtcNow
+                    EntityState.Added => data.Entity.CreatedDate = currentTime,
+                    EntityState.Modified => data.Entity.UpdatedDate = currentTime,
+                    _ => currentTime
                 };
             }
             return await base.SaveChangesAsync(cancellationToken);
         }
+
     }
 }

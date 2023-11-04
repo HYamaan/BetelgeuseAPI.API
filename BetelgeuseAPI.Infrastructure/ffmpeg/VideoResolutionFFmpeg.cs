@@ -22,7 +22,7 @@ namespace BetelgeuseAPI.Infrastructure.ffmpeg
             await Task.Run(async () =>
             {
                 string temporaryFilePath = Path.GetTempFileName();
-                var directory = Path.GetDirectoryName(temporaryFilePath);
+                var directory = Path.GetDirectoryName(temporaryFilePath)!;
                 var destinationPath = Path.Combine(directory, newFileName);
                 using (var stream = new FileStream(destinationPath, FileMode.Create))
                 {

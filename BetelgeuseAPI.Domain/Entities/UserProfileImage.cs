@@ -8,5 +8,6 @@ namespace BetelgeuseAPI.Domain.Entities
 {
     public class UserProfileImage:File
     {
+        public  User? User { get; set; }
     }
 }

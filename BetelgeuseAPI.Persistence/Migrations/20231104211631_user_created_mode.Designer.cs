@@ -3,6 +3,7 @@ using System;
 using BetelgeuseAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations
 {
     [DbContext(typeof(BetelgeuseAPIDbContext))]
-    partial class BetelgeuseAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231104211631_user_created_mode")]
+    partial class user_created_mode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,6 +203,10 @@ namespace BetelgeuseAPI.Persistence.Migrations
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserProfileImage", b =>
                 {
                     b.HasBaseType("BetelgeuseAPI.Domain.Entities.File");
+
+                    b.Property<string>("userId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue("UserProfileImage");
                 });

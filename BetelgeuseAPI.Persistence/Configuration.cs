@@ -18,7 +18,7 @@ namespace BetelgeuseAPI.Persistence
                  .AddJsonFile("appsettings.json")
                  .Build();
 
-                string connectionString = configuration.GetConnectionString("PostgreSQL");
+                string connectionString = configuration.GetConnectionString("PostgreSQL")!;
                 return connectionString;
             }
         }
