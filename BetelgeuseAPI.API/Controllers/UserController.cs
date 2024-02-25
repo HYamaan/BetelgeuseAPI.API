@@ -7,10 +7,12 @@ using BetelgeuseAPI.Application.Repositories.UserProfileImageFile;
 using BetelgeuseAPI.Application.Repositories.VideoUploadFile;
 using BetelgeuseAPI.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BetelgeuseAPI.API.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IMediator _mediator;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BetelgeuseAPI.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class user_created_mode : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +35,6 @@ namespace BetelgeuseAPI.Persistence.Migrations
                     Storage = table.Column<string>(type: "text", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Discriminator = table.Column<string>(type: "text", nullable: false),
-                    userId = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

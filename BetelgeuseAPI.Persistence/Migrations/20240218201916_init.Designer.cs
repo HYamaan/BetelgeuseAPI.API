@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations
 {
     [DbContext(typeof(BetelgeuseAPIDbContext))]
-    [Migration("20231104212340_user_created_model-1")]
-    partial class user_created_model1
+    [Migration("20240218201916_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
