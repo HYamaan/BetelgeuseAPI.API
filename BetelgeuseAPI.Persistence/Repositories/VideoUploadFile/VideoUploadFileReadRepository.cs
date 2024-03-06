@@ -9,7 +9,7 @@ using BetelgeuseAPI.Persistence.Context;
 
 namespace BetelgeuseAPI.Persistence.Repositories.VideoUploadFile
 {
-    public class VideoUploadFileReadRepository:ReadRepository<VideoUploadModel>,IVideoUploadFileReadRepository
+    public class VideoUploadFileReadRepository:ReadRepository<BetelgeuseAPIDbContext,VideoUploadModel>,IVideoUploadFileReadRepository
     {
         public VideoUploadFileReadRepository(BetelgeuseAPIDbContext context) : base(context)
         {

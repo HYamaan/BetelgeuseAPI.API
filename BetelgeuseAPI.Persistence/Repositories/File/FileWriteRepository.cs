@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BetelgeuseAPI.Persistence.Repositories.File
 {
-    public class FileWriteRepository : WriteRepository<BetelgeuseAPI.Domain.Entities.File>, IFileWriteRepository
+    public class FileWriteRepository : WriteRepository<BetelgeuseAPIDbContext,BetelgeuseAPI.Domain.Entities.File>, IFileWriteRepository
     {
         public FileWriteRepository(BetelgeuseAPIDbContext context) : base(context)
         {
