@@ -11,13 +11,16 @@ using System.Threading.Tasks;
 
 namespace BetelgeuseAPI.Persistence.Repositories
 {
-    public class ReadRepository<T> : IReadRepository<T> where T : BaseEntity
+    public class ReadRepository<TContext,T> : IReadRepository<T> where TContext : DbContext
+        where T : BaseEntity
     {
-        private readonly BetelgeuseAPIDbContext _context;
-        public ReadRepository(BetelgeuseAPIDbContext context)
+        private readonly TContext _context;
+
+        public ReadRepository(TContext context)
         {
             _context = context;
         }
+
 
         public DbSet<T> Table => _context.Set<T>();
 

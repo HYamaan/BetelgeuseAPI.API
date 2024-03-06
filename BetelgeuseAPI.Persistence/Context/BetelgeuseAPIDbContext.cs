@@ -1,5 +1,9 @@
-﻿using BetelgeuseAPI.Domain.Common;
+﻿using BetelgeuseAPI.Domain.Auth;
+using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities;
+using BetelgeuseAPI.Persistence.Seeds;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -7,9 +11,9 @@ namespace BetelgeuseAPI.Persistence.Context
 {
     public class BetelgeuseAPIDbContext : DbContext
     {
-        public BetelgeuseAPIDbContext(DbContextOptions options) : base(options) { }
+        public BetelgeuseAPIDbContext(DbContextOptions<BetelgeuseAPIDbContext> options) : base(options) { }
         public DbSet<Domain.Entities.File> Files { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Domain.Entities.User> Users { get; set; }
         public DbSet<UserProfileImage> UserImageFiles { get; set; }
         public DbSet<VideoUploadModel> VideoUploadFiles { get; set; }
 

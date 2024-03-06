@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BetelgeuseAPI.Persistence.Repositories.VideoUploadFile
 {
-    public class VideoUploadFileWriteRepository:WriteRepository<VideoUploadModel>,IVideoUploadFileWriteRepository
+    public class VideoUploadFileWriteRepository:WriteRepository<BetelgeuseAPIDbContext,VideoUploadModel>,IVideoUploadFileWriteRepository
     {
         public VideoUploadFileWriteRepository(BetelgeuseAPIDbContext context) : base(context)
         {
