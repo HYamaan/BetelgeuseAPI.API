@@ -1,7 +1,7 @@
-﻿namespace BetelgeuseAPI.Application.Features.Commands.AppUser.CreateUser;
+﻿using BetelgeuseAPI.Domain.Common;
 
-public class CreateUserCommandResponse
+namespace BetelgeuseAPI.Application.Features.Commands.AppUser.CreateUser;
+
+public class CreateUserCommandResponse:ResponseMessageAndSucceeded
 {
-    public bool Succeeded { get; set; }
-    public string Message { get; set; }
 }

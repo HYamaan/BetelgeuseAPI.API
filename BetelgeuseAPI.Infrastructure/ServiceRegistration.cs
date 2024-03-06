@@ -1,10 +1,7 @@
-﻿
-using BetelgeuseAPI.Application.Abstractions.Services;
+﻿using BetelgeuseAPI.Application.Abstractions.Services;
 using BetelgeuseAPI.Application.Abstractions.Storage;
 using BetelgeuseAPI.Application.Abstractions.Token;
-using BetelgeuseAPI.Domain.Settings;
 using BetelgeuseAPI.Infrastructure.Enums;
-using BetelgeuseAPI.Infrastructure.Extension;
 using BetelgeuseAPI.Infrastructure.Services;
 using BetelgeuseAPI.Infrastructure.Services.Storage;
 using BetelgeuseAPI.Infrastructure.Services.Storage.Azure;
@@ -12,7 +9,6 @@ using BetelgeuseAPI.Infrastructure.Services.Storage.Local;
 using BetelgeuseAPI.Infrastructure.Services.Token;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 
 namespace BetelgeuseAPI.Infrastructure
 {
@@ -23,8 +19,6 @@ namespace BetelgeuseAPI.Infrastructure
             serviceCollection.AddScoped<IMailService, MailService>();
             serviceCollection.AddScoped<IStorageService, StorageService>();
             serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
-            
-            serviceCollection.AddSwaggerOpenAPI();
         }
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
         {

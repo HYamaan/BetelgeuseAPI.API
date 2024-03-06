@@ -18,7 +18,7 @@ public class ChangePasswordCommandHandler:IRequestHandler<ChangePasswordCommandR
 
     public async Task<ChangePasswordCommandResponse> Handle(ChangePasswordCommandRequest request, CancellationToken cancellationToken)
     {
-        var response =await _accountService.ChangePassword(_mapper.Map<ChangePasswordRequest>(request));
+        var response =await _accountService.ChangePassword(request);
 
         return new ChangePasswordCommandResponse()
         {

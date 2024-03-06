@@ -29,7 +29,7 @@ namespace BetelgeuseAPI.Application.Features.Commands.AppUser.UpdatePassword
             if (!request.Password.Equals(request.ConfirmPassword))
                 throw new PasswordChangeFailedException($"Lütfen şifreyi birebir doğrulayınız.");
 
-            var response = await _accountService.UpdatePasswordAsync(_mapper.Map<ResetPasswordRequest>(request));
+            var response = await _accountService.UpdatePasswordAsync(request);
 
             return new UpdatePasswordCommandResponse()
             {

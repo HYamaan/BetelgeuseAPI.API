@@ -10,9 +10,7 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.19.0-beta.1" />
     <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
-    <PackageReference Include="Microsoft.OpenApi" Version="1.4.3" />
     <PackageReference Include="MimeKit" Version="4.3.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>

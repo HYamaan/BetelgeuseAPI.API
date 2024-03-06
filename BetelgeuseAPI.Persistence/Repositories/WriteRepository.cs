@@ -2,21 +2,19 @@
 using BetelgeuseAPI.Domain.Common;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BetelgeuseAPI.Persistence.Context;
 
 namespace BetelgeuseAPI.Persistence.Repositories
 {
-    public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
+    public class WriteRepository<TContext, T> : IWriteRepository<T>
+        where TContext : DbContext
+        where T : BaseEntity
     {
-        readonly private BetelgeuseAPIDbContext _context;
-        public WriteRepository(BetelgeuseAPIDbContext context)
+        private readonly TContext _context;
+
+        public WriteRepository(TContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public DbSet<T> Table => _context.Set<T>();

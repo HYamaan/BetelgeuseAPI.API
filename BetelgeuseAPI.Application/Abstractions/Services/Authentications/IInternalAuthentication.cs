@@ -1,17 +1,14 @@
-﻿using BetelgeuseAPI.Application.Features.Commands.AppUser.CreateUser;
-using BetelgeuseAPI.Domain.Auth;
+﻿using BetelgeuseAPI.Application.DTOs;
+using BetelgeuseAPI.Application.DTOs.Request.Account;
+using BetelgeuseAPI.Application.Features.Commands.AppUser.Auth.CreateTokenByRefreshToken;
+using BetelgeuseAPI.Application.Features.Commands.AppUser.Auth.LoginUser;
 using BetelgeuseAPI.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BetelgeuseAPI.Application.Abstractions.Services.Authentications
 {
     public interface IInternalAuthentication
     {
-        Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress);
-        Task<Response<string>> RegisterAsync(CreateUserCommandRequest request, string origin);
+        Task<Response<LoginUserCommandResponse>> LoginAccountAsync(LoginAccountRequest request);
+        Task<Response<TokenDto>> RefreshTokenLoginAsync(RefreshTokenLoginCommandRequest request);
     }
 }

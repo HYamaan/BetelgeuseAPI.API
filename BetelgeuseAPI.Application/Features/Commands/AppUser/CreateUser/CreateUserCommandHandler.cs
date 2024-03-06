@@ -27,8 +27,12 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest
     {
         try
         {
-            var response = await _accountService.CreateAccountAsync(_mapper.Map<CreateAccountRequest>(request));
-            return _mapper.Map<CreateUserCommandResponse>(response);
+            var response = await _accountService.CreateAccountAsync(request);
+            return new CreateUserCommandResponse()
+            {
+                Succeeded = response.Succeeded,
+                Message = response.Message,
+            };
         }
         catch (Exception e)
         {

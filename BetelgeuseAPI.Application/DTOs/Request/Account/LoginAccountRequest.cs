@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BetelgeuseAPI.Application.DTOs.Request.Account
+﻿namespace BetelgeuseAPI.Application.DTOs.Request.Account
 {
     public class LoginAccountRequest
     {

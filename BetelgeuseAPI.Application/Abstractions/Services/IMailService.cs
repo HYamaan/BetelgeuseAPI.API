@@ -1,6 +1,4 @@
-﻿using BetelgeuseAPI.Domain.Settings;
-
-namespace BetelgeuseAPI.Application.Abstractions.Services;
+﻿namespace BetelgeuseAPI.Application.Abstractions.Services;
 
     public interface IMailService
     {

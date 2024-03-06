@@ -37,7 +37,7 @@ namespace BetelgeuseAPI.Application
                     ClockSkew = TimeSpan.Zero,
                     ValidIssuer = configuration["JWTSettings:Issuer"],
                     ValidAudience = configuration["JWTSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSettings:Key"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWTSettings:SecurityKey"]))
                 };
                 o.Events = new JwtBearerEvents()
                 {
@@ -53,14 +53,14 @@ namespace BetelgeuseAPI.Application
                         context.HandleResponse();
                         context.Response.StatusCode = 401;
                         context.Response.ContentType = "application/json";
-                        var result = JsonConvert.SerializeObject(new Response<string>("You are not Authorized"));
+                        var result = JsonConvert.SerializeObject( Response<string>.Fail("You are not Authorized"));
                         return context.Response.WriteAsync(result);
                     },
                     OnForbidden = context =>
                     {
                         context.Response.StatusCode = 403;
                         context.Response.ContentType = "application/json";
-                        var result = JsonConvert.SerializeObject(new Response<string>("You are not authorized to access this resource"));
+                        var result = JsonConvert.SerializeObject(Response<string>.Fail("You are not authorized to access this resource"));
                         return context.Response.WriteAsync(result);
                     },
                 };

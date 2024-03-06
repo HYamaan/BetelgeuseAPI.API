@@ -13,19 +13,19 @@ namespace BetelgeuseAPI.Persistence.Seeds
                 {
                     Id = Constants.Admin,
                     Name = Roles.Admin.ToString(),
-                    NormalizedName = Roles.Admin.ToString()
+                    NormalizedName = Roles.Admin.ToString().ToUpper()
                 },
                 new AppRole
                 {
                     Id = Constants.Moderator,
                     Name = Roles.Moderator.ToString(),
-                    NormalizedName = Roles.Moderator.ToString()
+                    NormalizedName = Roles.Moderator.ToString().ToUpper()
                 },
                 new AppRole
                 {
                     Id = Constants.Student,
                     Name = Roles.Student.ToString(),
-                    NormalizedName = Roles.Student.ToString()
+                    NormalizedName = Roles.Student.ToString().ToUpper()
                 }
             };
         }

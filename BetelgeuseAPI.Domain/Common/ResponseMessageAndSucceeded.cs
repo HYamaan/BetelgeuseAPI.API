@@ -8,7 +8,7 @@ namespace BetelgeuseAPI.Domain.Common
 {
     public class ResponseMessageAndSucceeded
     {
-        public string Message { get; set; }
-        public bool Succeeded { get; set; }
+        public string? Message { get; set; }
+        public bool? Succeeded { get; set; }
     }
 }

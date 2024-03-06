@@ -10,7 +10,7 @@ namespace BetelgeuseAPI.Domain.Settings
     {
         public string SecurityKey { get; set; }
         public string Issuer { get; set; }
-        public List<String> Audience { get; set; }
+        public string Audience { get; set; }
         public double AccessTokenExpiration { get; set; }
         public int RefreshTokenExpiration { get; set; }
 

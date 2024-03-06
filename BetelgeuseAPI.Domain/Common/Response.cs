@@ -8,23 +8,37 @@ namespace BetelgeuseAPI.Domain.Common
 {
     public class Response<T>
     {
+        public bool Succeeded { get; set; }
+        public string Message { get; set; }
+        public T Data { get; set; }
         public Response()
         {
         }
-        public Response(T data, string message = null)
+
+        public static Response<T> Fail(string message)
         {
-            Succeeded = true;
-            Message = message;
-            Data = data;
+            return new Response<T>
+            {
+                Succeeded = false,
+                Message = message
+            };
         }
-        public Response(string message)
+        public static Response<T> Success(T data, string message = null)
         {
-            Succeeded = false;
-            Message = message;
+            return new Response<T>
+            {
+                Succeeded = true,
+                Message = message,
+                Data = data
+            };
         }
-        public bool Succeeded { get; set; }
-        public string Message { get; set; }
-        public List<string> Errors { get; set; }
-        public T Data { get; set; }
+        public static Response<T> Success(string message)
+        {
+            return new Response<T>
+            {
+                Succeeded = true,
+                Message = message,
+            };
+        }
     }
 }

@@ -6,9 +6,7 @@ namespace BetelgeuseAPI.Application.Features.Commands.AppUser.ChangePassword;
 
 public class ChangePasswordCommandRequest:IRequest<ChangePasswordCommandResponse>
 {
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
+
     [Required]
     [PasswordPropertyText]
     [MinLength(4)]
