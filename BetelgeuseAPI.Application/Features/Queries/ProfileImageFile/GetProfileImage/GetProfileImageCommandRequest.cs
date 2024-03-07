@@ -2,8 +2,6 @@
 
 namespace BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileImage;
 
-public class GetProfileImageCommandRequest : IRequest<GetProfilImageCommandResponse>
+public class GetProfileImageCommandRequest : IRequest<GetProfileImageCommandResponse>
 {
-    public required string Id { get; set; }
-
 }

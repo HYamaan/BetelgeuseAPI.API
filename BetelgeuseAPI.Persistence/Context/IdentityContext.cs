@@ -17,6 +17,9 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<UserAccountEducation> UserAccountEducations { get; set; }
         public DbSet<UserAccountExperiences> UserAccountExperiences { get; set; }
 
+        public DbSet<Domain.Entities.File> File { get; set; }
+        public DbSet<UserProfileImage> UserProfileImage { get; set; }
+        public DbSet<UserProfileBackgroundImage> UserProfileBackgroundImage { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
