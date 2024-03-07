@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace BetelgeuseAPI.Persistence.Repositories.UserProfileImageFile
 {
-    public class UserProfileImageFileReadRepository : ReadRepository<BetelgeuseAPIDbContext,UserProfileImage>,IUserProfileImageFileReadRepository
+    public class UserProfileImageFileReadRepository : ReadRepository<IdentityContext,UserProfileImage>,IUserProfileImageFileReadRepository
     {
-        public UserProfileImageFileReadRepository(BetelgeuseAPIDbContext context) : base(context)
+        public UserProfileImageFileReadRepository(IdentityContext context) : base(context)
         {
         }
     }

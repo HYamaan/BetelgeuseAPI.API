@@ -22,6 +22,30 @@ namespace BetelgeuseAPI.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.AllUserSkills", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Skill")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("isCheck")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AllUserSkills");
+                });
+
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseChildSubTopic", b =>
                 {
                     b.Property<Guid>("Id")
@@ -108,102 +132,6 @@ namespace BetelgeuseAPI.Persistence.Migrations
                     b.ToTable("CourseVideoSubTopics");
                 });
 
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Storage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Files");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("File");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("UserProfileImageId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserProfileImageId")
-                        .IsUnique();
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.VideoUploadModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Storage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VideoUploadFiles");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserProfileImage", b =>
-                {
-                    b.HasBaseType("BetelgeuseAPI.Domain.Entities.File");
-
-                    b.HasDiscriminator().HasValue("UserProfileImage");
-                });
-
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseChildSubTopic", b =>
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Entities.CourseParentSubTopic", "CourseParentSubTopic")
@@ -226,15 +154,6 @@ namespace BetelgeuseAPI.Persistence.Migrations
                     b.Navigation("CourseSubTopic");
                 });
 
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.User", b =>
-                {
-                    b.HasOne("BetelgeuseAPI.Domain.Entities.UserProfileImage", "UserProfileImage")
-                        .WithOne("User")
-                        .HasForeignKey("BetelgeuseAPI.Domain.Entities.User", "UserProfileImageId");
-
-                    b.Navigation("UserProfileImage");
-                });
-
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseChildSubTopic", b =>
                 {
                     b.Navigation("CourseVideoSubTopic");
@@ -243,11 +162,6 @@ namespace BetelgeuseAPI.Persistence.Migrations
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseParentSubTopic", b =>
                 {
                     b.Navigation("CourseSubTopics");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserProfileImage", b =>
-                {
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,10 +12,10 @@ namespace BetelgeuseAPI.Persistence.Context
     public class BetelgeuseAPIDbContext : DbContext
     {
         public BetelgeuseAPIDbContext(DbContextOptions<BetelgeuseAPIDbContext> options) : base(options) { }
-        public DbSet<Domain.Entities.File> Files { get; set; }
-        public DbSet<Domain.Entities.User> Users { get; set; }
-        public DbSet<UserProfileImage> UserImageFiles { get; set; }
-        public DbSet<VideoUploadModel> VideoUploadFiles { get; set; }
+
+
+        public DbSet<AllUserSkills> AllUserSkills { get; set; }
+
 
         public DbSet<CourseParentSubTopic> CourseParentSubTopics { get; set; }
         public DbSet<CourseChildSubTopic> CourseChildSubTopics { get; set; }

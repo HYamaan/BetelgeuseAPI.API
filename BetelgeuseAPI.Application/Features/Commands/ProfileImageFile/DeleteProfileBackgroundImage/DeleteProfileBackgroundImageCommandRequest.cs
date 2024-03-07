@@ -1,0 +1,7 @@
+﻿using MediatR;
+
+namespace BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.DeleteProfileBackgroundImage;
+
+public class DeleteProfileBackgroundImageCommandRequest:IRequest<DeleteProfileBackgroundPhotoCommandResponse>
+{
+}

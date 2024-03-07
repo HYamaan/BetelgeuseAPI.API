@@ -4,9 +4,9 @@ using BetelgeuseAPI.Persistence.Context;
 
 namespace BetelgeuseAPI.Persistence.Repositories.UserProfileImageFile
 {
-    public class UserProfileImageFileWriteRepository : WriteRepository<BetelgeuseAPIDbContext,UserProfileImage>, IUserProfileImageFileWriteRepository
+    public class UserProfileImageFileWriteRepository : WriteRepository<IdentityContext,UserProfileImage>, IUserProfileImageFileWriteRepository
     {
-        public UserProfileImageFileWriteRepository(BetelgeuseAPIDbContext context) : base(context)
+        public UserProfileImageFileWriteRepository(IdentityContext context) : base(context)
         {
         }
     }

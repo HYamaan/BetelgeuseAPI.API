@@ -1,0 +1,71 @@
+﻿using BetelgeuseAPI.Application.Abstractions.Services;
+using BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.AddUserSkills;
+using BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.DeleteUserSkills;
+using BetelgeuseAPI.Application.Repositories.UserAccountSkill;
+using BetelgeuseAPI.Domain.Common;
+using BetelgeuseAPI.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace BetelgeuseAPI.Persistence.Services;
+
+public class AdminService:IAdminService
+{
+    private readonly IServicesHelper _servicesHelper;
+    private readonly IAllUserAccountSkillWriteRepository _allUserAccountSkillWriteRepository;
+    private readonly IAllUserAccountSkillReadRepository _allUserAccountSkillReadRepository;
+
+    public AdminService(IAllUserAccountSkillWriteRepository allUserAccountSkillWriteRepository, IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository, IServicesHelper servicesHelper)
+    {
+        _allUserAccountSkillWriteRepository = allUserAccountSkillWriteRepository;
+        _allUserAccountSkillReadRepository = allUserAccountSkillReadRepository;
+        _servicesHelper = servicesHelper;
+    }
+
+    public async Task<Response<AddUserSkillCommandResponse>> AddUserSkill(AddUserSkillCommandRequest request)
+    {
+        try
+        {
+            var userId =  _servicesHelper.GetUserIdFromContext();
+
+            var response = await _allUserAccountSkillReadRepository
+                .GetWhere(ux => ux.Skill.Trim().ToLower() == request.Skill.Trim().ToLower())
+                .FirstOrDefaultAsync();
+
+            if (response == null)
+            {
+                var newUserSkill = new AllUserSkills()
+                {
+                    Skill = request.Skill,
+                    isCheck = request.isCheck,
+                };
+
+                await _allUserAccountSkillWriteRepository.AddAsync(newUserSkill);
+                await _allUserAccountSkillWriteRepository.SaveAsync();
+            
+                return Response<AddUserSkillCommandResponse>.Success("Yetenek Eklendi.");
+            }
+            else
+            {
+                return Response<AddUserSkillCommandResponse>.Fail("Bu yetenek zaten mevcut.");
+            }
+        }
+        catch (Exception e)
+        {
+            return Response<AddUserSkillCommandResponse>.Fail(e.Message);
+        }
+    }
+
+
+    public async Task<Response<DeleteUserSkillCommandResponse>> DeleteUserSkill(DeleteUserSkillCommandRequest request)
+    {
+        var skillId = await _allUserAccountSkillReadRepository.GetByIdAsync(request.Id);
+        if (skillId == null)
+        {
+            return Response<DeleteUserSkillCommandResponse>.Fail("Yetenek Bulunamadı");
+        }
+
+        await _allUserAccountSkillWriteRepository.RemoveAsync(request.Id);
+        await _allUserAccountSkillWriteRepository.SaveAsync();
+        return Response<DeleteUserSkillCommandResponse>.Success("Yetenek başarılı bir şekilde silindi.");
+    }
+}

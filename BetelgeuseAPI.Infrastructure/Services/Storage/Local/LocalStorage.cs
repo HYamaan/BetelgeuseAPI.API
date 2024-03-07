@@ -15,10 +15,17 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
             _webHostEnvironment = webHostEnvironment;
         }
 
-
-
+        
         public async Task DeleteAsync(string path, string fileName)
-            => File.Delete($"{path}\\{fileName}");
+        {
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "files", fileName);
+            var bool2 = File.Exists(filePath);
+            if (File.Exists(filePath))
+            {
+                await Task.Run(() => System.IO.File.Delete(filePath));
+            }
+        }
+
 
         public List<string> GetFiles(string path)
         {
