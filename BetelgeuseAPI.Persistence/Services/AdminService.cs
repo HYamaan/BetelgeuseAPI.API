@@ -14,6 +14,7 @@ public class AdminService:IAdminService
     private readonly IAllUserAccountSkillWriteRepository _allUserAccountSkillWriteRepository;
     private readonly IAllUserAccountSkillReadRepository _allUserAccountSkillReadRepository;
 
+
     public AdminService(IAllUserAccountSkillWriteRepository allUserAccountSkillWriteRepository, IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository, IServicesHelper servicesHelper)
     {
         _allUserAccountSkillWriteRepository = allUserAccountSkillWriteRepository;
@@ -55,7 +56,6 @@ public class AdminService:IAdminService
         }
     }
 
-
     public async Task<Response<DeleteAllUserSkillCommandResponse>> DeleteUserSkill(DeleteAllUserSkillCommandRequest request)
     {
         var skillId = await _allUserAccountSkillReadRepository.GetByIdAsync(request.Id);
@@ -68,4 +68,6 @@ public class AdminService:IAdminService
         await _allUserAccountSkillWriteRepository.SaveAsync();
         return Response<DeleteAllUserSkillCommandResponse>.Success("Yetenek başarılı bir şekilde silindi.");
     }
+
+
 }

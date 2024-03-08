@@ -2,8 +2,6 @@ using BetelgeuseAPI.Infrastructure;
 using BetelgeuseAPI.Infrastructure.Services.Storage.Local;
 using BetelgeuseAPI.Persistence;
 using BetelgeuseAPI.Application;
-using BetelgeuseAPI.Application.Abstractions.Services;
-using BetelgeuseAPI.Infrastructure.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);

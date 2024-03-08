@@ -4,7 +4,6 @@ using BetelgeuseAPI.Application.Repositories.UserAccountEducation;
 using BetelgeuseAPI.Application.Repositories.UserAccountExperiences;
 using BetelgeuseAPI.Application.Repositories.UserAccountInformation;
 using BetelgeuseAPI.Application.Repositories.UserAccountInformationAbout;
-using BetelgeuseAPI.Application.Repositories.UserAccountSkill;
 using BetelgeuseAPI.Application.Repositories.UserAccountSkills;
 using BetelgeuseAPI.Application.Repositories.UserProfileBackgroundImageFile;
 using BetelgeuseAPI.Application.Repositories.UserProfileImageFile;
@@ -18,7 +17,6 @@ using BetelgeuseAPI.Persistence.Repositories;
 using BetelgeuseAPI.Persistence.Repositories.File;
 using BetelgeuseAPI.Persistence.Repositories.UserAccountInformation;
 using BetelgeuseAPI.Persistence.Repositories.UserAccountInformationAbout;
-using BetelgeuseAPI.Persistence.Repositories.UserAccountSkill;
 using BetelgeuseAPI.Persistence.Repositories.UserAccountSkills;
 using BetelgeuseAPI.Persistence.Repositories.UserProfileBackgroundImageFile;
 using BetelgeuseAPI.Persistence.Repositories.UserProfileImageFile;
@@ -57,6 +55,7 @@ namespace BetelgeuseAPI.Persistence
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IServicesHelper, ServicesHelper>();
+            services.AddScoped<IBlogService, BlogService>();
             
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IFileReadRepository, FileReadRepository>();
@@ -78,11 +77,9 @@ namespace BetelgeuseAPI.Persistence
             services.AddScoped<IUserProfileBackgroundImageFileWriteRepository, UserProfileBackgroundImageFileWriteRepository>();
             services.AddScoped<IUserProfileImageFileWriteRepository, UserProfileImageFileWriteRepository>();
             services.AddScoped<IUserProfileImageFileReadRepository, UserProfileImageFileReadRepository>();
-            services.AddScoped<IAllUserAccountSkillWriteRepository, AllUserAccountSkillWriteRepository>();
-            services.AddScoped<IAllUserAccountSkillReadRepository, AllUserAccountSkillReadRepository>();
             services.AddScoped<IUserAccountSkillsWriteRepository, UserAccountSkillsWriteRepository>();
             services.AddScoped<IUserAccountSkillsReadRepository, UserAccountSkillsReadRepository>();
-
+            services.AddAdminServices();
         }
     }
 }

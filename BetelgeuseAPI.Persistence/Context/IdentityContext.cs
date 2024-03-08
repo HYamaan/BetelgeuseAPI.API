@@ -11,6 +11,7 @@ namespace BetelgeuseAPI.Persistence.Context
     public class IdentityContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) { }
+        
         public DbSet<RefreshToken> RefreshToken { get; set; }
         public DbSet<UserAccountInformation> UserAccountInformation { get; set; }
         public DbSet<UserAccountAbout> UserAccountInformationAbout { get; set; }
@@ -18,6 +19,8 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<UserAccountExperiences> UserAccountExperiences { get; set; }
         public DbSet<AllUserSkills> AllUserSkills { get; set; }
         public DbSet<UserSkills> UserSkills { get; set; }
+
+        public DbSet<BlogCategories> BlogCategories { get; set; }
 
         public DbSet<Domain.Entities.File> File { get; set; }
         public DbSet<UserProfileImage> UserProfileImage { get; set; }

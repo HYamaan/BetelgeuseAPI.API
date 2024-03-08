@@ -1,5 +1,7 @@
 ﻿using BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.AddUserSkills;
 using BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.DeleteUserSkills;
+using BetelgeuseAPI.Application.Features.Commands.Admin.Blog.BlogCategory.AddBlogCategory;
+using BetelgeuseAPI.Application.Features.Commands.Admin.Blog.BlogCategory.DeleteBlogCategory;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +20,22 @@ public class AdminController:Controller
     {
         _mediator = mediator;
     }
-    
+    [Authorize]
     [HttpPost("[action]")]
     public async Task<IActionResult> AddAllUserSkill ([FromBody] AddAllUserSkillCommandRequest model)
     {
         AddAllUserSkillCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
-    
-    [HttpPost("[action]")]
+
+
+    [Authorize]
+    [HttpDelete("[action]")]
     public async Task<IActionResult> DeleteAllUserSkill ([FromBody] DeleteAllUserSkillCommandRequest model)
     {
         DeleteAllUserSkillCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
-    
+
+
 }

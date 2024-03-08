@@ -223,7 +223,7 @@ public class UserService:IUserService
 
             if (profilePhoto == null)
             {
-                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File);
+                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File!);
                 var userProfileImage = new UserProfileImage
                 {
                     FileName = fileName,
@@ -237,7 +237,7 @@ public class UserService:IUserService
             {
                 
                 await _storageService.DeleteAsync(profilePhoto.Path.Split(Path.DirectorySeparatorChar)[0], profilePhoto.FileName);
-                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File);
+                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File!);
                 profilePhoto.FileName = fileName;
                 profilePhoto.Path = pathOrContainerName;
                 _profileImageFileWriteRepository.Update(profilePhoto);
@@ -275,7 +275,7 @@ public class UserService:IUserService
             {
                 
                 await _storageService.DeleteAsync(profilePhoto.Path.Split(Path.DirectorySeparatorChar)[0], profilePhoto.FileName);
-                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File);
+                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File!);
                 profilePhoto.FileName = fileName;
                 profilePhoto.Path = pathOrContainerName;
                 _profileBackgroundImageFileWriteRepository.Update(profilePhoto);
