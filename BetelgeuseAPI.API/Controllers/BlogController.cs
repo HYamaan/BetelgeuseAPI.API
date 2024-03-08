@@ -1,7 +1,10 @@
-﻿using BetelgeuseAPI.Application.Features.Commands.Admin.Blog.BlogCategory.AddBlogCategory;
-using BetelgeuseAPI.Application.Features.Commands.Admin.Blog.BlogCategory.DeleteBlogCategory;
-using BetelgeuseAPI.Application.Features.Queries.Blog;
+﻿using BetelgeuseAPI.Application.Features.Commands.Blog.BlogCategory.AddBlogCategory;
+using BetelgeuseAPI.Application.Features.Commands.Blog.BlogCategory.DeleteBlogCategory;
+using BetelgeuseAPI.Application.Features.Commands.Blog.CreateBlog;
+using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByCategory;
+using BetelgeuseAPI.Application.Features.Queries.Blog.BlogCategory;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BetelgeuseAPI.API.Controllers;
@@ -21,6 +24,13 @@ public class BlogController : Controller
         AddBlogCategoryCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
+    [Authorize]
+    [HttpPost("[action]")]
+    public async Task<IActionResult> CreateBlog([FromForm] CreateBlogCommandRequest model)
+    {
+        CreateBlogCommandResponse response = await _mediator.Send(model);
+        return Ok(response);
+    }
 
     [HttpGet("[action]")]
     public async Task<IActionResult> GetBlogAllCategories()
@@ -36,4 +46,12 @@ public class BlogController : Controller
         DeleteBlogCategoryCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetBlogByCategories([FromQuery] GetBlogByCategoryCommandRequest request)
+    {
+        GetBlogByCategoryCommandResponse response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+
 }
