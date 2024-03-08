@@ -5,9 +5,9 @@ namespace BetelgeuseAPI.Domain.Entities;
 
 public class UserSkills:BaseEntity
 {
-    public required string AppUserId { get; set; }
-    public required string AllUserSkillsId{ get; set; }
-    public required bool IsSkillsCheck { get; set; }
-    public required AllUserSkills AllUserSkills{ get; set; }
-    public required AppUser AppUser{ get; set; }
+    public string AppUserId { get; set; }
+    public Guid AllUserSkillsId { get; set; }
+    public bool IsCheck { get; set; }
+    public AllUserSkills AllUserSkills { get; set; }
+    public AppUser AppUser {get; set; }
 }

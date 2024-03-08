@@ -3,6 +3,7 @@ using System;
 using BetelgeuseAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20240307231901_userSkillName")]
+    partial class userSkillName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "0af3c39b-d8cb-4d2d-b04d-3b0530251278",
+                            Id = "e8d6055d-fe33-4600-ab1c-454f0fb3a42e",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "d3642d22-2695-4683-9f59-b22558847f31",
+                            Id = "f280ef8c-8ff9-4ebb-80eb-ce4d0ef3633c",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
-                            Id = "85f4fccd-11ac-42ce-abfa-fc107d54598e",
+                            Id = "e06d8e31-2c7a-44da-8126-77118975857f",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -135,9 +138,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "85f4fccd-11ac-42ce-abfa-fc107d54598e",
+                            Id = "e06d8e31-2c7a-44da-8126-77118975857f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "11af0acf-4ca3-4815-965f-c281f04e1a24",
+                            ConcurrencyStamp = "66e782d5-6940-469b-ac7e-ecc9cb69a9ce",
                             Email = "student@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -150,9 +153,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
-                            Id = "d3642d22-2695-4683-9f59-b22558847f31",
+                            Id = "f280ef8c-8ff9-4ebb-80eb-ce4d0ef3633c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2384dc2d-cc92-4b95-a525-21a4c510e9e1",
+                            ConcurrencyStamp = "1c3ecfe8-4c90-4980-815d-66c5cb093f70",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -418,7 +421,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasIndex("AllUserSkillsId")
                         .IsUnique();
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("AppUserId")
+                        .IsUnique();
 
                     b.ToTable("UserSkills", "Identity");
                 });
@@ -512,13 +516,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            UserId = "d3642d22-2695-4683-9f59-b22558847f31",
-                            RoleId = "d3642d22-2695-4683-9f59-b22558847f31"
+                            UserId = "f280ef8c-8ff9-4ebb-80eb-ce4d0ef3633c",
+                            RoleId = "f280ef8c-8ff9-4ebb-80eb-ce4d0ef3633c"
                         },
                         new
                         {
-                            UserId = "85f4fccd-11ac-42ce-abfa-fc107d54598e",
-                            RoleId = "85f4fccd-11ac-42ce-abfa-fc107d54598e"
+                            UserId = "e06d8e31-2c7a-44da-8126-77118975857f",
+                            RoleId = "e06d8e31-2c7a-44da-8126-77118975857f"
                         });
                 });
 
@@ -615,8 +619,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .IsRequired();
 
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
-                        .WithMany("UserSkills")
-                        .HasForeignKey("AppUserId")
+                        .WithOne("UserSkills")
+                        .HasForeignKey("BetelgeuseAPI.Domain.Entities.UserSkills", "AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -716,7 +720,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
                     b.Navigation("UserProfileImage");
 
-                    b.Navigation("UserSkills");
+                    b.Navigation("UserSkills")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.AllUserSkills", b =>

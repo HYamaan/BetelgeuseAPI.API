@@ -16,6 +16,8 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<UserAccountAbout> UserAccountInformationAbout { get; set; }
         public DbSet<UserAccountEducation> UserAccountEducations { get; set; }
         public DbSet<UserAccountExperiences> UserAccountExperiences { get; set; }
+        public DbSet<AllUserSkills> AllUserSkills { get; set; }
+        public DbSet<UserSkills> UserSkills { get; set; }
 
         public DbSet<Domain.Entities.File> File { get; set; }
         public DbSet<UserProfileImage> UserProfileImage { get; set; }

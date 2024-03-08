@@ -14,8 +14,6 @@ namespace BetelgeuseAPI.Persistence.Context
         public BetelgeuseAPIDbContext(DbContextOptions<BetelgeuseAPIDbContext> options) : base(options) { }
 
 
-        public DbSet<AllUserSkills> AllUserSkills { get; set; }
-
 
         public DbSet<CourseParentSubTopic> CourseParentSubTopics { get; set; }
         public DbSet<CourseChildSubTopic> CourseChildSubTopics { get; set; }

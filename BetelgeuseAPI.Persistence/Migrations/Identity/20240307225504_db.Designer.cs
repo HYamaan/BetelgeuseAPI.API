@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20240307210942_init")]
-    partial class init
+    [Migration("20240307225504_db")]
+    partial class db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "8ca00ddf-c555-4fcd-96cd-51cd2d8b2f51",
+                            Id = "4b9900df-87f3-45f5-b94e-ce8efd53850f",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "d998ccfd-7a21-47d7-b9a6-2844f139d55f",
+                            Id = "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
-                            Id = "37ed111b-755a-40fb-9ee2-0e79f438f462",
+                            Id = "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -138,9 +138,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "37ed111b-755a-40fb-9ee2-0e79f438f462",
+                            Id = "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "915ecca8-9964-4416-9e48-f7a5c1c22dcc",
+                            ConcurrencyStamp = "94611902-6db3-44aa-b4c9-b811c5be572f",
                             Email = "student@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -153,9 +153,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
-                            Id = "d998ccfd-7a21-47d7-b9a6-2844f139d55f",
+                            Id = "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "52a40a21-ba37-4bdc-a265-d6adb3dd0381",
+                            ConcurrencyStamp = "8cb8b84b-5c3d-4911-8574-b34433bd9df8",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -300,6 +300,30 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.ToTable("UserAccountInformation", "Identity");
                 });
 
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.AllUserSkills", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsCheck")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Skill")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AllUserSkills", "Identity");
+                });
+
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File", b =>
                 {
                     b.Property<Guid>("Id")
@@ -368,6 +392,39 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .IsUnique();
 
                     b.ToTable("UserAccountInformationAbout", "Identity");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserSkills", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AllUserSkillsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsSkillsCheck")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AllUserSkillsId")
+                        .IsUnique();
+
+                    b.HasIndex("AppUserId")
+                        .IsUnique();
+
+                    b.ToTable("UserSkills", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -459,13 +516,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            UserId = "d998ccfd-7a21-47d7-b9a6-2844f139d55f",
-                            RoleId = "d998ccfd-7a21-47d7-b9a6-2844f139d55f"
+                            UserId = "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d",
+                            RoleId = "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d"
                         },
                         new
                         {
-                            UserId = "37ed111b-755a-40fb-9ee2-0e79f438f462",
-                            RoleId = "37ed111b-755a-40fb-9ee2-0e79f438f462"
+                            UserId = "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42",
+                            RoleId = "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42"
                         });
                 });
 
@@ -551,6 +608,25 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", null)
                         .WithOne("UserAccountAbout")
                         .HasForeignKey("BetelgeuseAPI.Domain.Entities.UserAccountAbout", "AppUserId");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserSkills", b =>
+                {
+                    b.HasOne("BetelgeuseAPI.Domain.Entities.AllUserSkills", "AllUserSkills")
+                        .WithOne("UserSkills")
+                        .HasForeignKey("BetelgeuseAPI.Domain.Entities.UserSkills", "AllUserSkillsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
+                        .WithOne("UserSkills")
+                        .HasForeignKey("BetelgeuseAPI.Domain.Entities.UserSkills", "AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AllUserSkills");
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -643,6 +719,15 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("UserProfileBackgroundImage");
 
                     b.Navigation("UserProfileImage");
+
+                    b.Navigation("UserSkills")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.AllUserSkills", b =>
+                {
+                    b.Navigation("UserSkills")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

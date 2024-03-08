@@ -3,19 +3,19 @@ using MediatR;
 
 namespace BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.DeleteUserSkills;
 
-public class DeleteUserSkillCommandHandler:IRequestHandler<DeleteUserSkillCommandRequest,DeleteUserSkillCommandResponse>
+public class DeleteAllUserSkillCommandHandler:IRequestHandler<DeleteAllUserSkillCommandRequest,DeleteAllUserSkillCommandResponse>
 {
     private readonly IAdminService _adminService;
 
-    public DeleteUserSkillCommandHandler(IAdminService adminService)
+    public DeleteAllUserSkillCommandHandler(IAdminService adminService)
     {
         _adminService = adminService;
     }
 
-    public async Task<DeleteUserSkillCommandResponse> Handle(DeleteUserSkillCommandRequest request, CancellationToken cancellationToken)
+    public async Task<DeleteAllUserSkillCommandResponse> Handle(DeleteAllUserSkillCommandRequest request, CancellationToken cancellationToken)
     {
         var response = await _adminService.DeleteUserSkill(request);
-        return new DeleteUserSkillCommandResponse()
+        return new DeleteAllUserSkillCommandResponse()
         {
             Succeeded = response.Succeeded,
             Message = response.Message

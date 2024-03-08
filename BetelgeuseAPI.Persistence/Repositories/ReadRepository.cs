@@ -31,6 +31,7 @@ namespace BetelgeuseAPI.Persistence.Repositories
                 query = query.AsNoTracking();
             return query;
         }
+
         public IQueryable<T> GetWhere(Expression<Func<T, bool>> method, bool tracking = true)
         {
             var query = Table.Where(method);

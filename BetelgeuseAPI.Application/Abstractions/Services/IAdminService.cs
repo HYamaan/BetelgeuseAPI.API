@@ -6,7 +6,7 @@ namespace BetelgeuseAPI.Application.Abstractions.Services;
 
 public interface IAdminService
 {
-    Task<Response<AddUserSkillCommandResponse>> AddUserSkill(AddUserSkillCommandRequest request);
+    Task<Response<AddAllUserSkillCommandResponse>> AddUserSkill(AddAllUserSkillCommandRequest request);
 
-    Task<Response<DeleteUserSkillCommandResponse>> DeleteUserSkill(DeleteUserSkillCommandRequest request);
+    Task<Response<DeleteAllUserSkillCommandResponse>> DeleteUserSkill(DeleteAllUserSkillCommandRequest request);
 }

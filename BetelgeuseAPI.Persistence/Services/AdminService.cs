@@ -21,7 +21,7 @@ public class AdminService:IAdminService
         _servicesHelper = servicesHelper;
     }
 
-    public async Task<Response<AddUserSkillCommandResponse>> AddUserSkill(AddUserSkillCommandRequest request)
+    public async Task<Response<AddAllUserSkillCommandResponse>> AddUserSkill(AddAllUserSkillCommandRequest request)
     {
         try
         {
@@ -36,36 +36,36 @@ public class AdminService:IAdminService
                 var newUserSkill = new AllUserSkills()
                 {
                     Skill = request.Skill,
-                    isCheck = request.isCheck,
+                    IsCheck = request.isCheck,
                 };
 
                 await _allUserAccountSkillWriteRepository.AddAsync(newUserSkill);
                 await _allUserAccountSkillWriteRepository.SaveAsync();
             
-                return Response<AddUserSkillCommandResponse>.Success("Yetenek Eklendi.");
+                return Response<AddAllUserSkillCommandResponse>.Success("Yetenek Eklendi.");
             }
             else
             {
-                return Response<AddUserSkillCommandResponse>.Fail("Bu yetenek zaten mevcut.");
+                return Response<AddAllUserSkillCommandResponse>.Fail("Bu yetenek zaten mevcut.");
             }
         }
         catch (Exception e)
         {
-            return Response<AddUserSkillCommandResponse>.Fail(e.Message);
+            return Response<AddAllUserSkillCommandResponse>.Fail(e.Message);
         }
     }
 
 
-    public async Task<Response<DeleteUserSkillCommandResponse>> DeleteUserSkill(DeleteUserSkillCommandRequest request)
+    public async Task<Response<DeleteAllUserSkillCommandResponse>> DeleteUserSkill(DeleteAllUserSkillCommandRequest request)
     {
         var skillId = await _allUserAccountSkillReadRepository.GetByIdAsync(request.Id);
         if (skillId == null)
         {
-            return Response<DeleteUserSkillCommandResponse>.Fail("Yetenek Bulunamadı");
+            return Response<DeleteAllUserSkillCommandResponse>.Fail("Yetenek Bulunamadı");
         }
 
         await _allUserAccountSkillWriteRepository.RemoveAsync(request.Id);
         await _allUserAccountSkillWriteRepository.SaveAsync();
-        return Response<DeleteUserSkillCommandResponse>.Success("Yetenek başarılı bir şekilde silindi.");
+        return Response<DeleteAllUserSkillCommandResponse>.Success("Yetenek başarılı bir şekilde silindi.");
     }
 }

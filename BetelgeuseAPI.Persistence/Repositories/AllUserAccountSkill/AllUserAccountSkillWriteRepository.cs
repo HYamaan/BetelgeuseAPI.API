@@ -4,9 +4,9 @@ using BetelgeuseAPI.Persistence.Context;
 
 namespace BetelgeuseAPI.Persistence.Repositories.UserAccountSkill;
 
-public class AllUserAccountSkillWriteRepository:WriteRepository<BetelgeuseAPIDbContext,AllUserSkills>,IAllUserAccountSkillWriteRepository
+public class AllUserAccountSkillWriteRepository:WriteRepository<IdentityContext,AllUserSkills>,IAllUserAccountSkillWriteRepository
 {
-    public AllUserAccountSkillWriteRepository(BetelgeuseAPIDbContext context) : base(context)
+    public AllUserAccountSkillWriteRepository(IdentityContext context) : base(context)
     {
     }
 }

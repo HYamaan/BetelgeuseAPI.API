@@ -11,6 +11,8 @@ using BetelgeuseAPI.Application.Features.Commands.UserSettings.Experience.Delete
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.Experience.UpdateAccountExperience;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UpdateAccountAbout;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UploadAccountInformation;
+using BetelgeuseAPI.Application.Features.Commands.UserSettings.UserSkill.AddUserSkill;
+using BetelgeuseAPI.Application.Features.Queries.GetAllUserSkills;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileBackgroundImage;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileImage;
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountAbout;
@@ -63,12 +65,20 @@ namespace BetelgeuseAPI.API.Controllers
             AddAccountExperiencesCommandResponse response = await _mediator.Send(model);
             return Ok(response);
         }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> AddEducation ([FromBody] AddAccountEducationCommandRequest model)
         {
             AddAccountEducationCommandResponse response = await _mediator.Send(model);
             return Ok(response);
         }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AddUserSkill([FromBody] AddUserSkillCommandRequest model)
+        {
+            AddUserSkillCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+        }
+
         [HttpPut("[action]")]
         public async Task<IActionResult> UpdateAccount([FromBody] UpdateAccountCommandRequest model)
         {
@@ -131,6 +141,14 @@ namespace BetelgeuseAPI.API.Controllers
             GetProfileBackgroundImageCommandResponse response = await _mediator.Send(request);
             return Ok(response);
         }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetAllUserSkills()
+        {
+            var model = new GetAllUserSkillsCommandRequest();
+            GetAllUserSkillsCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+        }
+
         [HttpGet("[action]")]
         public async Task<IActionResult> GetUserSkills ()
         {
