@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.AddUserSkills;
 
-public class AddUserSkillCommandRequest:IRequest<AddUserSkillCommandResponse>
+public class AddAllUserSkillCommandRequest:IRequest<AddAllUserSkillCommandResponse>
 {
     public string Skill { get; set; }
 

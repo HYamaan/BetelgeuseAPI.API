@@ -4,9 +4,9 @@ using BetelgeuseAPI.Persistence.Context;
 
 namespace BetelgeuseAPI.Persistence.Repositories.UserAccountSkill;
 
-public class AllUserAccountSkillReadRepository:ReadRepository<BetelgeuseAPIDbContext,AllUserSkills>, IAllUserAccountSkillReadRepository
+public class AllUserAccountSkillReadRepository:ReadRepository<IdentityContext,AllUserSkills>, IAllUserAccountSkillReadRepository
 {
-    public AllUserAccountSkillReadRepository(BetelgeuseAPIDbContext context) : base(context)
+    public AllUserAccountSkillReadRepository(IdentityContext context) : base(context)
     {
     }
 }

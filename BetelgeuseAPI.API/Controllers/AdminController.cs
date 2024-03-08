@@ -20,16 +20,16 @@ public class AdminController:Controller
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> AddUserSkill ([FromBody] AddUserSkillCommandRequest model)
+    public async Task<IActionResult> AddAllUserSkill ([FromBody] AddAllUserSkillCommandRequest model)
     {
-        AddUserSkillCommandResponse response = await _mediator.Send(model);
+        AddAllUserSkillCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
     
     [HttpPost("[action]")]
-    public async Task<IActionResult> DeleteUserSkill ([FromBody] DeleteUserSkillCommandRequest model)
+    public async Task<IActionResult> DeleteAllUserSkill ([FromBody] DeleteAllUserSkillCommandRequest model)
     {
-        DeleteUserSkillCommandResponse response = await _mediator.Send(model);
+        DeleteAllUserSkillCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
     

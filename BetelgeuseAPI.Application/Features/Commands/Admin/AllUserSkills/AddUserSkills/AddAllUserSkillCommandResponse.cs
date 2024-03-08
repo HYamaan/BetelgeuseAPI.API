@@ -2,7 +2,7 @@
 
 namespace BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.AddUserSkills;
 
-public class AddUserSkillCommandResponse:ResponseMessageAndSucceeded
+public class AddAllUserSkillCommandResponse:ResponseMessageAndSucceeded
 {
     
 }

@@ -11,6 +11,7 @@ using BetelgeuseAPI.Application.Features.Commands.UserSettings.Experience.Delete
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.Experience.UpdateAccountExperience;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UpdateAccountAbout;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UploadAccountInformation;
+using BetelgeuseAPI.Application.Features.Commands.UserSettings.UserSkill.AddUserSkill;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileBackgroundImage;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileImage;
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountAbout;
@@ -32,12 +33,14 @@ public interface IUserService
     Task<Response<AddAccountEducationCommandResponse>> AddAccountEducation(AddAccountEducationCommandRequest request);
     Task<Response<UploadProfileImageCommandResponse>> AddProfilePhoto(UploadProfileImageCommandRequest request);
     Task<Response<UploadProfileBackgroundImageCommandResponse>> AddProfileBackgroundPhoto(UploadProfileBackgroundImageCommandRequest request);
-    
+    Task<Response<AddUserSkillCommandResponse>> AddUserSkill(AddUserSkillCommandRequest request);
+
     Task<Response<List<AccountEducationDto>>> GetAccountEducation(GetAccountEducationCommandRequest request);
     Task<Response<List<AccountExperienceDto>>> GetAccountExperiences(GetAccountExperienceCommandRequest request);
     Task<Response<GetAccountAboutCommandResponse>> GetAccountAbout(GetAccountAboutCommandRequest request);
     Task<Response<GetProfileImageCommandResponse>> GetAccountProfileImage();  
     Task<Response<GetProfileBackgroundImageCommandResponse>> GetAccountProfileBackgroundImage();
+    Task<Response<List<AccountUserSkillsDto>>> GetAllUserSkills();
     Task<Response<List<AccountUserSkillsDto>>> GetUserSkills();
 
     Task<Response<DeleteAccountEducationCommandResponse>> DeleteAccountEducation(

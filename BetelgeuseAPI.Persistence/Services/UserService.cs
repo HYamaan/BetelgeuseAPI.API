@@ -17,6 +17,7 @@ using BetelgeuseAPI.Application.Features.Commands.UserSettings.Education.UpdateA
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.Experience.DeleteAccountExperience;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.Experience.UpdateAccountExperience;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UpdateAccountAbout;
+using BetelgeuseAPI.Application.Features.Commands.UserSettings.UserSkill.AddUserSkill;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileBackgroundImage;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileImage;
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountAbout;
@@ -28,6 +29,7 @@ using BetelgeuseAPI.Application.Repositories.UserAccountEducation;
 using BetelgeuseAPI.Application.Repositories.UserAccountExperiences;
 using BetelgeuseAPI.Application.Repositories.UserAccountInformationAbout;
 using BetelgeuseAPI.Application.Repositories.UserAccountSkill;
+using BetelgeuseAPI.Application.Repositories.UserAccountSkills;
 using BetelgeuseAPI.Application.Repositories.UserProfileBackgroundImageFile;
 using BetelgeuseAPI.Application.Repositories.UserProfileImageFile;
 using BetelgeuseAPI.Domain.Entities;
@@ -54,6 +56,8 @@ public class UserService:IUserService
     private readonly IUserProfileBackgroundImageFileReadRepository _profileBackgroundImageReadRepository;
     private readonly IUserProfileBackgroundImageFileWriteRepository _profileBackgroundImageFileWriteRepository ;
     private readonly IAllUserAccountSkillReadRepository _allUserAccountSkillReadRepository;
+    private readonly IUserAccountSkillsWriteRepository _userAccountSkillWriteRepository;
+    private readonly IUserAccountSkillsReadRepository _userAccountSkillReadRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IConfiguration _configuration;
 
@@ -71,7 +75,7 @@ public class UserService:IUserService
         IUserProfileImageFileReadRepository profileImageFileReadRepository, 
         IConfiguration configuration,
         IUserProfileBackgroundImageFileWriteRepository profileBackgroundImageFileWriteRepository,
-        IUserProfileBackgroundImageFileReadRepository profileBackgroundImageReadRepository, IServicesHelper servicesHelper, IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository)
+        IUserProfileBackgroundImageFileReadRepository profileBackgroundImageReadRepository, IServicesHelper servicesHelper, IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository, IUserAccountSkillsReadRepository userAccountSkillReadRepository, IUserAccountSkillsWriteRepository userAccountSkillWriteRepository)
     {
         _httpContextAccessor = httpContextAccessor;
         _informationReadRepository = informationReadRepository;
@@ -90,6 +94,8 @@ public class UserService:IUserService
         _profileBackgroundImageReadRepository = profileBackgroundImageReadRepository;
         _servicesHelper = servicesHelper;
         _allUserAccountSkillReadRepository = allUserAccountSkillReadRepository;
+        _userAccountSkillReadRepository = userAccountSkillReadRepository;
+        _userAccountSkillWriteRepository = userAccountSkillWriteRepository;
     }
 
     public async Task<Response<UpdateAccountCommandResponse>> UpdateAccountInformation(UpdateAccountCommandRequest request)
@@ -284,6 +290,47 @@ public class UserService:IUserService
         }
     }
 
+    public async Task<Response<AddUserSkillCommandResponse>> AddUserSkill(AddUserSkillCommandRequest request)
+    {
+        try
+        {
+            var userId = _servicesHelper.GetUserIdFromContext();
+
+            var userSkill = await _userAccountSkillReadRepository
+                .GetWhere(ux => ux.AppUserId == userId && ux.AllUserSkillsId == Guid.Parse(request.Id))
+                .FirstOrDefaultAsync();
+
+            if (userSkill != null)
+            {
+                userSkill.IsCheck = request.isCheck;
+                _userAccountSkillWriteRepository.Update(userSkill);
+            }
+            else
+            {
+                var globalSkill = await _allUserAccountSkillReadRepository.GetWhere(ux => ux.Id == Guid.Parse(request.Id)).FirstOrDefaultAsync();
+
+                var newUserSkill = new UserSkills
+                {
+                    AppUserId = userId,
+                    AllUserSkills = globalSkill ?? throw new ArgumentNullException(nameof(globalSkill)),
+                    AllUserSkillsId = globalSkill.Id,
+                    IsCheck = request.isCheck
+                };
+
+                await _userAccountSkillWriteRepository.AddAsync(newUserSkill);
+            }
+
+            await _userAccountSkillWriteRepository.SaveAsync();
+
+            return Response<AddUserSkillCommandResponse>.Success("Başarılı bir şekilde eklendi.");
+        }
+        catch (Exception e)
+        {
+            return Response<AddUserSkillCommandResponse>.Fail(e.Message);
+        }
+    }
+
+
 
     public async Task<Response<List<AccountEducationDto>>> GetAccountEducation(GetAccountEducationCommandRequest request)
     {
@@ -360,16 +407,29 @@ public class UserService:IUserService
             return Response<GetProfileBackgroundImageCommandResponse>.Fail(e.Message);
         }
     }
+
+    public async Task<Response<List<AccountUserSkillsDto>>> GetAllUserSkills()
+    {
+        var response = await  _allUserAccountSkillReadRepository.GetWhere(x=>x.IsCheck).Select(ux =>
+                       new AccountUserSkillsDto()
+                       {
+                Id = ux.Id.ToString(),
+                isCheck = false,
+                Skill = ux.Skill
+            }).ToListAsync();
+          return Response<List<AccountUserSkillsDto>>.Success(response);
+    }
+
     public async Task<Response<List<AccountUserSkillsDto>>> GetUserSkills()
     {
         try
         {
-            var userSkills = await _allUserAccountSkillReadRepository.GetWhere(ux => ux.isCheck == true)
+            var userSkills = await _allUserAccountSkillReadRepository.GetWhere(ux => ux.IsCheck == true)
                 .Select(ux=>
                     new AccountUserSkillsDto()
                     {
                         Id =ux.Id.ToString(),
-                        isCheck = ux.isCheck,Skill = ux.Skill
+                        isCheck = ux.IsCheck,Skill = ux.Skill
                     }).ToListAsync();
         
             return Response<List<AccountUserSkillsDto>>.Success(userSkills, null);

@@ -1,20 +1,20 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Services;
 using MediatR;
 
-namespace BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.AddUserSkills;
+namespace BetelgeuseAPI.Application.Features.Commands.UserSettings.UserSkill.AddUserSkill;
 
 public class AddUserSkillsCommandHandler:IRequestHandler<AddUserSkillCommandRequest,AddUserSkillCommandResponse>
 {
-    private readonly IAdminService _adminService;
+    private readonly IUserService _userService;
 
-    public AddUserSkillsCommandHandler(IAdminService adminService)
+    public AddUserSkillsCommandHandler(IUserService userService)
     {
-        _adminService = adminService;
+        _userService = userService;
     }
 
     public async Task<AddUserSkillCommandResponse> Handle(AddUserSkillCommandRequest request, CancellationToken cancellationToken)
     {
-        var response = await _adminService.AddUserSkill(request);
+        var response = await _userService.AddUserSkill(request);
 
         return new AddUserSkillCommandResponse()
         {

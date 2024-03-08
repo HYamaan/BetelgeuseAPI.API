@@ -9,13 +9,29 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations.Identity
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "Identity");
+
+            migrationBuilder.CreateTable(
+                name: "AllUserSkills",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Skill = table.Column<string>(type: "text", nullable: false),
+                    IsCheck = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AllUserSkills", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Role",
@@ -302,6 +318,37 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserSkills",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AppUserId = table.Column<string>(type: "text", nullable: false),
+                    AllUserSkillsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsSkillsCheck = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSkills", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserSkills_AllUserSkills_AllUserSkillsId",
+                        column: x => x.AllUserSkillsId,
+                        principalSchema: "Identity",
+                        principalTable: "AllUserSkills",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserSkills_User_AppUserId",
+                        column: x => x.AppUserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserTokens",
                 schema: "Identity",
                 columns: table => new
@@ -329,9 +376,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "37ed111b-755a-40fb-9ee2-0e79f438f462", null, "Student", "STUDENT" },
-                    { "8ca00ddf-c555-4fcd-96cd-51cd2d8b2f51", null, "Admin", "ADMİN" },
-                    { "d998ccfd-7a21-47d7-b9a6-2844f139d55f", null, "Moderator", "MODERATOR" }
+                    { "4b9900df-87f3-45f5-b94e-ce8efd53850f", null, "Admin", "ADMİN" },
+                    { "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d", null, "Moderator", "MODERATOR" },
+                    { "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42", null, "Student", "STUDENT" }
                 });
 
             migrationBuilder.InsertData(
@@ -340,8 +387,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "37ed111b-755a-40fb-9ee2-0e79f438f462", 0, "915ecca8-9964-4416-9e48-f7a5c1c22dcc", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" },
-                    { "d998ccfd-7a21-47d7-b9a6-2844f139d55f", 0, "52a40a21-ba37-4bdc-a265-d6adb3dd0381", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" }
+                    { "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d", 0, "8cb8b84b-5c3d-4911-8574-b34433bd9df8", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" },
+                    { "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42", 0, "94611902-6db3-44aa-b4c9-b811c5be572f", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -350,8 +397,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "37ed111b-755a-40fb-9ee2-0e79f438f462", "37ed111b-755a-40fb-9ee2-0e79f438f462" },
-                    { "d998ccfd-7a21-47d7-b9a6-2844f139d55f", "d998ccfd-7a21-47d7-b9a6-2844f139d55f" }
+                    { "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d", "d0dc58b8-0949-4f0a-a9ee-f659a9d80f0d" },
+                    { "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42", "fc7ae421-b7f1-48fd-b31e-10aaa1a8bb42" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -435,6 +482,20 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity",
                 table: "UserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSkills_AllUserSkillsId",
+                schema: "Identity",
+                table: "UserSkills",
+                column: "AllUserSkillsId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSkills_AppUserId",
+                schema: "Identity",
+                table: "UserSkills",
+                column: "AppUserId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -481,11 +542,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
+                name: "UserSkills",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
                 name: "UserTokens",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
                 name: "Role",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "AllUserSkills",
                 schema: "Identity");
 
             migrationBuilder.DropTable(

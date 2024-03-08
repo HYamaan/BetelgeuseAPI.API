@@ -4,6 +4,6 @@ namespace BetelgeuseAPI.Application.Features.Commands.UserSettings.UserSkill.Add
 
 public class AddUserSkillCommandRequest:IRequest<AddUserSkillCommandResponse>
 {
-    public string Skill { get; set; }
+    public string Id { get; set; }
     public bool isCheck { get; set; }
 }
