@@ -18,7 +18,7 @@ namespace BetelgeuseAPI.Application.Features.Queries.Blog.BlogByCategory
            var result = await _blogService.GetBlogByCategoryAsync(request);
            return new GetBlogByCategoryCommandResponse()
            {
-               Data = result.Data.Data,
+               Data = result.Data?.Data,
                Message = result.Message,
                Succeeded = result.Succeeded
            };

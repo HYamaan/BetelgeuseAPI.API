@@ -20,9 +20,14 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<AllUserSkills> AllUserSkills { get; set; }
         public DbSet<UserSkills> UserSkills { get; set; }
         
+        public DbSet<Category> Category { get; set; }
+        public DbSet<EBookCategory> EBookCategory { get; set; }
+        public DbSet<CourseCategory> CourseCategory { get; set; }
+        public DbSet<BlogCategory> BlogCategory { get; set; }
 
         public DbSet<BlogCategories> BlogCategories { get; set; }
         public DbSet<Blogs> Blogs { get; set; }
+        public DbSet<MetaData> MetaData { get; set; }
 
         public DbSet<Domain.Entities.File> File { get; set; }
         public DbSet<UserProfileImage> UserProfileImage { get; set; }
