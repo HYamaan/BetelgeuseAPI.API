@@ -80,6 +80,8 @@ namespace BetelgeuseAPI.Persistence
             services.AddScoped<IUserAccountSkillsWriteRepository, UserAccountSkillsWriteRepository>();
             services.AddScoped<IUserAccountSkillsReadRepository, UserAccountSkillsReadRepository>();
             services.AddAdminServices();
+            services.AddBlogServices();
+            services.AddCategoryService();
         }
     }
 }

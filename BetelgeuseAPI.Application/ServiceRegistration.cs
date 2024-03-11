@@ -9,6 +9,7 @@ using BetelgeuseAPI.Domain.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace BetelgeuseAPI.Application
 {

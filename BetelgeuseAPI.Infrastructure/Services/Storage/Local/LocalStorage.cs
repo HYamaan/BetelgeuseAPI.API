@@ -64,8 +64,8 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
                 Directory.CreateDirectory(uploadPath);
 
             string fileNewName = await FileRenameAsync(path, file.FileName, HasFile);
-            await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
-            return (fileNewName, $"{path}\\{fileNewName}");
+            await CopyFileAsync(Path.Combine(uploadPath, fileNewName), file);
+            return (fileNewName, $"{path}/{fileNewName}");
         }
 
         public async Task<List<(string fileName, string pathOrContainerName)>> UploadVideoAsync(string path, IFormFile file)

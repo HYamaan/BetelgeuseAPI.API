@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Commands\Instructor\" />
-    <Folder Include="Repositories\Admin\Blog\" />
+    <Folder Include="Repositories\Admin\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 
