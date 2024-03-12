@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\Admin\**" />
     <Compile Remove="Validators\**" />
+    <EmbeddedResource Remove="Repositories\Admin\**" />
     <EmbeddedResource Remove="Validators\**" />
+    <None Remove="Repositories\Admin\**" />
     <None Remove="Validators\**" />
   </ItemGroup>
 
@@ -21,7 +24,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.12" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Commands\Instructor\" />
-    <Folder Include="Repositories\Admin\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 

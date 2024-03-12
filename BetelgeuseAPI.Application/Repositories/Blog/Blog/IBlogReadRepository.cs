@@ -7,6 +7,6 @@ namespace BetelgeuseAPI.Application.Repositories.Blog.CreateBlog;
 
 public interface IBlogReadRepository:IReadRepository<Domain.Entities.Blogs>
 {
-    IQueryable<BlogResponseDto> GetFilteredBlogsAsync(Expression<Func<Blogs, bool>> filterExpression);
+    IQueryable<BlogResponseDto> GetFilteredBlogs(Expression<Func<Blogs, bool>> filterExpression);
     Task<string> BlogUrlControl(string url);
 }
