@@ -3,6 +3,7 @@ using System;
 using BetelgeuseAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20240311212601_init-3")]
+    partial class init3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "f34be3cd-aeb8-4fc1-8518-9cf480820ef6",
+                            Id = "660262dc-8fe6-46bc-b6ac-db3ba88bbe3f",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "3fb5f07d-9705-4854-b31d-feb4a2064ea4",
+                            Id = "3696cf85-2a15-4ae5-8d2b-54f7a38bae7b",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
-                            Id = "0b3c5de8-1944-4b4f-b362-777d9486d7ba",
+                            Id = "0fac6596-d746-4961-a084-40e54f800d88",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -135,9 +138,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "0b3c5de8-1944-4b4f-b362-777d9486d7ba",
+                            Id = "0fac6596-d746-4961-a084-40e54f800d88",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c519587a-a5c7-4a95-9219-c62cbdcfed53",
+                            ConcurrencyStamp = "ac4c8da8-2a55-433d-9fbd-559569a25e0f",
                             Email = "student@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -150,9 +153,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
-                            Id = "3fb5f07d-9705-4854-b31d-feb4a2064ea4",
+                            Id = "3696cf85-2a15-4ae5-8d2b-54f7a38bae7b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4487286b-fb47-4381-b99e-d6d1b7c20354",
+                            ConcurrencyStamp = "721345ec-0d5c-4811-b383-2192b8aaffdb",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -389,9 +392,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("ViewCount")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -632,13 +632,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            UserId = "3fb5f07d-9705-4854-b31d-feb4a2064ea4",
-                            RoleId = "3fb5f07d-9705-4854-b31d-feb4a2064ea4"
+                            UserId = "3696cf85-2a15-4ae5-8d2b-54f7a38bae7b",
+                            RoleId = "3696cf85-2a15-4ae5-8d2b-54f7a38bae7b"
                         },
                         new
                         {
-                            UserId = "0b3c5de8-1944-4b4f-b362-777d9486d7ba",
-                            RoleId = "0b3c5de8-1944-4b4f-b362-777d9486d7ba"
+                            UserId = "0fac6596-d746-4961-a084-40e54f800d88",
+                            RoleId = "0fac6596-d746-4961-a084-40e54f800d88"
                         });
                 });
 

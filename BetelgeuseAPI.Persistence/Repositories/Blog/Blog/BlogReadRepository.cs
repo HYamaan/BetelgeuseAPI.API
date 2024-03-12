@@ -4,7 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using BetelgeuseAPI.Application.DTOs.Response;
+using BetelgeuseAPI.Application.DTOs.Response.Account;
 using BetelgeuseAPI.Application.DTOs.Response.Blog;
+using BetelgeuseAPI.Application.DTOs.Response.Category;
 using BetelgeuseAPI.Application.Repositories.Blog.CreateBlog;
 using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Persistence.Context;
@@ -21,20 +23,36 @@ namespace BetelgeuseAPI.Persistence.Repositories.Blog.CreateBlog
             _context = context;
         }
   
-        public  IQueryable<BlogResponseDto> GetFilteredBlogsAsync(Expression<Func<Blogs, bool>> filterExpression)
+        public  IQueryable<BlogResponseDto> GetFilteredBlogs(Expression<Func<Blogs, bool>> filterExpression)
         {
             return _context.Blogs
                 .Where(filterExpression)
+                .OrderByDescending(blog => blog.ViewCount)
                 .Select(ux => new BlogResponseDto
                 {
                     Id = ux.Id,
                     Title = ux.Title,
                     Description = ux.Description,
                     Content = ux.Content,
-                    BlogCategoriesID = ux.BlogCategoriesID,
-                    Image = ux.BlogImage.Path,
-                    userEmailAddress = ux.BlogImage.AppUser.Email,
-                    userName = ux.BlogImage.AppUser.UserName,
+                    BlogCategoryID = ux.BlogImageID,
+                    BlogImage = ux.BlogImage.Path,
+                    CreatedDate=ux.CreatedDate,
+                    ViewCount = ux.ViewCount,
+                    Author = new BlogAppUserDto
+                    {
+                        Id = ux.BlogImage.AppUser.Id,
+                        UserName = ux.BlogImage.AppUser.UserName,
+                        Email = ux.BlogImage.AppUser.Email,
+                        slug = ux.BlogImage.AppUser.Id,
+                        Image = ux.BlogImage.AppUser.UserProfileImage
+                    },
+                    BlogCategory = new GetAllCategoryResponseDto
+                    {
+                        CategoryID = ux.BlogCategory.Id,
+                        Name = ux.BlogCategory.Name,
+                        ParentCategoryID = ux.BlogCategory.ParentCategoryID,
+                        ParentCategoryName = ux.BlogCategory.ParentCategory.Name
+                    },
                     MetaData = new MetaDataResponseDto
                     {
                         ShortDescription = ux.MetaData.ShortDescription,

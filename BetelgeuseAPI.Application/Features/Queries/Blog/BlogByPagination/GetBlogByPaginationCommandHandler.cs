@@ -18,9 +18,9 @@ public class GetBlogByPaginationCommandHandler: IRequestHandler<GetBlogByPaginat
 
         return new GetBlogByPaginationCommandResponse
         {
-            Succeeded = true,
-            Message = "Get Blog By Pagination Successfully",
-            Data = result.Data.Data
+            Succeeded = result.Succeeded,
+            Message = result.Message,
+            Data = result.Data?.Data
         };
     }
 }

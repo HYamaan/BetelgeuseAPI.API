@@ -3,8 +3,6 @@ using BetelgeuseAPI.Application.Abstractions.Storage;
 using BetelgeuseAPI.Application.DTOs.Response.Blog;
 using BetelgeuseAPI.Application.Features.Commands.Blog.CreateBlog;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByCategory;
-using BetelgeuseAPI.Application.Features.Queries.Blog.BlogCategory;
-using BetelgeuseAPI.Application.Repositories.Blog.AddBlogCategory;
 using BetelgeuseAPI.Application.Repositories.Blog.BlogImage;
 using BetelgeuseAPI.Application.Repositories.Blog.CreateBlog;
 using BetelgeuseAPI.Domain.Common;
@@ -15,11 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByUser;
 using BetelgeuseAPI.Application.Operations;
-using BetelgeuseAPI.Application.Features.Commands.Blog.AddBlogCategory;
 using BetelgeuseAPI.Application.Features.Commands.Blog.DeleteBlog;
-using BetelgeuseAPI.Application.Features.Commands.Blog.DeleteBlogCategory;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByPagination;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetAllBlogs;
+using BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
 using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BetelgeuseAPI.Persistence.Services;
@@ -31,15 +28,12 @@ public class BlogService : IBlogService
 
     private readonly IBlogImageReadRepository _blogImageFileReadRepository;
     private readonly IBlogImageWriteRepository _blogImageFileWriteRepository;
-    private readonly IAddBlogCategoryReadRepository _addBlogCategoryRead;
-    private readonly IAddBlogCategoryWriteRepository _addBlogCategoryWrite;
+
     private readonly IBlogWriteRepository _blogWrite;
     private readonly IBlogReadRepository _blogRead;
 
-    public BlogService(IAddBlogCategoryWriteRepository addBlogCategoryWrite, IAddBlogCategoryReadRepository addBlogCategoryRead, IServicesHelper servicesHelper, IStorageService storageService, IBlogImageWriteRepository blogImageFileWriteRepository, IBlogImageReadRepository blogImageFileReadRepository, IBlogWriteRepository blogWrite, IBlogReadRepository blogRead)
+    public BlogService(IServicesHelper servicesHelper, IStorageService storageService, IBlogImageWriteRepository blogImageFileWriteRepository, IBlogImageReadRepository blogImageFileReadRepository, IBlogWriteRepository blogWrite, IBlogReadRepository blogRead)
     {
-        _addBlogCategoryWrite = addBlogCategoryWrite;
-        _addBlogCategoryRead = addBlogCategoryRead;
         _servicesHelper = servicesHelper;
         _storageService = storageService;
         _blogImageFileWriteRepository = blogImageFileWriteRepository;
@@ -48,40 +42,7 @@ public class BlogService : IBlogService
         _blogRead = blogRead;
     }
 
-    public async Task<Response<AddBlogCategoryCommandResponse>> AddBlogCategory(AddBlogCategoryCommandRequest request)
-    {
-        var isValid = await _addBlogCategoryRead.GetSingleAsync(ux => ux.Title.Trim().ToLower() == request.Title.Trim().ToLower());
 
-        if (isValid != null)
-        {
-            return Response<AddBlogCategoryCommandResponse>.Fail("Blog category daha önceden eklenmiş");
-        }
-
-        var blogCategory = new BlogCategories()
-        {
-            Title = request.Title,
-            SubTitle = request.SubTitle
-        };
-        await _addBlogCategoryWrite.AddAsync(blogCategory);
-        await _addBlogCategoryWrite.SaveAsync();
-        return Response<AddBlogCategoryCommandResponse>.Success("Blog category eklendi.");
-    }
-
-
-    public async Task<Response<GetBlogCategoriesCommandResponse>> GetBlogCategoriesAsync()
-    {
-        var result = await _addBlogCategoryRead.GetAll().Select(ux => new BlogCategoryResponseDto()
-        {
-            Id = ux.Id,
-            Title = ux.Title,
-            SubTitle = ux.SubTitle
-        }).ToListAsync();
-
-        return Response<GetBlogCategoriesCommandResponse>.Success(new GetBlogCategoriesCommandResponse()
-        {
-            Data = result
-        });
-    }
 
     public async Task<Response<CreateBlogCommandResponse>> CreateBlog(CreateBlogCommandRequest request)
     {
@@ -89,12 +50,10 @@ public class BlogService : IBlogService
         var seoTitle = NameOperation.CharacterRegulatory(request.Title.ToLower());
         var url = await _blogRead.BlogUrlControl(seoTitle.Replace(" ", "-"));
 
-
-
         var newBlogs = new Blogs()
         {
             Title = request.Title,
-            BlogCategoriesID = request.BlogCategoriesID,
+            BlogCategoryId = request.BlogCategoriesID,
             Description = request.Description,
             Content = request.Content,
             BlogImage = new BlogImage(),
@@ -117,7 +76,7 @@ public class BlogService : IBlogService
 
     public async Task<Response<GetAllBlogsCommandResponse>> GetAllBlogsAsync()
     {
-        var filteredBlogs = await _blogRead.GetFilteredBlogsAsync(ux => ux.Status == BlogType.Pending.ToString()).ToListAsync();
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.Status == BlogType.Pending.ToString()).ToListAsync();
         if (filteredBlogs.Count == 0)
             return Response<GetAllBlogsCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
         return Response<GetAllBlogsCommandResponse>.Success(new GetAllBlogsCommandResponse
@@ -128,7 +87,7 @@ public class BlogService : IBlogService
 
     public async Task<Response<GetBlogByCategoryCommandResponse>> GetBlogByCategoryAsync(GetBlogByCategoryCommandRequest request)
     {
-        var filteredBlogs = await _blogRead.GetFilteredBlogsAsync(ux => ux.BlogCategoriesID == request.CategoryId).ToListAsync();
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogCategoryId == request.CategoryId).Include(ux=>ux.BlogCategoryID).ToListAsync();
 
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByCategoryCommandResponse>.Fail("Kategoriye uygun bir veri bulunamadı");
@@ -142,7 +101,7 @@ public class BlogService : IBlogService
     public async Task<Response<GetBlogByPaginationCommandResponse>> GetBlogByPaginationAsync(GetBlogByPaginationCommandRequest request)
     {
         var take = 10;
-        var filteredBlogs = await _blogRead.GetFilteredBlogsAsync(ux => true).Skip(int.Parse(request.Index)).Take(take).ToListAsync();
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => true).Skip(int.Parse(request.Index)).Take(take).ToListAsync();
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByPaginationCommandResponse>.Fail("Uygun bir veri bulunamadı");
         return Response<GetBlogByPaginationCommandResponse>.Success(new GetBlogByPaginationCommandResponse
@@ -152,9 +111,25 @@ public class BlogService : IBlogService
 
     }
 
+    public async Task<Response<GetBlogByIdCommandResponse>> GetBlogById(GetBlogByIdCommandRequest request)
+    {
+        await _blogWrite.IncrementViewCount(request.Id);
+
+        var filteredBlogs = await  _blogRead.GetFilteredBlogs(ux => ux.Id == request.Id).ToListAsync();
+        
+
+        if (filteredBlogs.Count == 0)
+            return Response<GetBlogByIdCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
+
+        return Response<GetBlogByIdCommandResponse>.Success(new GetBlogByIdCommandResponse
+        {
+            Data = filteredBlogs
+        });
+    }
+
     public async Task<Response<GetBlogByUserCommandResponse>> GetBlogByUserAsync(GetBlogByUserCommandRequest request)
     {
-        var filteredBlogs = await _blogRead.GetFilteredBlogsAsync(ux => ux.BlogImage.AppUserId == request.Id).ToListAsync();
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogImage.AppUserId == request.Id).ToListAsync();
 
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByUserCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
@@ -164,21 +139,7 @@ public class BlogService : IBlogService
             Data = filteredBlogs
         });
     }
-
-
-    public async Task<Response<DeleteBlogCategoryCommandResponse>> DeleteBlogCategory(DeleteBlogCategoryCommandRequest request)
-    {
-        var blogCategory = await _addBlogCategoryRead.GetByIdAsync(request.Id);
-        if (blogCategory == null)
-        {
-            return Response<DeleteBlogCategoryCommandResponse>.Fail("Blog category bulunamadı");
-        }
-        await _addBlogCategoryWrite.RemoveAsync(request.Id);
-        await _addBlogCategoryWrite.SaveAsync();
-        return Response<DeleteBlogCategoryCommandResponse>.Success($"{blogCategory.Title} silindi");
-    }
-
-
+    
 
     public async Task<Response<DeleteBlogCommandResponse>> DeleteBlog(DeleteBlogCommandRequest request)
     {

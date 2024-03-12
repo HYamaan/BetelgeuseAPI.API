@@ -203,7 +203,6 @@ public class CategoryService : ICategoryService
         }
     }
 
-
     public async Task<Response<DeleteCategoryCommandResponse>> DeleteCategoryAsync(DeleteCategoryCommandRequest request)
     {
         var categoryToDelete = await _categoryReadRepository.GetWhere(ux => ux.Id == request.Id).Include(ux => ux.ChildCategories).FirstOrDefaultAsync();

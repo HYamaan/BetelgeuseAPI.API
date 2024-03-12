@@ -14,5 +14,7 @@ namespace BetelgeuseAPI.Domain.Auth
         public List<UserProfileBackgroundImage> UserProfileBackgroundImage { get; set; }
         public List<UserAccountEducation> UserAccountEducations { get; set; }
         public List<UserAccountExperiences> UserAccountExperiences { get; set; }
+
+        //TODO: Kullanıcıların kişisel bilgilerini içeren bir sayfa tasarımını yapıldığında Meta ile bağlantılı olacak şekilde bir MetaData tablosu oluşturulacak.
     }
 }

@@ -25,7 +25,6 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<CourseCategory> CourseCategory { get; set; }
         public DbSet<BlogCategory> BlogCategory { get; set; }
 
-        public DbSet<BlogCategories> BlogCategories { get; set; }
         public DbSet<Blogs> Blogs { get; set; }
         public DbSet<MetaData> MetaData { get; set; }
 
