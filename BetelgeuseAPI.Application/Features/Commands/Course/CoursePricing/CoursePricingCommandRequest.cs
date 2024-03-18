@@ -1,0 +1,14 @@
+﻿using BetelgeuseAPI.Application.DTOs.Request;
+using BetelgeuseAPI.Domain.Entities.Course;
+using MediatR;
+
+namespace BetelgeuseAPI.Application.Features.Commands.Course.CoursePricing;
+
+public class CoursePricingCommandRequest:IRequest<CoursePricingCommandResponse>
+{
+    public Guid CourseId { get; set; }
+    public int Price { get; set; }
+    public bool? IsFree { get; set; }
+
+    public List<NewCoursePricingPlanRequestDto>? NewCoursePricingPlanRequestDto { get; set; }
+}

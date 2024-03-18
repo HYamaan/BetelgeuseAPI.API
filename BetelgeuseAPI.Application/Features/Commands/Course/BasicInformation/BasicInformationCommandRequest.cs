@@ -5,7 +5,7 @@ namespace BetelgeuseAPI.Application.Features.Commands.Course.BasicInformation;
 
 public class BasicInformationCommandRequest:IRequest<BasicInformationCommandResponse>
 {
-    public int Language { get; set; }
+    public Guid Language { get; set; }
     public int CourseType { get; set; }
     public string Title { get; set; }
     public string SeoDescription { get; set; }

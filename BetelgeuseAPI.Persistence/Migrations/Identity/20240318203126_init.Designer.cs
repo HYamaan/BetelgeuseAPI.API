@@ -3,6 +3,7 @@ using System;
 using BetelgeuseAPI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20240318203126_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "291ee979-4f92-4e25-abcf-a8e4e880e7cc",
+                            Id = "2994ef65-c89f-44ef-8599-abc134f9769a",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "fb099bbc-ef8c-4fdc-b93a-7c25de8bea41",
+                            Id = "8a98c227-bc65-4252-81c6-9575a8a5f1ad",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
-                            Id = "81c5a217-ba77-487d-a25d-a3a25ba9932d",
+                            Id = "c1ff75ec-ca40-47af-8433-a01e2809d234",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -135,9 +138,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "81c5a217-ba77-487d-a25d-a3a25ba9932d",
+                            Id = "c1ff75ec-ca40-47af-8433-a01e2809d234",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0dce8e10-d212-401b-b3ee-0adcbba2ad51",
+                            ConcurrencyStamp = "c79cdfde-143b-4071-b0ad-43d30517347e",
                             Email = "student@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -150,9 +153,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
-                            Id = "fb099bbc-ef8c-4fdc-b93a-7c25de8bea41",
+                            Id = "8a98c227-bc65-4252-81c6-9575a8a5f1ad",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c5152d5b-4914-4cbe-af91-e126a19fc1af",
+                            ConcurrencyStamp = "d96c5a15-4347-43ce-bbcc-0895eaaebf61",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -717,7 +720,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6c6d886c-f6fc-4dcf-976c-88117518d27a"),
+                            Id = new Guid("a3f2cfb1-3756-4ad4-bcf6-a04d1563d5ff"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsPrimary = true,
                             Name = "Türkçe",
@@ -727,7 +730,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
-                            Id = new Guid("353bd1e3-842b-46a6-9a7d-6d365849430b"),
+                            Id = new Guid("17041c45-db2a-4073-a452-82ef3d526112"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsPrimary = false,
                             Name = "İngilizce",
@@ -887,13 +890,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            UserId = "fb099bbc-ef8c-4fdc-b93a-7c25de8bea41",
-                            RoleId = "fb099bbc-ef8c-4fdc-b93a-7c25de8bea41"
+                            UserId = "8a98c227-bc65-4252-81c6-9575a8a5f1ad",
+                            RoleId = "8a98c227-bc65-4252-81c6-9575a8a5f1ad"
                         },
                         new
                         {
-                            UserId = "81c5a217-ba77-487d-a25d-a3a25ba9932d",
-                            RoleId = "81c5a217-ba77-487d-a25d-a3a25ba9932d"
+                            UserId = "c1ff75ec-ca40-47af-8433-a01e2809d234",
+                            RoleId = "c1ff75ec-ca40-47af-8433-a01e2809d234"
                         });
                 });
 

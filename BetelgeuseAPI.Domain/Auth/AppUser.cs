@@ -1,4 +1,5 @@
 ﻿using BetelgeuseAPI.Domain.Entities;
+using BetelgeuseAPI.Domain.Entities.Course;
 using BetelgeuseAPI.Domain.Entities.File;
 using Microsoft.AspNetCore.Identity;
 
@@ -15,6 +16,8 @@ namespace BetelgeuseAPI.Domain.Auth
         public List<UserProfileBackgroundImage> UserProfileBackgroundImage { get; set; }
         public List<UserAccountEducation> UserAccountEducations { get; set; }
         public List<UserAccountExperiences> UserAccountExperiences { get; set; }
+
+        public List<InclusiveCourse> InclusiveCourse { get; set; }
 
         //TODO: Kullanıcıların kişisel bilgilerini içeren bir sayfa tasarımını yapıldığında Meta ile bağlantılı olacak şekilde bir MetaData tablosu oluşturulacak.
     }

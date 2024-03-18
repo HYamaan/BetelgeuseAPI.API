@@ -35,9 +35,19 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<UserProfileImage> UserProfileImage { get; set; }
         public DbSet<UserProfileBackgroundImage> UserProfileBackgroundImage { get; set; }
         public DbSet<BlogImage> BlogImage { get; set; }
+        public DbSet<CourseCoverImage> CourseCoverImage { get; set; }
+        public DbSet<CourseThumbnail> CourseThumbnail { get; set; }
 
 
+        public DbSet<InclusiveCourse> InclusiveCourse { get; set; }
         public DbSet<CourseBasicInformation> CourseBasicInformation { get; set; }
+        public DbSet<CourseExtraInformation> CourseExtraInformation { get; set; }
+        public DbSet<CoursePricing> CoursePricing { get; set; }
+        public DbSet<NewCoursePricingPlan> NewCoursePricingPlan { get; set; }
+
+        public DbSet<Language> Language { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -76,6 +86,7 @@ namespace BetelgeuseAPI.Persistence.Context
             {
                 entity.ToTable("UserTokens");
             });
+
 
             modelBuilder.Seed();
         }
