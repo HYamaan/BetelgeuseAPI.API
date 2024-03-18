@@ -1,4 +1,5 @@
 ﻿using BetelgeuseAPI.Domain.Entities;
+using BetelgeuseAPI.Domain.Entities.File;
 using Microsoft.AspNetCore.Identity;
 
 namespace BetelgeuseAPI.Domain.Auth

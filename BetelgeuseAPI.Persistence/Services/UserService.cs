@@ -1,6 +1,5 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Services;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UploadAccountInformation;
-using BetelgeuseAPI.Application.Repositories.UserAccountInformation;
 using BetelgeuseAPI.Domain.Auth;
 using BetelgeuseAPI.Domain.Common;
 using Microsoft.AspNetCore.Http;
@@ -23,18 +22,19 @@ using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileImag
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountAbout;
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountEducation;
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountExperiences;
-using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountSkill;
 using BetelgeuseAPI.Application.Repositories;
-using BetelgeuseAPI.Application.Repositories.UserAccountEducation;
-using BetelgeuseAPI.Application.Repositories.UserAccountExperiences;
-using BetelgeuseAPI.Application.Repositories.UserAccountInformationAbout;
 using BetelgeuseAPI.Application.Repositories.UserAccountSkill;
-using BetelgeuseAPI.Application.Repositories.UserAccountSkills;
-using BetelgeuseAPI.Application.Repositories.UserProfileBackgroundImageFile;
-using BetelgeuseAPI.Application.Repositories.UserProfileImageFile;
 using BetelgeuseAPI.Domain.Entities;
+using BetelgeuseAPI.Domain.Entities.File;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using BetelgeuseAPI.Application.Repositories.FileContent.UserProfileBackgroundImageFile;
+using BetelgeuseAPI.Application.Repositories.FileContent.UserProfileImageFile;
+using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountInformation;
+using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountExperiences;
+using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountEducation;
+using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountAbout;
+using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountSkills;
 
 
 namespace BetelgeuseAPI.Persistence.Services;
@@ -61,6 +61,9 @@ public class UserService:IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IConfiguration _configuration;
 
+    private readonly IImageService<UserProfileImage, IUserProfileImageFileReadRepository, IUserProfileImageFileWriteRepository> _imageService;
+    private readonly IImageService<UserProfileBackgroundImage, IUserProfileBackgroundImageFileReadRepository, IUserProfileBackgroundImageFileWriteRepository> _imageBackgroundService;
+
     public UserService(
         IHttpContextAccessor httpContextAccessor,
         IUserAccountInformationReadRepository informationReadRepository,
@@ -75,7 +78,7 @@ public class UserService:IUserService
         IUserProfileImageFileReadRepository profileImageFileReadRepository, 
         IConfiguration configuration,
         IUserProfileBackgroundImageFileWriteRepository profileBackgroundImageFileWriteRepository,
-        IUserProfileBackgroundImageFileReadRepository profileBackgroundImageReadRepository, IServicesHelper servicesHelper, IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository, IUserAccountSkillsReadRepository userAccountSkillReadRepository, IUserAccountSkillsWriteRepository userAccountSkillWriteRepository)
+        IUserProfileBackgroundImageFileReadRepository profileBackgroundImageReadRepository, IServicesHelper servicesHelper, IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository, IUserAccountSkillsReadRepository userAccountSkillReadRepository, IUserAccountSkillsWriteRepository userAccountSkillWriteRepository, IImageService<UserProfileImage, IUserProfileImageFileReadRepository, IUserProfileImageFileWriteRepository> imageService, IImageService<UserProfileBackgroundImage, IUserProfileBackgroundImageFileReadRepository, IUserProfileBackgroundImageFileWriteRepository> imageBackgroundService)
     {
         _httpContextAccessor = httpContextAccessor;
         _informationReadRepository = informationReadRepository;
@@ -96,6 +99,8 @@ public class UserService:IUserService
         _allUserAccountSkillReadRepository = allUserAccountSkillReadRepository;
         _userAccountSkillReadRepository = userAccountSkillReadRepository;
         _userAccountSkillWriteRepository = userAccountSkillWriteRepository;
+        _imageService = imageService;
+        _imageBackgroundService = imageBackgroundService;
     }
 
     public async Task<Response<UpdateAccountCommandResponse>> UpdateAccountInformation(UpdateAccountCommandRequest request)
@@ -219,31 +224,7 @@ public class UserService:IUserService
         try
         {
             var userId = _servicesHelper.GetUserIdFromContext();
-            var profilePhoto = await _profileImageFileReadRepository.GetWhere(ux => ux.AppUserId == userId).FirstOrDefaultAsync();
-
-            if (profilePhoto == null)
-            {
-                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File!);
-                var userProfileImage = new UserProfileImage
-                {
-                    FileName = fileName,
-                    Path = pathOrContainerName,
-                    Storage = _storageService.StorageName,
-                    AppUserId = userId
-                };
-                await _profileImageFileWriteRepository.AddAsync(userProfileImage);
-            }
-            else
-            {
-                
-                await _storageService.DeleteAsync(profilePhoto.Path.Split(Path.DirectorySeparatorChar)[0], profilePhoto.FileName);
-                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File!);
-                profilePhoto.FileName = fileName;
-                profilePhoto.Path = pathOrContainerName;
-                _profileImageFileWriteRepository.Update(profilePhoto);
-            }
-
-            await _profileImageFileWriteRepository.SaveAsync();
+            await _imageService.SaveImage(request.profileImage, userId);
             return Response<UploadProfileImageCommandResponse>.Success("Resim başarılı bir şekilde yüklendi.");
         }
         catch (Exception e)
@@ -257,31 +238,7 @@ public class UserService:IUserService
         try
         {
             var userId = _servicesHelper.GetUserIdFromContext();
-            var profilePhoto = await _profileBackgroundImageReadRepository.GetWhere(ux => ux.AppUserId == userId).FirstOrDefaultAsync();
-
-            if (profilePhoto == null)
-            {
-                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File);
-                var userProfileImage = new UserProfileBackgroundImage()
-                {
-                    FileName = fileName,
-                    Path = pathOrContainerName,
-                    Storage = _storageService.StorageName,
-                    AppUserId = userId
-                };
-                await _profileBackgroundImageFileWriteRepository.AddAsync(userProfileImage);
-            }
-            else
-            {
-                
-                await _storageService.DeleteAsync(profilePhoto.Path.Split(Path.DirectorySeparatorChar)[0], profilePhoto.FileName);
-                var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", request.File!);
-                profilePhoto.FileName = fileName;
-                profilePhoto.Path = pathOrContainerName;
-                _profileBackgroundImageFileWriteRepository.Update(profilePhoto);
-            }
-
-            await _profileBackgroundImageFileWriteRepository.SaveAsync();
+            await _imageBackgroundService.SaveImage(request.profileBackgroundImage, userId);    
             return Response<UploadProfileBackgroundImageCommandResponse>.Success("Resim başarılı bir şekilde yüklendi.");
         }
         catch (Exception e)

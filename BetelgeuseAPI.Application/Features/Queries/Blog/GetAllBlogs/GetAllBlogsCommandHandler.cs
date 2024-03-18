@@ -18,7 +18,7 @@ public class GetAllBlogsCommandHandler:IRequestHandler<GetAllBlogsCommandRequest
         var result = await _blogService.GetAllBlogsAsync();
         return new GetAllBlogsCommandResponse()
         {
-            Data = result.Data.Data,
+            Data = result?.Data?.Data,
             Message = result.Message,
             Succeeded = result.Succeeded
         };

@@ -1,5 +1,4 @@
-﻿
-using BetelgeuseAPI.Domain.Entities;
+﻿using BetelgeuseAPI.Domain.Entities.File;
 
 namespace BetelgeuseAPI.Application.DTOs.Response.Account
 {

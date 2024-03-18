@@ -47,14 +47,14 @@ namespace BetelgeuseAPI.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadProfileImage([FromQuery] UploadProfileImageCommandRequest model)
         {
-            model.File = Request.Form.Files[0];
+            model.profileImage = Request.Form.Files[0];
             UploadProfileImageCommandResponse response = await _mediator.Send(model);
             return Ok(response);
         }
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadProfileBackgroundImage([FromQuery] UploadProfileBackgroundImageCommandRequest model)
         {
-            model.File = Request.Form.Files[0];
+            model.profileBackgroundImage = Request.Form.Files[0];
             UploadProfileBackgroundImageCommandResponse response = await _mediator.Send(model);
             return Ok(response);
         }

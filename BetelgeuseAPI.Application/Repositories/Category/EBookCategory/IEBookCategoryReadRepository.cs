@@ -1,6 +1,6 @@
 ﻿namespace BetelgeuseAPI.Application.Repositories.Category.EBookCategory;
 
-public interface IEBookCategoryReadRepository:IReadRepository<Domain.Entities.EBookCategory>
+public interface IEBookCategoryReadRepository:IReadRepository<Domain.Entities.Category.EBookCategory>
 {
     
 }

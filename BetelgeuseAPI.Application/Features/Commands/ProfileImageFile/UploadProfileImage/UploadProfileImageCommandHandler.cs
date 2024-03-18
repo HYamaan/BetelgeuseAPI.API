@@ -15,7 +15,7 @@ namespace BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.UploadPro
 
         public async Task<UploadProfileImageCommandResponse> Handle(UploadProfileImageCommandRequest request, CancellationToken cancellationToken)
         {
-            if (request.File == null)
+            if (request.profileImage == null)
                     return new UploadProfileImageCommandResponse();
 
             var response = await _userService.AddProfilePhoto(request);
