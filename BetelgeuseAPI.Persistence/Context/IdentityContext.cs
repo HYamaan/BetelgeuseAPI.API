@@ -1,6 +1,9 @@
 ﻿using BetelgeuseAPI.Domain.Auth;
 using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities;
+using BetelgeuseAPI.Domain.Entities.Category;
+using BetelgeuseAPI.Domain.Entities.Course;
+using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Persistence.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -28,10 +31,23 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<Blogs> Blogs { get; set; }
         public DbSet<MetaData> MetaData { get; set; }
 
-        public DbSet<Domain.Entities.File> File { get; set; }
+        public DbSet<Domain.Entities.File.File> File { get; set; }
         public DbSet<UserProfileImage> UserProfileImage { get; set; }
         public DbSet<UserProfileBackgroundImage> UserProfileBackgroundImage { get; set; }
         public DbSet<BlogImage> BlogImage { get; set; }
+        public DbSet<CourseCoverImage> CourseCoverImage { get; set; }
+        public DbSet<CourseThumbnail> CourseThumbnail { get; set; }
+
+
+        public DbSet<InclusiveCourse> InclusiveCourse { get; set; }
+        public DbSet<CourseBasicInformation> CourseBasicInformation { get; set; }
+        public DbSet<CourseExtraInformation> CourseExtraInformation { get; set; }
+        public DbSet<CoursePricing> CoursePricing { get; set; }
+        public DbSet<NewCoursePricingPlan> NewCoursePricingPlan { get; set; }
+
+        public DbSet<Language> Language { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -70,6 +86,7 @@ namespace BetelgeuseAPI.Persistence.Context
             {
                 entity.ToTable("UserTokens");
             });
+
 
             modelBuilder.Seed();
         }

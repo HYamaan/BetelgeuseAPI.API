@@ -1,6 +1,5 @@
 ﻿
 using BetelgeuseAPI.Application.Abstractions.Services;
-using BetelgeuseAPI.Application.Repositories.UserProfileImageFile;
 using MediatR;
 
 namespace BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.RemoveProfileImage;

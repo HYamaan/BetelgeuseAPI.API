@@ -1,4 +1,6 @@
 ﻿using BetelgeuseAPI.Domain.Common;
+using BetelgeuseAPI.Domain.Entities.Category;
+using BetelgeuseAPI.Domain.Entities.File;
 
 
 namespace BetelgeuseAPI.Domain.Entities;

@@ -13,7 +13,7 @@ using BetelgeuseAPI.Application.Repositories.Category.BlogCategory;
 using BetelgeuseAPI.Application.Repositories.Category.CourseCategory;
 using BetelgeuseAPI.Application.Repositories.Category.EBookCategory;
 using BetelgeuseAPI.Domain.Common;
-using BetelgeuseAPI.Domain.Entities;
+using BetelgeuseAPI.Domain.Entities.Category;
 using Microsoft.EntityFrameworkCore;
 
 namespace BetelgeuseAPI.Persistence.Services;

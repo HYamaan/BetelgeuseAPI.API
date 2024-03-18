@@ -3,7 +3,7 @@ using BetelgeuseAPI.Persistence.Context;
 
 namespace BetelgeuseAPI.Persistence.Repositories.Category.BlogCategory;
 
-public class BlogCategoryReadRepository:ReadRepository<IdentityContext,Domain.Entities.BlogCategory>, IBlogCategoryReadRepository
+public class BlogCategoryReadRepository:ReadRepository<IdentityContext,Domain.Entities.Category.BlogCategory>, IBlogCategoryReadRepository
 {
     public BlogCategoryReadRepository(IdentityContext context) : base(context)
     {

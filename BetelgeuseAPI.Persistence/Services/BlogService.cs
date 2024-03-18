@@ -1,14 +1,11 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Services;
 using BetelgeuseAPI.Application.Abstractions.Storage;
-using BetelgeuseAPI.Application.DTOs.Response.Blog;
 using BetelgeuseAPI.Application.Features.Commands.Blog.CreateBlog;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByCategory;
-using BetelgeuseAPI.Application.Repositories.Blog.BlogImage;
 using BetelgeuseAPI.Application.Repositories.Blog.CreateBlog;
 using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Domain.Enum;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByUser;
@@ -17,29 +14,28 @@ using BetelgeuseAPI.Application.Features.Commands.Blog.DeleteBlog;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByPagination;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetAllBlogs;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
-using Org.BouncyCastle.Asn1.Ocsp;
+using BetelgeuseAPI.Domain.Entities.File;
+using BetelgeuseAPI.Application.Repositories.FileContent.BlogImage;
 
 namespace BetelgeuseAPI.Persistence.Services;
 
 public class BlogService : IBlogService
 {
     private readonly IServicesHelper _servicesHelper;
-    private readonly IStorageService _storageService;
-
-    private readonly IBlogImageReadRepository _blogImageFileReadRepository;
-    private readonly IBlogImageWriteRepository _blogImageFileWriteRepository;
 
     private readonly IBlogWriteRepository _blogWrite;
     private readonly IBlogReadRepository _blogRead;
+    private readonly IImageService<BlogImage,IBlogImageReadRepository, IBlogImageWriteRepository> _blogImageService;
 
-    public BlogService(IServicesHelper servicesHelper, IStorageService storageService, IBlogImageWriteRepository blogImageFileWriteRepository, IBlogImageReadRepository blogImageFileReadRepository, IBlogWriteRepository blogWrite, IBlogReadRepository blogRead)
+
+    public BlogService(IServicesHelper servicesHelper, IStorageService storageService,
+        IBlogWriteRepository blogWrite, IBlogReadRepository blogRead,
+        IImageService<BlogImage, IBlogImageReadRepository,IBlogImageWriteRepository> blogImageService)
     {
         _servicesHelper = servicesHelper;
-        _storageService = storageService;
-        _blogImageFileWriteRepository = blogImageFileWriteRepository;
-        _blogImageFileReadRepository = blogImageFileReadRepository;
         _blogWrite = blogWrite;
         _blogRead = blogRead;
+        _blogImageService = blogImageService;
     }
 
 
@@ -65,7 +61,7 @@ public class BlogService : IBlogService
                 Url = url
             }
         };
-        var profilePhoto = await SaveImage(request.BlogImage, userID);
+        var profilePhoto = await _blogImageService.SaveImage(request.BlogImage, userID);
         newBlogs.BlogImage = profilePhoto;
         newBlogs.BlogImageID = profilePhoto.Id;
 
@@ -87,7 +83,7 @@ public class BlogService : IBlogService
 
     public async Task<Response<GetBlogByCategoryCommandResponse>> GetBlogByCategoryAsync(GetBlogByCategoryCommandRequest request)
     {
-        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogCategoryId == request.CategoryId).Include(ux=>ux.BlogCategoryID).ToListAsync();
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogCategoryId == request.CategoryId).Include(ux => ux.BlogCategoryID).ToListAsync();
 
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByCategoryCommandResponse>.Fail("Kategoriye uygun bir veri bulunamadı");
@@ -115,8 +111,8 @@ public class BlogService : IBlogService
     {
         await _blogWrite.IncrementViewCount(request.Id);
 
-        var filteredBlogs = await  _blogRead.GetFilteredBlogs(ux => ux.Id == request.Id).ToListAsync();
-        
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.Id == request.Id).ToListAsync();
+
 
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByIdCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
@@ -139,7 +135,7 @@ public class BlogService : IBlogService
             Data = filteredBlogs
         });
     }
-    
+
 
     public async Task<Response<DeleteBlogCommandResponse>> DeleteBlog(DeleteBlogCommandRequest request)
     {
@@ -154,57 +150,58 @@ public class BlogService : IBlogService
     }
 
 
-    private async Task<BlogImage> SaveImage(IFormFile image, string userId)
-    {
+    //private async Task<BlogImage> SaveImage(IFormFile image, string userId)
+    //{
+    //    var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
+    //    if (fileName == null || pathOrContainerName == null)
+    //    {
+    //        return new BlogImage();
+    //    }
+    //    var userProfileImage = new BlogImage()
+    //    {
+    //        FileName = fileName,
+    //        Path = pathOrContainerName,
+    //        Storage = _storageService.StorageName,
+    //        AppUserId = userId,
+    //    };
+    //    await _blogImageFileWriteRepository.AddAsync(userProfileImage);
+    //    await _blogImageFileWriteRepository.SaveAsync();
+    //    return userProfileImage;
+    //}
+
+    //private async Task<BlogImage> UpdateImage(IFormFile image, string userId)
+    //{
+    //    var profilePhoto = await _blogImageFileReadRepository.GetWhere(ux => ux.AppUserId == userId).FirstOrDefaultAsync();
+
+    //    if (profilePhoto == null)
+    //    {
+    //        var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
+    //        var userProfileImage = new BlogImage()
+    //        {
+    //            FileName = fileName,
+    //            Path = pathOrContainerName,
+    //            Storage = _storageService.StorageName,
+    //            AppUserId = userId,
+
+    //        };
+    //        await _blogImageFileWriteRepository.AddAsync(userProfileImage);
+    //        await _blogImageFileWriteRepository.SaveAsync();
+    //        return userProfileImage;
+    //    }
+    //    else
+    //    {
+
+    //        await _storageService.DeleteAsync(profilePhoto.Path.Split(Path.DirectorySeparatorChar)[0], profilePhoto.FileName);
+    //        var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
+    //        profilePhoto.FileName = fileName;
+    //        profilePhoto.Path = pathOrContainerName;
+    //        _blogImageFileWriteRepository.Update(profilePhoto);
+    //        await _blogImageFileWriteRepository.SaveAsync();
+    //        return profilePhoto;
+    //    }
 
 
-        var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
-        var userProfileImage = new BlogImage()
-        {
-            FileName = fileName,
-            Path = pathOrContainerName,
-            Storage = _storageService.StorageName,
-            AppUserId = userId,
-        };
-        await _blogImageFileWriteRepository.AddAsync(userProfileImage);
-        await _blogImageFileWriteRepository.SaveAsync();
-        return userProfileImage;
-
-    }
-
-    private async Task<BlogImage> UpdateImage(IFormFile image, string userId)
-    {
-        var profilePhoto = await _blogImageFileReadRepository.GetWhere(ux => ux.AppUserId == userId).FirstOrDefaultAsync();
-
-        if (profilePhoto == null)
-        {
-            var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
-            var userProfileImage = new BlogImage()
-            {
-                FileName = fileName,
-                Path = pathOrContainerName,
-                Storage = _storageService.StorageName,
-                AppUserId = userId,
-
-            };
-            await _blogImageFileWriteRepository.AddAsync(userProfileImage);
-            await _blogImageFileWriteRepository.SaveAsync();
-            return userProfileImage;
-        }
-        else
-        {
-
-            await _storageService.DeleteAsync(profilePhoto.Path.Split(Path.DirectorySeparatorChar)[0], profilePhoto.FileName);
-            var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
-            profilePhoto.FileName = fileName;
-            profilePhoto.Path = pathOrContainerName;
-            _blogImageFileWriteRepository.Update(profilePhoto);
-            await _blogImageFileWriteRepository.SaveAsync();
-            return profilePhoto;
-        }
-
-
-    }
+    //}
 
 
 }

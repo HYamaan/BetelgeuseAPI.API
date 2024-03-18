@@ -6,6 +6,6 @@ namespace BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.UploadPro
 {
     public class UploadProfileImageCommandRequest : IRequest<UploadProfileImageCommandResponse>
     {
-        public IFormFile? File { get; set; }
+        public IFormFile? profileImage { get; set; }
     }
 }
