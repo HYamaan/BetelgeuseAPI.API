@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BetelgeuseAPI.Persistence
 {
@@ -18,7 +13,7 @@ namespace BetelgeuseAPI.Persistence
                  .AddJsonFile("appsettings.json")
                  .Build();
 
-                string connectionString = configuration.GetConnectionString("PostgreSQL");
+                string connectionString = configuration.GetConnectionString("PostgreSQL")!;
                 return connectionString;
             }
         }
