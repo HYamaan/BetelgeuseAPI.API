@@ -16,6 +16,7 @@ using BetelgeuseAPI.Application.Features.Queries.Blog.GetAllBlogs;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
 using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Application.Repositories.FileContent.BlogImage;
+using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
 
 namespace BetelgeuseAPI.Persistence.Services;
 

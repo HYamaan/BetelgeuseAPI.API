@@ -75,10 +75,19 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
 
-            string fileNewName = Guid.NewGuid().ToString();
+            string fileNewName = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             await videoResolutionTask(uploadPath, fileNewName, file, _webHostEnvironment.WebRootPath);
             List<(string fileName, string pathOrContainerName)> transformedFilePaths = VideoResolutionFFMPEG.TransformedFilePaths;
-            return transformedFilePaths;
+
+            var updatedFilePaths = transformedFilePaths.Select(file =>
+            {
+                var fileNameParts = file.fileName.Split('\\');
+
+                var updatedFileName = fileNameParts.Last();
+
+                return (file.pathOrContainerName, $"{updatedFileName}/{file.pathOrContainerName}");
+            }).ToList();
+            return updatedFilePaths;
         }
 
     }

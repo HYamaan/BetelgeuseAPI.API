@@ -1,14 +1,19 @@
-﻿using BetelgeuseAPI.Application.Features.Commands.Course.BasicInformation;
-using BetelgeuseAPI.Application.Features.Commands.Course.CourseExtraInformation;
-using BetelgeuseAPI.Application.Features.Commands.Course.CoursePricing;
+﻿using BetelgeuseAPI.Application.Features.Commands.Course.Delete.DeleteCourseSection;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.BasicInformation;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseExtraInformation;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CoursePricing;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSections;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSource;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BetelgeuseAPI.API.Controllers
 {
+  
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CourseController : ControllerBase
     {
 
@@ -43,5 +48,35 @@ namespace BetelgeuseAPI.API.Controllers
             return Ok(response);
 
         }
+
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> UploadSections([FromBody] CourseSectionsCommandRequest model)
+        {
+            CourseSectionsCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> UploadSource([FromForm] CourseSourceCommandRequest model)
+        {
+            model.uploadFile ??= Request.Form.Files[0];
+            CourseSourceCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+    
+        [HttpDelete("[action]")]
+        public async Task<IActionResult> DeleteSection([FromBody] DeleteCourseSectionCommandRequest model)
+        {
+           
+            DeleteCourseSectionCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+
     }
 }

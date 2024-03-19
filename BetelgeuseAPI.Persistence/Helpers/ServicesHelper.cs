@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using BetelgeuseAPI.Application.Abstractions.Services;
+using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
 using BetelgeuseAPI.Application.Exceptions;
 using BetelgeuseAPI.Domain.Auth;
 using Microsoft.AspNetCore.Http;

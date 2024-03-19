@@ -21,6 +21,7 @@ namespace BetelgeuseAPI.Infrastructure.ffmpeg
             
             await Task.Run(async () =>
             {
+                ClearTransformedFilePaths();
                 string temporaryFilePath = Path.GetTempFileName();
                 var directory = Path.GetDirectoryName(temporaryFilePath)!;
                 var destinationPath = Path.Combine(directory, newFileName);
@@ -64,6 +65,7 @@ namespace BetelgeuseAPI.Infrastructure.ffmpeg
                     Console.WriteLine($"Tüm dönüşüm işlemleri tamamlandı ({inputVideo}).");
                 }
                 File.Delete(temporaryFilePath);
+
             });
         }
 
@@ -105,6 +107,7 @@ namespace BetelgeuseAPI.Infrastructure.ffmpeg
             string inputVideoName = Path.GetFileNameWithoutExtension(inputVideo);
             string fileName = $@"{inputVideoName}_{targetWidth}x{targetHeight}.mp4";
             string outputVideo = $@"{pathOrContainerName}\{fileName}";
+
             transformedFilePaths.Add((pathOrContainerName, fileName));
             string scaleFilter = GetScaleFilter(targetWidth, targetHeight, sourceWidth, sourceHeight);
 
@@ -146,6 +149,12 @@ namespace BetelgeuseAPI.Infrastructure.ffmpeg
 
             return $"-vf scale={targetWidth}:{targetHeight}";
         }
+
+        public static void ClearTransformedFilePaths()
+        {
+            transformedFilePaths.Clear();
+        }
+
     }
     public static class Parallel
     {
@@ -161,4 +170,5 @@ namespace BetelgeuseAPI.Infrastructure.ffmpeg
             await Task.WhenAll(tasks);
         }
     }
+
 }

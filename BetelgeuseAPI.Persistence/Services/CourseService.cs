@@ -1,34 +1,75 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Services;
-using BetelgeuseAPI.Application.Features.Commands.Course.BasicInformation;
-using BetelgeuseAPI.Application.Features.Commands.Course.CourseExtraInformation;
-using BetelgeuseAPI.Application.Features.Commands.Course.CoursePricing;
+using BetelgeuseAPI.Application.Abstractions.Storage;
+using BetelgeuseAPI.Application.Features.Commands.Course.Delete.DeleteCourseSection;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.BasicInformation;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseExtraInformation;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CoursePricing;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSections;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSource;
 using BetelgeuseAPI.Application.Repositories.Course.BasicInformation;
+using BetelgeuseAPI.Application.Repositories.Course.CourseContent;
+using BetelgeuseAPI.Application.Repositories.Course.CourseSource;
 using BetelgeuseAPI.Application.Repositories.Course.InclusiveCourse;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseCoverImage;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseThumbnail;
-using BetelgeuseAPI.Domain.Auth;
+using BetelgeuseAPI.Application.Repositories.FileContent.CourseUpload;
 using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities.Course;
+using BetelgeuseAPI.Domain.Entities.Course.Content;
 using BetelgeuseAPI.Domain.Entities.File;
+using BetelgeuseAPI.Domain.Enum;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using File = System.IO.File;
+using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
 
 namespace BetelgeuseAPI.Persistence.Services;
 
 public class CourseService : ICourseService
 {
     private readonly IServicesHelper _servicesHelper;
+    private readonly IStorageService _storageService;
+    private readonly IFileCheckHelper _fileCheckHelper;
 
     private readonly ICourseBasicInformationReadRepository _courseBasicInformationRead;
     private readonly ICourseBasicInformationWriteRepository _courseBasicInformationWrite;
 
+    private readonly ICourseContentSectionReadRepository _courseSectionRead;
+    private readonly ICourseContentSectionWriteRepository _courseSectionWrite;
+
+    private readonly ICourseSourceReadRepository _courseSourceRead;
+    private readonly ICourseSourceWriteRepository _courseSourceWrite;
+
+    private readonly ICourseUploadReadRepository _uploadFileReadRepository;
+    private readonly ICourseUploadWriteRepository _UploadFileWriteRepository;
+
     private readonly IInclusiveCourseReadRepository _inclusiveCourseRead;
     private readonly IInclusiveCourseWriteRepository _inclusiveCourseWrite;
 
-    private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> _courseThumbnailService;
-    public readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> _courseCoverImageService;
 
 
-    public CourseService(IServicesHelper servicesHelper, ICourseBasicInformationReadRepository courseBasicInformationRead, ICourseBasicInformationWriteRepository courseBasicInformationWrite, IInclusiveCourseReadRepository inclusiveCourseRead, IInclusiveCourseWriteRepository inclusiveCourseWrite, IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> courseThumbnailService, IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> courseCoverImageService)
+    private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository>
+        _courseThumbnailService;
+
+    public readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository>
+        _courseCoverImageService;
+
+
+    public CourseService(IServicesHelper servicesHelper,
+        IStorageService storageService,
+        ICourseBasicInformationReadRepository courseBasicInformationRead,
+        ICourseBasicInformationWriteRepository courseBasicInformationWrite,
+        IInclusiveCourseReadRepository inclusiveCourseRead, IInclusiveCourseWriteRepository inclusiveCourseWrite,
+        IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> courseThumbnailService,
+        IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> courseCoverImageService,
+        ICourseContentSectionWriteRepository courseSectionWrite,
+        ICourseContentSectionReadRepository courseSectionRead,
+        ICourseSourceWriteRepository courseSourceWrite,
+        ICourseSourceReadRepository courseSourceRead,
+        ICourseUploadReadRepository uploadFileReadRepository,
+        ICourseUploadWriteRepository uploadFileWriteRepository, IFileCheckHelper fileCheckHelper)
     {
         _servicesHelper = servicesHelper;
         _courseBasicInformationRead = courseBasicInformationRead;
@@ -37,9 +78,18 @@ public class CourseService : ICourseService
         _inclusiveCourseWrite = inclusiveCourseWrite;
         _courseThumbnailService = courseThumbnailService;
         _courseCoverImageService = courseCoverImageService;
+        _courseSectionWrite = courseSectionWrite;
+        _courseSectionRead = courseSectionRead;
+        _courseSourceWrite = courseSourceWrite;
+        _courseSourceRead = courseSourceRead;
+        _uploadFileReadRepository = uploadFileReadRepository;
+        _UploadFileWriteRepository = uploadFileWriteRepository;
+        _fileCheckHelper = fileCheckHelper;
+        _storageService = storageService;
     }
 
-    public async Task<Response<BasicInformationCommandResponse>> AddCourseBasicInformation(BasicInformationCommandRequest model)
+    public async Task<Response<BasicInformationCommandResponse>> AddCourseBasicInformation(
+        BasicInformationCommandRequest model)
     {
         try
         {
@@ -71,15 +121,12 @@ public class CourseService : ICourseService
         }
     }
 
-    public async Task<Response<CourseExtraInformationCommandResponse>> AddCourseExtraInformation(CourseExtraInformationCommandRequest model)
+    public async Task<Response<CourseExtraInformationCommandResponse>> AddCourseExtraInformation(
+        CourseExtraInformationCommandRequest model)
     {
         try
         {
-            var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
-                .Include(x => x.CourseBasicInformation)
-                .Include(x => x.CourseExtraInformation)
-                .Include(x => x.CoursePricing)
-                .FirstOrDefaultAsync();
+            var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
             if (inclusiveCourse == null)
             {
                 throw new Exception("Course not found");
@@ -132,12 +179,7 @@ public class CourseService : ICourseService
     {
         try
         {
-            var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
-                .Include(x => x.CourseBasicInformation)
-                .Include(x => x.CourseExtraInformation)
-                .Include(x => x.CoursePricing)
-                .ThenInclude(x => x.NewCoursePricingPlan)
-                .FirstOrDefaultAsync();
+            var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
             if (inclusiveCourse == null)
             {
                 throw new Exception("Course not found");
@@ -147,7 +189,7 @@ public class CourseService : ICourseService
             {
                 inclusiveCourse.CoursePricing = new CoursePricing();
             }
-               
+
 
             inclusiveCourse.CoursePricing.Price = model.Price;
             inclusiveCourse.CoursePricing.IsFree = model?.IsFree ?? false;
@@ -156,12 +198,17 @@ public class CourseService : ICourseService
             {
                 inclusiveCourse.CoursePricing.Price = 0;
             }
-          
-               
+
+
 
             if (model.NewCoursePricingPlanRequestDto != null && model.NewCoursePricingPlanRequestDto.Any())
             {
-                inclusiveCourse.CoursePricing.NewCoursePricingPlan.RemoveAll(plan => plan.CoursePricingId == inclusiveCourse.CoursePricingId);
+                if (inclusiveCourse.CoursePricingId is not null)
+                {
+                    inclusiveCourse.CoursePricing.NewCoursePricingPlan.RemoveAll(plan =>
+                        plan.CoursePricingId == inclusiveCourse.CoursePricingId);
+                }
+
                 inclusiveCourse.CoursePricing.NewCoursePricingPlan = new List<NewCoursePricingPlan>();
 
                 foreach (var planDto in model.NewCoursePricingPlanRequestDto)
@@ -185,8 +232,146 @@ public class CourseService : ICourseService
         }
         catch (Exception e)
         {
-           return Response<CoursePricingCommandResponse>.Fail(e.Message);
+            return Response<CoursePricingCommandResponse>.Fail(e.Message);
         }
     }
+
+    public async Task<Response<CourseSectionsCommandResponse>> AddCourseSections(CourseSectionsCommandRequest model)
+    {
+        var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
+
+        if (inclusiveCourse == null)
+        {
+            return Response<CourseSectionsCommandResponse>.Fail("Course not found");
+        }
+        if (inclusiveCourse.CourseContent == null)
+        {
+            inclusiveCourse.CourseContent = new CourseContent();
+            inclusiveCourse.CourseContent.Sections = new List<CourseSections>(); // Initialize the Sections list
+        }
+        var newSection = new CourseSections()
+        {
+            Title = model.Title,
+            LanguageId = model.LanguageId,
+            IsActive = model.IsActive,
+            PassAllParts = model.PassAllParts,
+        };
+        inclusiveCourse.CourseContent.Sections.Add(newSection);
+        _inclusiveCourseWrite.Update(inclusiveCourse);
+        await _inclusiveCourseWrite.SaveAsync();
+        return Response<CourseSectionsCommandResponse>.Success("Course section added");
+    }
+
+    public async Task<Response<CourseSourceCommandResponse>> AddCourseSource(CourseSourceCommandRequest model)
+    {
+        var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
+
+        if (inclusiveCourse == null)
+        {
+            return Response<CourseSourceCommandResponse>.Fail("Course not found");
+        }
+
+        var section = inclusiveCourse?.CourseContent?.Sections?.FirstOrDefault(s => s.Id == model.SectionId);
+
+        if (section == null)
+        {
+            return Response<CourseSourceCommandResponse>.Fail("Section not found");
+        }
+
+
+        var newCourseSource = new CourseSource
+        {
+            Title = model.Title,
+            LanguageId = model.LanguageId,
+            IsActive = model.IsActive,
+            IsFree = model.IsFree,
+            Description = model.Description,
+            Source = model.Source,
+            FileType = model.FileType
+        };
+
+        if (model.Source == CourseUploadSourceType.Upload || model.Source == CourseUploadSourceType.AmazonS3)
+        {
+            var userId = _servicesHelper.GetUserIdFromContext();
+            var user = await _servicesHelper.GetUserById(userId);
+            if (model.FileType == CourseUploadFileType.Video && await _fileCheckHelper.CheckVideoFormat(model.uploadFile))
+            {
+                
+                var data = await _storageService.UploadVideoAsync("files", model.uploadFile);
+
+                var courseUploads = data.Select(d => new CourseUpload
+                {
+                    FileName = d.fileName,
+                    Path = d.pathOrContainerName,
+                    Storage = _storageService.StorageName,
+                    AppUser = user
+                }).ToList();
+
+                await _UploadFileWriteRepository.AddRangeAsync(courseUploads);
+                await _UploadFileWriteRepository.SaveAsync();
+
+                newCourseSource.CourseUpload = courseUploads;
+            }
+            else if ((model.FileType == CourseUploadFileType.Pdf && await _fileCheckHelper.CheckPdfFormat(model.uploadFile)) || 
+                     (model.FileType == CourseUploadFileType.PowerPoint && await _fileCheckHelper.CheckPPTFormat(model.uploadFile)))
+            {
+                var data = await _storageService.UploadAsync("files", model.uploadFile);
+                var courseUploads = new CourseUpload
+                {
+                    FileName = data.fileName,
+                    Path = data.pathOrContainerName,
+                    Storage = _storageService.StorageName,
+                    AppUser = user
+                };
+                
+                await _UploadFileWriteRepository.AddAsync(courseUploads);
+                await _UploadFileWriteRepository.SaveAsync();
+                newCourseSource.CourseUpload = new List<CourseUpload> { courseUploads };
+
+            }
+            else
+            {
+                return Response<CourseSourceCommandResponse>.Fail($"Invalid {model.uploadFile.FileName} format");
+            }
+        }
+
+
+        else if (model.Source != null)
+        {
+            newCourseSource.Link = model.Link;
+        }
+
+
+
+        section.CourseSources ??= new List<CourseSource>();
+        section.CourseSources.Add(newCourseSource);
+
+        _inclusiveCourseWrite.Update(inclusiveCourse);
+        await _inclusiveCourseWrite.SaveAsync();
+
+        return Response<CourseSourceCommandResponse>.Success("Course source added");
+    }
+
+    public async Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model)
+    {
+        await _courseSectionWrite.RemoveAsync(model.SectionId.ToString());
+        await _courseSectionWrite.SaveAsync();
+        return Response<DeleteCourseSectionCommandResponse>.Success("Course section deleted");
+    }
+
+    private async Task<InclusiveCourse> GetInclusiveCourse(Guid courseId)
+    {
+        return await _inclusiveCourseRead.GetWhere(c => c.Id == courseId)
+            .Include(x => x.CourseBasicInformation)
+            .Include(x => x.CourseExtraInformation)
+            .Include(x => x.CoursePricing)
+            .ThenInclude(x => x.NewCoursePricingPlan)
+            .Include(x => x.CourseContent)
+            .ThenInclude(x => x.Sections)
+            .ThenInclude(x => x.CourseSources)
+            .ThenInclude(x => x.CourseUpload)
+            .FirstOrDefaultAsync();
+    }
+
 
 }

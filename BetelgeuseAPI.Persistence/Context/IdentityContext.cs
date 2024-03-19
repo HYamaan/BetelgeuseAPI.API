@@ -3,6 +3,7 @@ using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Domain.Entities.Category;
 using BetelgeuseAPI.Domain.Entities.Course;
+using BetelgeuseAPI.Domain.Entities.Course.Content;
 using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Persistence.Seeds;
 using Microsoft.AspNetCore.Identity;
@@ -44,6 +45,11 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<CourseExtraInformation> CourseExtraInformation { get; set; }
         public DbSet<CoursePricing> CoursePricing { get; set; }
         public DbSet<NewCoursePricingPlan> NewCoursePricingPlan { get; set; }
+
+        public DbSet<CourseContent> CourseContent { get; set; }
+        public DbSet<CourseSections> CourseSections { get; set; }
+        public DbSet<CourseSource> CourseSource { get; set; }
+        public DbSet<CourseUpload> CourseUpload { get; set; }
 
         public DbSet<Language> Language { get; set; }
 
