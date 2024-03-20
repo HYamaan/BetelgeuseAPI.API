@@ -10,44 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1044f0ce-0174-433f-b398-f2f5cc693a64" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.API/Controllers/BlogController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.API/Controllers/BlogController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Abstractions/Services/IBlogService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Abstractions/Services/IBlogService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/AutoMapper/AccountProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/AutoMapper/AccountProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/DTOs/Response/Blog/BlogResponseDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/DTOs/Response/Blog/BlogResponseDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByCategory/GetBlogByCategoryCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByCategory/GetBlogByCategoryCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/ServiceRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/ServiceRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Auth/AppUser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Auth/AppUser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/BlogCategories.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/BlogCategories.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/Blogs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/Blogs.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Infrastructure/Operations/NameOperation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Infrastructure/Operations/NameOperation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Infrastructure/Services/Storage/Local/LocalStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Infrastructure/Services/Storage/Local/LocalStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Context/IdentityContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Context/IdentityContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308191632_init.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308191632_init.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308192355_init-1.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308192355_init-1.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308195242_init-2.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308195242_init-2.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308200950_init-3.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308200950_init-3.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308210104_init-4.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308210104_init-4.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308212108_init-5.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308212108_init-5.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308212933_init-6.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308212933_init-6.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308215232_init-7.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308215232_init-7.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308220212_init-8.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308220212_init-8.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308220750_init-9.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308220750_init-9.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308222050_init-11.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308222050_init-11.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308222219_init-12.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240308222219_init-12.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/IdentityContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/IdentityContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/BlogService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/BlogService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BetelgeuseAPI.API/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BetelgeuseAPI.API/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/CourseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/CourseService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,23 +57,14 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f4bc324a395d24ed12db75b0a81536b642509aa14825bf114d9b7c934e2b/Mediator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f91195dc1f983d6ec69125bd192fea551738920a3ae32077f21c5af5b9/UserManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f9749fe3576a687c3c42f3794cefe8f8d91e62f939c66c0a32dbb3f74255/ManualResetEventSlim.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.API/Controllers/AdminController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Application/Abstractions/Services/IAdminService.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Application/DTOs/Response/Account/AccountEducationDto.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Application/DTOs/Response/Account/AccountExperienceDto.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UpdateAccountAbout/UpdateAccountAboutCommandResponse.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/AddUserSkill/AddUserSkillCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/AddUserSkill/AddUserSkillCommandRequest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/AddUserSkill/AddUserSkillCommandResponse.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/DeleteUserSkill/DeleteUserSkillCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/DeleteUserSkill/DeleteUserSkillCommandRequest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/DeleteUserSkill/DeleteUserSkillCommandRequest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/DeleteUserSkill/DeleteUserSkillCommandResponse.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Application/Features/Queries/UserSettings/GetAccountSkill/GetAccountSkillCommandResponse.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Domain/Entities/AllUserSkills.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Domain/Settings/MailSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Persistence/Context/IdentityContext.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Persistence/Services/AdminService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Persistence/Services/CourseService.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
   <component name="ProblemsViewState">
@@ -207,6 +162,7 @@
       <workItem from="1709822801696" duration="5009000" />
       <workItem from="1709906753885" duration="21000" />
       <workItem from="1710103843954" duration="32000" />
+      <workItem from="1710893613585" duration="61000" />
     </task>
     <servers />
   </component>
@@ -233,13 +189,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/AccountService.cs</url>
-          <line>94</line>
+          <line>93</line>
           <properties documentPath="D:\Repos\Bitirme\betelgeuse\BetelgeuseAPI.API\BetelgeuseAPI.Persistence\Services\AccountService.cs" initialLine="97" containingFunctionPresentation="Method 'UpdatePasswordAsync'">
             <startOffsets>
-              <option value="4234" />
+              <option value="4174" />
             </startOffsets>
             <endOffsets>
-              <option value="5118" />
+              <option value="5058" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="5" />
@@ -254,7 +210,7 @@
       </pinned-members>
     </pin-to-top-manager>
     <watches-manager>
-      <inline-watch fileUrl="file://$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/AccountService.cs" line="99">
+      <inline-watch fileUrl="file://$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/AccountService.cs" line="98">
         <watch expression="IdentityResult.Succeeded" language="C#" />
       </inline-watch>
     </watches-manager>

@@ -52,11 +52,7 @@ public class CourseService : ICourseService
     public readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> _courseCoverImageService;
 
 
-    private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository>
-        _courseThumbnailService;
 
-    public readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository>
-        _courseCoverImageService;
 
 
     public CourseService(IServicesHelper servicesHelper,
