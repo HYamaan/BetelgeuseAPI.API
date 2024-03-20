@@ -12,8 +12,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BetelgeuseAPI.Persistence.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
     [Migration("20240319210325_init-2")]
     partial class init2
+========
+    [Migration("20240318203126_init")]
+    partial class init
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +59,31 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             Id = "0a38de68-7712-4500-b155-ec8c0f176336",
+========
+                            Id = "2994ef65-c89f-44ef-8599-abc134f9769a",
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             Id = "2e026eb0-3dfa-4559-a5da-15e6f73bced2",
+========
+                            Id = "8a98c227-bc65-4252-81c6-9575a8a5f1ad",
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             Id = "f5a7a18e-23d1-4f0e-8b60-a424b5c84aa9",
+========
+                            Id = "c1ff75ec-ca40-47af-8433-a01e2809d234",
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -138,9 +155,15 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             Id = "f5a7a18e-23d1-4f0e-8b60-a424b5c84aa9",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "fe2c7226-aa00-4b44-9a7b-99bbe726a2af",
+========
+                            Id = "c1ff75ec-ca40-47af-8433-a01e2809d234",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c79cdfde-143b-4071-b0ad-43d30517347e",
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                             Email = "student@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -153,9 +176,15 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             Id = "2e026eb0-3dfa-4559-a5da-15e6f73bced2",
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "7a16ba27-d8d9-488e-9311-c24cf7f53d3e",
+========
+                            Id = "8a98c227-bc65-4252-81c6-9575a8a5f1ad",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d96c5a15-4347-43ce-bbcc-0895eaaebf61",
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -444,6 +473,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.UseTphMappingStrategy();
                 });
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -544,6 +574,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.ToTable("CourseSource", "Identity");
                 });
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.CourseBasicInformation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -677,9 +709,12 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<Guid>("CourseBasicInformationId")
                         .HasColumnType("uuid");
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                     b.Property<Guid?>("CourseContentId")
                         .HasColumnType("uuid");
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                     b.Property<Guid?>("CourseExtraInformationId")
                         .HasColumnType("uuid");
 
@@ -698,8 +733,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
                     b.HasIndex("CourseBasicInformationId");
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                     b.HasIndex("CourseContentId");
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                     b.HasIndex("CourseExtraInformationId");
 
                     b.HasIndex("CoursePricingId");
@@ -825,7 +863,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             Id = new Guid("122a243f-af0e-49ab-935c-4d1a38c29883"),
+========
+                            Id = new Guid("a3f2cfb1-3756-4ad4-bcf6-a04d1563d5ff"),
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsPrimary = true,
                             Name = "Türkçe",
@@ -835,7 +877,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             Id = new Guid("a5b3e98f-be47-4a07-8c83-0f50d0d67aed"),
+========
+                            Id = new Guid("17041c45-db2a-4073-a452-82ef3d526112"),
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsPrimary = false,
                             Name = "İngilizce",
@@ -995,6 +1041,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                             UserId = "2e026eb0-3dfa-4559-a5da-15e6f73bced2",
                             RoleId = "2e026eb0-3dfa-4559-a5da-15e6f73bced2"
                         },
@@ -1002,6 +1049,15 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         {
                             UserId = "f5a7a18e-23d1-4f0e-8b60-a424b5c84aa9",
                             RoleId = "f5a7a18e-23d1-4f0e-8b60-a424b5c84aa9"
+========
+                            UserId = "8a98c227-bc65-4252-81c6-9575a8a5f1ad",
+                            RoleId = "8a98c227-bc65-4252-81c6-9575a8a5f1ad"
+                        },
+                        new
+                        {
+                            UserId = "c1ff75ec-ca40-47af-8433-a01e2809d234",
+                            RoleId = "c1ff75ec-ca40-47af-8433-a01e2809d234"
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                         });
                 });
 
@@ -1045,6 +1101,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasDiscriminator().HasValue("EBookCategory");
                 });
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseUpload", b =>
                 {
                     b.HasBaseType("BetelgeuseAPI.Domain.Entities.File.File");
@@ -1062,6 +1119,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.BlogImage", b =>
                 {
                     b.HasBaseType("BetelgeuseAPI.Domain.Entities.File.File");
+========
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.BlogImage", b =>
+                {
+                    b.HasBaseType("BetelgeuseAPI.Domain.Entities.File.File");
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
 
                     b.HasIndex("AppUserId");
 
@@ -1180,6 +1242,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("ParentCategory");
                 });
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseSections", b =>
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", null)
@@ -1198,6 +1261,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("CourseSections");
                 });
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.CourseBasicInformation", b =>
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Entities.File.CourseCoverImage", "CoverImage")
@@ -1246,10 +1311,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                     b.HasOne("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", "CourseContent")
                         .WithMany()
                         .HasForeignKey("CourseContentId");
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                     b.HasOne("BetelgeuseAPI.Domain.Entities.Course.CourseExtraInformation", "CourseExtraInformation")
                         .WithMany()
                         .HasForeignKey("CourseExtraInformationId");
@@ -1262,8 +1330,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
                     b.Navigation("CourseBasicInformation");
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
                     b.Navigation("CourseContent");
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
                     b.Navigation("CourseExtraInformation");
 
                     b.Navigation("CoursePricing");
@@ -1357,6 +1428,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .IsRequired();
                 });
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseUpload", b =>
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
@@ -1372,6 +1444,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("AppUser");
                 });
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.BlogImage", b =>
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
@@ -1461,6 +1535,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("ChildCategories");
                 });
 
+<<<<<<<< HEAD:BetelgeuseAPI.Persistence/Migrations/Identity/20240319210325_init-2.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", b =>
                 {
                     b.Navigation("Sections");
@@ -1476,6 +1551,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("CourseUpload");
                 });
 
+========
+>>>>>>>> 4de6326df3a7bc2f0b0b6aec1243179994c82717:BetelgeuseAPI.Persistence/Migrations/Identity/20240318203126_init.Designer.cs
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.CoursePricing", b =>
                 {
                     b.Navigation("NewCoursePricingPlan");

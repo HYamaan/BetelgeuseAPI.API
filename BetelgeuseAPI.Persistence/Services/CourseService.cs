@@ -48,6 +48,8 @@ public class CourseService : ICourseService
     private readonly IInclusiveCourseReadRepository _inclusiveCourseRead;
     private readonly IInclusiveCourseWriteRepository _inclusiveCourseWrite;
 
+    private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> _courseThumbnailService;
+    public readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> _courseCoverImageService;
 
 
     private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository>
@@ -189,7 +191,7 @@ public class CourseService : ICourseService
             {
                 inclusiveCourse.CoursePricing = new CoursePricing();
             }
-
+               
 
             inclusiveCourse.CoursePricing.Price = model.Price;
             inclusiveCourse.CoursePricing.IsFree = model?.IsFree ?? false;
@@ -198,8 +200,8 @@ public class CourseService : ICourseService
             {
                 inclusiveCourse.CoursePricing.Price = 0;
             }
-
-
+          
+               
 
             if (model.NewCoursePricingPlanRequestDto != null && model.NewCoursePricingPlanRequestDto.Any())
             {
@@ -232,7 +234,7 @@ public class CourseService : ICourseService
         }
         catch (Exception e)
         {
-            return Response<CoursePricingCommandResponse>.Fail(e.Message);
+           return Response<CoursePricingCommandResponse>.Fail(e.Message);
         }
     }
 
@@ -248,7 +250,7 @@ public class CourseService : ICourseService
         {
             inclusiveCourse.CourseContent = new CourseContent();
             inclusiveCourse.CourseContent.Sections = new List<CourseSections>(); // Initialize the Sections list
-        }
+    }
         var newSection = new CourseSections()
         {
             Title = model.Title,
