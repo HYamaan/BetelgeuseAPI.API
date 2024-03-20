@@ -1,6 +1,9 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Storage.Local;
+using BetelgeuseAPI.Infrastructure.ffmpeg;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+
+using System.IO;
 
 namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
 {
@@ -11,8 +14,18 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
         {
             _webHostEnvironment = webHostEnvironment;
         }
+
+        
         public async Task DeleteAsync(string path, string fileName)
-            => File.Delete($"{path}\\{fileName}");
+        {
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "files", fileName);
+            var bool2 = File.Exists(filePath);
+            if (File.Exists(filePath))
+            {
+                await Task.Run(() => System.IO.File.Delete(filePath));
+            }
+        }
+
 
         public List<string> GetFiles(string path)
         {
@@ -20,11 +33,11 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
             return directory.GetFiles().Select(f => f.Name).ToList();
         }
 
-        public bool HasFile(string path, string fileName)
+        public new bool HasFile(string path, string fileName)
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
-            string filePath = Path.Combine(webRootPath,path, fileName);
-          
+            string filePath = Path.Combine(webRootPath, path, fileName);
+
             return File.Exists(filePath);
         }
 
@@ -44,22 +57,38 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
                 throw ex;
             }
         }
-        public async Task<List<(string fileName, string pathOrContainerName)>> UploadAsync(string path, IFormFileCollection files)
+        public async Task<(string fileName, string pathOrContainerName)> UploadAsync(string path, IFormFile file)
         {
             string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
 
-            List<(string fileName, string path)> datas = new();
-            foreach (IFormFile file in files)
-            {
-                string fileNewName = await FileRenameAsync(path, file.FileName, HasFile);
-
-                await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
-                datas.Add((fileNewName, $"{path}\\{fileNewName}"));
-            }
-
-            return datas;
+            string fileNewName = await FileRenameAsync(path, file.FileName, HasFile);
+            await CopyFileAsync(Path.Combine(uploadPath, fileNewName), file);
+            return (fileNewName, $"{path}/{fileNewName}");
         }
+
+        public async Task<List<(string fileName, string pathOrContainerName)>> UploadVideoAsync(string path, IFormFile file)
+        {
+
+            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+
+            string fileNewName = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            await videoResolutionTask(uploadPath, fileNewName, file, _webHostEnvironment.WebRootPath);
+            List<(string fileName, string pathOrContainerName)> transformedFilePaths = VideoResolutionFFMPEG.TransformedFilePaths;
+
+            var updatedFilePaths = transformedFilePaths.Select(file =>
+            {
+                var fileNameParts = file.fileName.Split('\\');
+
+                var updatedFileName = fileNameParts.Last();
+
+                return (file.pathOrContainerName, $"{updatedFileName}/{file.pathOrContainerName}");
+            }).ToList();
+            return updatedFilePaths;
+        }
+
     }
 }

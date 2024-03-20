@@ -22,28 +22,19 @@ namespace BetelgeuseAPI.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File", b =>
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseChildSubTopic", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("CourseParentSubTopicId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Storage")
+                    b.Property<string>("SubTitle")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -52,18 +43,101 @@ namespace BetelgeuseAPI.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Files");
+                    b.HasIndex("CourseParentSubTopicId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("File");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("CourseChildSubTopics");
                 });
 
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.UserProfileImage", b =>
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseParentSubTopic", b =>
                 {
-                    b.HasBaseType("BetelgeuseAPI.Domain.Entities.File");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
-                    b.HasDiscriminator().HasValue("UserProfileImage");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ParentTopic")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CourseParentSubTopics");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseVideoSubTopic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CourseSubTopicId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("Height")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Publish")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VideoName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Width")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseSubTopicId");
+
+                    b.ToTable("CourseVideoSubTopics");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseChildSubTopic", b =>
+                {
+                    b.HasOne("BetelgeuseAPI.Domain.Entities.CourseParentSubTopic", "CourseParentSubTopic")
+                        .WithMany("CourseSubTopics")
+                        .HasForeignKey("CourseParentSubTopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourseParentSubTopic");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseVideoSubTopic", b =>
+                {
+                    b.HasOne("BetelgeuseAPI.Domain.Entities.CourseChildSubTopic", "CourseSubTopic")
+                        .WithMany("CourseVideoSubTopic")
+                        .HasForeignKey("CourseSubTopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CourseSubTopic");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseChildSubTopic", b =>
+                {
+                    b.Navigation("CourseVideoSubTopic");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.CourseParentSubTopic", b =>
+                {
+                    b.Navigation("CourseSubTopics");
                 });
 #pragma warning restore 612, 618
         }

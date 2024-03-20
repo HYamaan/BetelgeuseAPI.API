@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EfCoreDialogsState">
+    <option name="keyValueStorage">
+      <map>
+        <entry key="Common:661cb505-0fb4-411d-8c20-f2a2a9a6b3b6:dbContext" value="BetelgeuseAPI.Persistence.Context.IdentityContext" />
+        <entry key="Common:buildConfiguration" value="Release" />
+        <entry key="Common:fe8401f2-c862-4ded-9916-64d3f91277bf:dbContext" value="BetelgeuseAPI.Persistence.Context.IdentityContext" />
+        <entry key="Common:noBuild" value="true" />
+        <entry key="Common:outputFolder" value="Migrations" />
+        <entry key="Common:targetFramework" value="net7.0" />
+        <entry key="Common:useDefaultConnection" value="true" />
+      </map>
+    </option>
+  </component>
+</project>
