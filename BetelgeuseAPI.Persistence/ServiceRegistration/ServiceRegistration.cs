@@ -1,4 +1,5 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Services;
+using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
 using BetelgeuseAPI.Application.Repositories;
 using BetelgeuseAPI.Application.Repositories.FileContent.File;
 using BetelgeuseAPI.Application.Repositories.FileContent.UserProfileBackgroundImageFile;
@@ -58,6 +59,7 @@ namespace BetelgeuseAPI.Persistence
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IServicesHelper, ServicesHelper>();
+            services.AddScoped<IFileCheckHelper, FileCheckHelper>();
             services.AddScoped(typeof(IImageService<,,>), typeof(ImageService<,,>));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

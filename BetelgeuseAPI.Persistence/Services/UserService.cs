@@ -35,6 +35,7 @@ using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountExpe
 using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountEducation;
 using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountAbout;
 using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountSkills;
+using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
 
 
 namespace BetelgeuseAPI.Persistence.Services;

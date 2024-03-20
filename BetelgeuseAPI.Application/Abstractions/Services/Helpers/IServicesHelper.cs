@@ -1,6 +1,6 @@
 ﻿using BetelgeuseAPI.Domain.Auth;
 
-namespace BetelgeuseAPI.Application.Abstractions.Services;
+namespace BetelgeuseAPI.Application.Abstractions.Services.Helpers;
 
 public interface IServicesHelper
 {
