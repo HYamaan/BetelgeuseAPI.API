@@ -2,6 +2,7 @@
 using BetelgeuseAPI.Application.Abstractions.Token;
 using BetelgeuseAPI.Application.DTOs;
 using BetelgeuseAPI.Application.DTOs.Request.Account;
+using BetelgeuseAPI.Application.DTOs.Response.Account;
 using BetelgeuseAPI.Application.Exceptions;
 using BetelgeuseAPI.Application.Features.Commands.AppUser.Auth.CreateTokenByRefreshToken;
 using BetelgeuseAPI.Application.Features.Commands.AppUser.Auth.LoginUser;
@@ -116,18 +117,21 @@ namespace BetelgeuseAPI.Persistence.Services
 
 
                  var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
-                LoginUserCommandResponse response = new LoginUserCommandResponse();
-                response.Id= user.Id;
-                response.AccessToken = token.AccessToken;
-                response.Email = user.Email!;
-                response.Roles = rolesList.ToList();
-                response.IsVerified = user.EmailConfirmed;
-                response.RefreshToken = token.RefreshToken;
-                response.Succeeded = true;
-                response.Message = $"Authenticated {user.UserName}";
-                
+                 var data = new LoginResponseDto()
+                 {
+                     Id = user.Id,
+                     Email = user.Email,
+                     AccessToken = token.AccessToken,
+                     RefreshToken = token.RefreshToken,
+                     Roles = rolesList.ToList(),
+                     IsVerified = user.EmailConfirmed
+                 };
+                 var result = new LoginUserCommandResponse()
+                 {
+                     Data = data
+                 };
 
-                return  Response<LoginUserCommandResponse>.Success(response);
+                return  Response<LoginUserCommandResponse>.Success(result);
             }
             catch (Exception e)
             {
@@ -163,24 +167,38 @@ namespace BetelgeuseAPI.Persistence.Services
             await _unitOfWork.CommitIdentityAsync();
         }
 
-        public async Task<Response<TokenDto>> RefreshTokenLoginAsync(RefreshTokenLoginCommandRequest request)
+        public async Task<Response<RefreshTokenLoginCommandResponse>> RefreshTokenLoginAsync(RefreshTokenLoginCommandRequest request)
         {
             var existRefreshToken = _refreshTokenReadRepository.GetWhere(x => x.Token == request.RefreshToken && x.CreatedByIp == request.IPAddress).SingleOrDefault();
             if (existRefreshToken == null)
             {
-                return new Response<TokenDto>() { Succeeded = false, Message = "Invalid Refresh Token" };
+                return Response<RefreshTokenLoginCommandResponse>.Fail("Invalid Refresh Token");
             }
             var user = await _userManager.FindByIdAsync(existRefreshToken.AppUserId!);
 
             if (user == null)
             {
-                return new Response<TokenDto>() { Succeeded = false, Message = "User Not Found" };
+                return Response<RefreshTokenLoginCommandResponse>.Fail("User Not Found");
             }
             var tokenDto = await _tokenHandler.GenerateJWToken(user);
-            existRefreshToken.Token = tokenDto.RefreshToken;
             existRefreshToken.Expires = tokenDto.RefreshTokenExpiration.ToUniversalTime();
             await _unitOfWork.CommitIdentityAsync();
-            return new Response<TokenDto>() { Data = tokenDto, Succeeded = true, Message = "Created refresh token" };
+
+            var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
+            var data = new LoginResponseDto()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                AccessToken = tokenDto.AccessToken,
+                RefreshToken = tokenDto.RefreshToken,
+                Roles = rolesList.ToList(),
+                IsVerified = user.EmailConfirmed
+            };
+            var result = new RefreshTokenLoginCommandResponse()
+            {
+                Data = data
+            };
+            return Response<RefreshTokenLoginCommandResponse>.Success(result, "Refresh token updated");
         }
 
     }

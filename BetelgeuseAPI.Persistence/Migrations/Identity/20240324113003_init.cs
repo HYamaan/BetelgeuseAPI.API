@@ -527,6 +527,39 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "CourseQuiz",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Language = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Time = table.Column<int>(type: "integer", nullable: true),
+                    Attempts = table.Column<int>(type: "integer", nullable: true),
+                    PassingScore = table.Column<int>(type: "integer", nullable: false),
+                    ExpiryDate = table.Column<int>(type: "integer", nullable: true),
+                    LimitedQuestion = table.Column<bool>(type: "boolean", nullable: false),
+                    QuestionCount = table.Column<int>(type: "integer", nullable: true),
+                    RandomizeQuestion = table.Column<bool>(type: "boolean", nullable: false),
+                    Certificate = table.Column<bool>(type: "boolean", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CourseSectionsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseQuiz", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseQuiz_CourseSections_CourseSectionsId",
+                        column: x => x.CourseSectionsId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseSections",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CourseSource",
                 schema: "Identity",
                 columns: table => new
@@ -552,39 +585,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         column: x => x.CourseSectionsId,
                         principalSchema: "Identity",
                         principalTable: "CourseSections",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "File",
-                schema: "Identity",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AppUserId = table.Column<string>(type: "text", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
-                    Path = table.Column<string>(type: "text", nullable: false),
-                    Storage = table.Column<string>(type: "text", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
-                    CourseSourceId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_File", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_File_CourseSource_CourseSourceId",
-                        column: x => x.CourseSourceId,
-                        principalSchema: "Identity",
-                        principalTable: "CourseSource",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_File_User_AppUserId",
-                        column: x => x.AppUserId,
-                        principalSchema: "Identity",
-                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -617,13 +617,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Blogs_File_BlogImageID",
-                        column: x => x.BlogImageID,
-                        principalSchema: "Identity",
-                        principalTable: "File",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Blogs_MetaData_MetaDataId",
                         column: x => x.MetaDataId,
                         principalSchema: "Identity",
@@ -651,20 +644,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CourseBasicInformation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CourseBasicInformation_File_CoverImageId",
-                        column: x => x.CoverImageId,
-                        principalSchema: "Identity",
-                        principalTable: "File",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CourseBasicInformation_File_ThumbnailId",
-                        column: x => x.ThumbnailId,
-                        principalSchema: "Identity",
-                        principalTable: "File",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -717,14 +696,106 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CourseQuestions",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LanguageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Grade = table.Column<int>(type: "integer", nullable: false),
+                    QuestionType = table.Column<int>(type: "integer", nullable: false),
+                    ImageId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CourseQuizId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseQuestions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseQuestions_CourseQuiz_CourseQuizId",
+                        column: x => x.CourseQuizId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseQuiz",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CourseQuizAnswer",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
+                    IsCorrect = table.Column<bool>(type: "boolean", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    CourseQuestionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseQuizAnswer", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseQuizAnswer_CourseQuestions_CourseQuestionId",
+                        column: x => x.CourseQuestionId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseQuestions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "File",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    AppUserId = table.Column<string>(type: "text", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    Storage = table.Column<string>(type: "text", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    CourseSourceId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CourseQuestionsId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_File_CourseQuestions_CourseQuestionsId",
+                        column: x => x.CourseQuestionsId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseQuestions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_File_CourseSource_CourseSourceId",
+                        column: x => x.CourseSourceId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseSource",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_File_User_AppUserId",
+                        column: x => x.AppUserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 schema: "Identity",
                 table: "Language",
                 columns: new[] { "Id", "CreatedDate", "IsPrimary", "Name", "Published", "SeoCode", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { new Guid("5e9ee4ef-8444-4d1c-832b-089243201abc"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "Türkçe", true, "tr", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("fb865feb-d748-40a9-943d-8e9df947d815"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "İngilizce", true, "en", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { new Guid("710dd364-ce6f-4de3-abf5-2bc8cf9a1ee7"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, "İngilizce", true, "en", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { new Guid("a2148c9c-f647-48e9-bbc6-23ebecc0f871"), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, "Türkçe", true, "tr", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -733,9 +804,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4896071a-ee16-424b-8454-cb5b47c48d76", null, "Admin", "ADMİN" },
-                    { "9d234374-0487-4cfb-8736-2856f707e683", null, "Moderator", "MODERATOR" },
-                    { "c782081f-f070-40e1-a1cf-ee19d42ce96c", null, "Student", "STUDENT" }
+                    { "7bc98da2-2332-4f16-8ba2-a6a9109c12a0", null, "Admin", "ADMİN" },
+                    { "e505342b-ac8b-4b4a-9cae-f89175105bd4", null, "Moderator", "MODERATOR" },
+                    { "ec51d3bf-fcb4-4c4f-b610-8379faffc55a", null, "Student", "STUDENT" }
                 });
 
             migrationBuilder.InsertData(
@@ -744,8 +815,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "9d234374-0487-4cfb-8736-2856f707e683", 0, "e48debd9-6980-41d9-b365-e31c03bbacce", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" },
-                    { "c782081f-f070-40e1-a1cf-ee19d42ce96c", 0, "e6e9f6c8-9652-4f86-918c-395bf7c7a9f8", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" }
+                    { "e505342b-ac8b-4b4a-9cae-f89175105bd4", 0, "6b0db498-689e-403a-b881-e5fe6868ee93", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" },
+                    { "ec51d3bf-fcb4-4c4f-b610-8379faffc55a", 0, "2b7cb147-238c-4a00-875d-97e1e6b2124c", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -754,8 +825,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "9d234374-0487-4cfb-8736-2856f707e683", "9d234374-0487-4cfb-8736-2856f707e683" },
-                    { "c782081f-f070-40e1-a1cf-ee19d42ce96c", "c782081f-f070-40e1-a1cf-ee19d42ce96c" }
+                    { "e505342b-ac8b-4b4a-9cae-f89175105bd4", "e505342b-ac8b-4b4a-9cae-f89175105bd4" },
+                    { "ec51d3bf-fcb4-4c4f-b610-8379faffc55a", "ec51d3bf-fcb4-4c4f-b610-8379faffc55a" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -807,6 +878,30 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 column: "PartnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CourseQuestions_CourseQuizId",
+                schema: "Identity",
+                table: "CourseQuestions",
+                column: "CourseQuizId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseQuestions_ImageId",
+                schema: "Identity",
+                table: "CourseQuestions",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseQuiz_CourseSectionsId",
+                schema: "Identity",
+                table: "CourseQuiz",
+                column: "CourseSectionsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseQuizAnswer_CourseQuestionId",
+                schema: "Identity",
+                table: "CourseQuizAnswer",
+                column: "CourseQuestionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CourseSections_CourseContentId",
                 schema: "Identity",
                 table: "CourseSections",
@@ -823,6 +918,12 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity",
                 table: "File",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_File_CourseQuestionsId",
+                schema: "Identity",
+                table: "File",
+                column: "CourseQuestionsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_File_CourseSourceId",
@@ -954,13 +1055,61 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity",
                 table: "UserSkills",
                 column: "AppUserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Blogs_File_BlogImageID",
+                schema: "Identity",
+                table: "Blogs",
+                column: "BlogImageID",
+                principalSchema: "Identity",
+                principalTable: "File",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CourseBasicInformation_File_CoverImageId",
+                schema: "Identity",
+                table: "CourseBasicInformation",
+                column: "CoverImageId",
+                principalSchema: "Identity",
+                principalTable: "File",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CourseBasicInformation_File_ThumbnailId",
+                schema: "Identity",
+                table: "CourseBasicInformation",
+                column: "ThumbnailId",
+                principalSchema: "Identity",
+                principalTable: "File",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CourseQuestions_File_ImageId",
+                schema: "Identity",
+                table: "CourseQuestions",
+                column: "ImageId",
+                principalSchema: "Identity",
+                principalTable: "File",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_CourseQuestions_File_ImageId",
+                schema: "Identity",
+                table: "CourseQuestions");
+
             migrationBuilder.DropTable(
                 name: "Blogs",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "CourseQuizAnswer",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1044,11 +1193,15 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
+                name: "Category",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
                 name: "File",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "Category",
+                name: "CourseQuestions",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1057,6 +1210,10 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "User",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "CourseQuiz",
                 schema: "Identity");
 
             migrationBuilder.DropTable(

@@ -21,16 +21,10 @@ public class TokenHandler : ITokenHandler
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly JWTSettings _jwtSettings;
-    private readonly IUserRefreshTokenReadRepository _refreshTokenReadRepository;
-    private readonly IUserRefreshTokenWriteRepository _refreshTokenWriteRepository;
-    private readonly IUnitOfWork _unitOfWork;
     public TokenHandler(UserManager<AppUser> userManager,
-        IOptions<JWTSettings> jwtSettings, IUserRefreshTokenReadRepository refreshTokenReadRepository, IUnitOfWork unitOfWork, IUserRefreshTokenWriteRepository refreshTokenWriteRepository)
+        IOptions<JWTSettings> jwtSettings)
     {
         _userManager = userManager;
-        _refreshTokenReadRepository = refreshTokenReadRepository;
-        _unitOfWork = unitOfWork;
-        _refreshTokenWriteRepository = refreshTokenWriteRepository;
         _jwtSettings = jwtSettings.Value;
     }
     private string RandomTokenString()

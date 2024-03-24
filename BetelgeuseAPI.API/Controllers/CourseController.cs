@@ -2,6 +2,8 @@
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.BasicInformation;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseExtraInformation;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CoursePricing;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseQuestion;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseQuizes;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSections;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSource;
 using MediatR;
@@ -61,8 +63,27 @@ namespace BetelgeuseAPI.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadSource([FromForm] CourseSourceCommandRequest model)
         {
-            model.uploadFile ??= Request.Form.Files[0];
+            if (model.uploadFile != null)
+            {
+                model.uploadFile = Request.Form.Files[0];
+            }
             CourseSourceCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> UploadQuiz([FromBody] CourseQuizCommandRequest model)
+        {
+            CourseQuizCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> UploadQuestion([FromForm] CourseQuestionCommandRequest model)
+        {
+            CourseQuestionCommandResponse response = await _mediator.Send(model);
             return Ok(response);
 
         }

@@ -2,17 +2,25 @@
 using BetelgeuseAPI.Application.Repositories.Category.CourseCategory;
 using BetelgeuseAPI.Application.Repositories.Course.BasicInformation;
 using BetelgeuseAPI.Application.Repositories.Course.CourseContent;
+using BetelgeuseAPI.Application.Repositories.Course.CourseQuiz;
+using BetelgeuseAPI.Application.Repositories.Course.CourseQuizAnswer;
 using BetelgeuseAPI.Application.Repositories.Course.CourseSource;
 using BetelgeuseAPI.Application.Repositories.Course.InclusiveCourse;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseCoverImage;
+using BetelgeuseAPI.Application.Repositories.FileContent.CourseQuizQuestionImage;
+using BetelgeuseAPI.Application.Repositories.FileContent.CourseQuizQuestionVideo;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseThumbnail;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseUpload;
 using BetelgeuseAPI.Persistence.Repositories.Category.CourseCategory;
 using BetelgeuseAPI.Persistence.Repositories.Course.BasicInformation;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseContent;
+using BetelgeuseAPI.Persistence.Repositories.Course.CourseQuiz;
+using BetelgeuseAPI.Persistence.Repositories.Course.CourseQuizAnswer;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseSource;
 using BetelgeuseAPI.Persistence.Repositories.Course.InclusiveCourse;
 using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseCoverImage;
+using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseQuizQuestionImage;
+using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseQuizQuestionVideo;
 using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseThumbnail;
 using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseUpload;
 using BetelgeuseAPI.Persistence.Repositories.UserAccountSkill;
@@ -50,6 +58,20 @@ public static class CourseRegistration
 
         services.AddScoped<ICourseUploadReadRepository, CourseUploadReadRepository>();
         services.AddScoped<ICourseUploadWriteRepository, CourseUploadWriteRepository>();
+
+        services.AddScoped<ICourseQuizesReadRepository, CourseQuizesReadRepository>();
+        services.AddScoped<ICourseQuizesWriteRepository, CourseQuizesWriteRepository>();
+
+
+        services.AddScoped<ICourseQuizQuestionVideoReadRepository, CourseQuizQuestionVideoReadRepository>();
+        services.AddScoped<ICourseQuizQuestionVideoWriteRepository, CourseQuizQuestionVideoWriteRepository>();
+
+        services.AddScoped<ICourseQuizQuestionImageReadRepository, CourseQuizQuestionImageReadRepository>();
+        services.AddScoped<ICourseQuizQuestionImageWriteRepository, CourseQuizQuestionImageWriteRepository>();
+
+        services.AddScoped<ICourseQuizAnswerReadRepository, CourseQuizAnswerReadRepository>();
+        services.AddScoped<ICourseQuizAnswerWriteRepository, CourseQuizAnswerWriteRepository>();
+
 
     }
 }

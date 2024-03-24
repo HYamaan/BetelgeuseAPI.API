@@ -20,7 +20,12 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, 
     public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
     {
         var response = await _authService.LoginAccountAsync(_mapper.Map<LoginAccountRequest>(request));
-        return response.Data;
+        return new LoginUserCommandResponse()
+        {
+            Data = response.Data.Data,
+            Message = response.Message,
+            Succeeded = response.Succeeded,
+        };
 
     }
 }
