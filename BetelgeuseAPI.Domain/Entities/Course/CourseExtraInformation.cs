@@ -17,4 +17,8 @@ public class CourseExtraInformation:BaseEntity
 
     public Category.Category Category { get; set; }
     public AppUser Partner { get; set; }
+
+    public Guid InclusiveCourseId { get; set; }
+    public InclusiveCourse InclusiveCourse { get; set; }
+
 }

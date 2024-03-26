@@ -8,7 +8,7 @@ namespace BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseQuesti
 public class CourseQuestionCommandRequest:IRequest<CourseQuestionCommandResponse>
 {
     public required Guid quizId { get; set; }
-    public required Guid LanguageId { get; set; }
+    public required Languages LanguageId { get; set; }
     public CourseQuizQuestionType QuestionType { get; set; }
     public required string Title { get; set; }
     public required int Grade { get; set; }

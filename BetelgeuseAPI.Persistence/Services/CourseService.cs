@@ -20,14 +20,24 @@ using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
+using BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.UploadCourseQuiz;
+using BetelgeuseAPI.Application.Features.Commands.Course.CourseSection.UpdateCourseSection;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseQuestion;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseQuizes;
+using BetelgeuseAPI.Application.Repositories.Course.CourseExtraInformation;
 using BetelgeuseAPI.Application.Repositories.Course.CourseQuiz;
 using BetelgeuseAPI.Application.Repositories.Course.CourseQuizAnswer;
-using BetelgeuseAPI.Application.Repositories.FileContent.CourseQuizQuestionImage;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseQuizQuestionVideo;
 using BetelgeuseAPI.Domain.Entities.Course.Content.Quiz;
 using BetelgeuseAPI.Domain.Entities.File.Quiz;
+using BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.CourseQuestion.UpdateCourseQuestion;
+using BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.DeleteCourseQuestion;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetBasicInformation;
+using BetelgeuseAPI.Application.Repositories.Course.CourseQuestion;
+using BetelgeuseAPI.Application.Repositories.Course.CourseQuizUpload;
+using BetelgeuseAPI.Domain.Auth;
+using Microsoft.AspNetCore.Http;
+using BetelgeuseAPI.Application.DTOs.Response.Course;
 
 namespace BetelgeuseAPI.Persistence.Services;
 
@@ -61,13 +71,18 @@ public class CourseService : ICourseService
     private readonly ICourseQuizAnswerReadRepository _courseQuizAnswerRead;
     private readonly ICourseQuizAnswerWriteRepository _courseQuizAnswerWrite;
 
+    private readonly ICourseExtraInformationReadRepository _courseExtraInformationRead;
+    private readonly ICourseExtraInformationWriteRepository _courseExtraInformationWrite;
+
+    private readonly ICourseQuestionReadRepository _courseQuizQuestionRead;
+    private readonly ICourseQuestionWriteRepository _courseQuizQuestionWrite;
+
+
+    private readonly ICourseQuizUploadReadRepository _courseQuizUploadRead;
+    private readonly ICourseQuizUploadWriteRepository _courseQuizUploadWrite;
 
     private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> _courseThumbnailService;
     public readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> _courseCoverImageService;
-    public readonly IImageService<CourseQuizQuestionImage, ICourseQuizQuestionImageReadRepository, ICourseQuizQuestionImageWriteRepository> _courseQuizQuestionImageService;
-
-
-
 
 
 
@@ -90,10 +105,11 @@ public class CourseService : ICourseService
         ICourseQuizesWriteRepository courseQuizesWrite,
         ICourseQuizQuestionVideoReadRepository courseQuizQuestionVideoRead,
         ICourseQuizQuestionVideoWriteRepository courseQuizQuestionVideoWrite,
-        IImageService<CourseQuizQuestionImage, ICourseQuizQuestionImageReadRepository,
-            ICourseQuizQuestionImageWriteRepository> courseQuizQuestionImageService,
         ICourseQuizAnswerWriteRepository courseQuizAnswerWrite,
-        ICourseQuizAnswerReadRepository courseQuizAnswerRead)
+        ICourseQuizAnswerReadRepository courseQuizAnswerRead,
+        ICourseExtraInformationWriteRepository courseExtraInformationWrite,
+        ICourseExtraInformationReadRepository courseExtraInformationRead, ICourseQuestionWriteRepository courseQuizQuestionWrite, ICourseQuestionReadRepository courseQuizQuestionRead,
+        ICourseQuizUploadReadRepository courseQuizUploadRead, ICourseQuizUploadWriteRepository courseQuizUploadWrite)
     {
         _servicesHelper = servicesHelper;
         _courseBasicInformationRead = courseBasicInformationRead;
@@ -113,22 +129,37 @@ public class CourseService : ICourseService
         _courseQuizesWrite = courseQuizesWrite;
         _courseQuizQuestionVideoRead = courseQuizQuestionVideoRead;
         _courseQuizQuestionVideoWrite = courseQuizQuestionVideoWrite;
-        _courseQuizQuestionImageService = courseQuizQuestionImageService;
         _courseQuizAnswerWrite = courseQuizAnswerWrite;
         _courseQuizAnswerRead = courseQuizAnswerRead;
+        _courseExtraInformationWrite = courseExtraInformationWrite;
+        _courseExtraInformationRead = courseExtraInformationRead;
+        _courseQuizQuestionWrite = courseQuizQuestionWrite;
+        _courseQuizQuestionRead = courseQuizQuestionRead;
+        _courseQuizUploadRead = courseQuizUploadRead;
+        _courseQuizUploadWrite = courseQuizUploadWrite;
         _storageService = storageService;
     }
-
     public async Task<Response<BasicInformationCommandResponse>> AddCourseBasicInformation(
-        BasicInformationCommandRequest model)
+      BasicInformationCommandRequest model)
     {
         try
         {
+            var defaultValue = false;
             var userId = _servicesHelper.GetUserIdFromContext();
             var user = await _servicesHelper.GetUserById(userId);
-
             var inclusiveCourse = new InclusiveCourse();
             inclusiveCourse.CourseBasicInformation = new CourseBasicInformation();
+
+            if (model?.CourseId != null)
+            {
+                var result = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
+                    .Include(x => x.CourseBasicInformation).FirstOrDefaultAsync();
+                if (result != null) inclusiveCourse = result;
+                defaultValue = true;
+            }
+
+
+
             inclusiveCourse.CourseBasicInformation.Language = model.Language;
             inclusiveCourse.CourseBasicInformation.CourseType = model.CourseType;
             inclusiveCourse.CourseBasicInformation.SeoDescription = model.SeoDescription;
@@ -142,7 +173,14 @@ public class CourseService : ICourseService
             inclusiveCourse.CourseBasicInformation.CoverImage = CoverImage;
             inclusiveCourse.AppUser = user;
 
-            await _inclusiveCourseWrite.AddAsync(inclusiveCourse);
+            if (defaultValue)
+            {
+                _inclusiveCourseWrite.Update(inclusiveCourse);
+            }
+            else
+            {
+                await _inclusiveCourseWrite.AddAsync(inclusiveCourse);
+            }
             await _inclusiveCourseWrite.SaveAsync();
             return Response<BasicInformationCommandResponse>.Success("Course basic information added");
         }
@@ -157,26 +195,31 @@ public class CourseService : ICourseService
     {
         try
         {
-            var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
-            if (inclusiveCourse == null)
+            var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
+              .Include(x => x.CourseExtraInformation).FirstOrDefaultAsync();
+
+            var defaultValue = false;
+            var courseExtraInformation = new CourseExtraInformation();
+            if (inclusiveCourse.CourseExtraInformation != null)
             {
-                throw new Exception("Course not found");
+                courseExtraInformation = inclusiveCourse.CourseExtraInformation;
+                defaultValue = true;
             }
 
-            inclusiveCourse.CourseExtraInformation = new CourseExtraInformation
-            {
-                CategoryId = model.CategoryId,
-                Duration = model.Duration,
-                IsCourseForm = model.IsCourseForm,
-                IsSupport = model.IsSupport,
-                IsDownloadable = model.IsDownloadable,
-                IsPartnered = model.IsPartnered,
-                Tag = model.Tag,
-                CourseLevel = model.CourseLevel,
-            };
+
+            courseExtraInformation.InclusiveCourseId = model.CourseId;
+            courseExtraInformation.CategoryId = model.CategoryId;
+            courseExtraInformation.Duration = model.Duration;
+            courseExtraInformation.IsCourseForm = model.IsCourseForm;
+            courseExtraInformation.IsSupport = model.IsSupport;
+            courseExtraInformation.IsDownloadable = model.IsDownloadable;
+            courseExtraInformation.IsPartnered = model.IsPartnered;
+            courseExtraInformation.Tag = model.Tag;
+            courseExtraInformation.CourseLevel = model.CourseLevel;
+
             if (model.CourseSubLanguages != null && model.CourseSubLanguages.Any())
             {
-                inclusiveCourse.CourseExtraInformation.CourseSubLanguage = string.Join(",",
+                courseExtraInformation.CourseSubLanguage = string.Join(",",
                     model.CourseSubLanguages.Select(csl => csl.language.ToString()));
 
             }
@@ -192,11 +235,19 @@ public class CourseService : ICourseService
 
                 //inclusiveCourse.CourseExtraInformation.Partners = partners;
                 var newPartner = await _servicesHelper.GetUserById(model.PartnerId.ToString());
-                inclusiveCourse.CourseExtraInformation.Partner = newPartner;
+                courseExtraInformation.Partner = newPartner;
             }
 
-            _inclusiveCourseWrite.Update(inclusiveCourse);
-            await _inclusiveCourseWrite.SaveAsync();
+            if (defaultValue)
+            {
+                _courseExtraInformationWrite.Update(courseExtraInformation);
+            }
+            else
+            {
+                await _courseExtraInformationWrite.AddAsync(courseExtraInformation);
+            }
+
+            await _courseExtraInformationWrite.SaveAsync();
 
             return Response<CourseExtraInformationCommandResponse>.Success("Course extra information added");
         }
@@ -269,16 +320,16 @@ public class CourseService : ICourseService
 
     public async Task<Response<CourseSectionsCommandResponse>> AddCourseSections(CourseSectionsCommandRequest model)
     {
-        var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
-
-        if (inclusiveCourse == null)
+        var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId).Include(x => x.Sections).FirstOrDefaultAsync();
+        var defaultValue = false;
+        var courseSection = new CourseSections();
+        if (inclusiveCourse.Sections == null)
         {
             return Response<CourseSectionsCommandResponse>.Fail("Course not found");
         }
-        if (inclusiveCourse.CourseContent == null)
+        if (inclusiveCourse.Sections == null)
         {
-            inclusiveCourse.CourseContent = new CourseContent();
-            inclusiveCourse.CourseContent.Sections = new List<CourseSections>(); // Initialize the Sections list
+            inclusiveCourse.Sections = new List<CourseSections>(); // Initialize the Sections list
         }
         var newSection = new CourseSections()
         {
@@ -287,11 +338,12 @@ public class CourseService : ICourseService
             IsActive = model.IsActive,
             PassAllParts = model.PassAllParts,
         };
-        inclusiveCourse.CourseContent.Sections.Add(newSection);
+        inclusiveCourse.Sections.Add(newSection);
         _inclusiveCourseWrite.Update(inclusiveCourse);
         await _inclusiveCourseWrite.SaveAsync();
         return Response<CourseSectionsCommandResponse>.Success("Course section added");
     }
+
 
     public async Task<Response<CourseSourceCommandResponse>> AddCourseSource(CourseSourceCommandRequest model)
     {
@@ -302,7 +354,7 @@ public class CourseService : ICourseService
             return Response<CourseSourceCommandResponse>.Fail("Course not found");
         }
 
-        var section = inclusiveCourse?.CourseContent?.Sections?.FirstOrDefault(s => s.Id == model.SectionId);
+        var section = inclusiveCourse?.Sections?.FirstOrDefault(s => s.Id == model.SectionId);
 
         if (section == null)
         {
@@ -388,6 +440,7 @@ public class CourseService : ICourseService
 
     public async Task<Response<CourseQuizCommandResponse>> AddCourseQuiz(CourseQuizCommandRequest model)
     {
+
         var findSection = await _courseSectionRead.GetByIdAsync(model.SectionId.ToString());
 
         if (findSection == null)
@@ -434,14 +487,15 @@ public class CourseService : ICourseService
         };
         if (model.Image != null && await _fileCheckHelper.CheckImageFormat(model.Image))
         {
-            var result = await _courseQuizQuestionImageService.SaveImage(model.Image, userId);
+            var result = await UpdateQuizQuestionImage(model.Image, user, newQuestion);
+
             newQuestion.Image = result;
         }
         else if (model.Video != null && await _fileCheckHelper.CheckVideoFormat(model.Video))
         {
             var data = await _storageService.UploadVideoAsync("files", model.Video);
 
-            var courseUploads = data.Select(d => new CourseQuizQuestionVideo
+            var courseUploads = data.Select(d => new CourseQuizUpload
             {
                 FileName = d.fileName,
                 Path = d.pathOrContainerName,
@@ -449,8 +503,8 @@ public class CourseService : ICourseService
                 AppUser = user
             }).ToList();
 
-            await _courseQuizQuestionVideoWrite.AddRangeAsync(courseUploads);
-            await _courseQuizQuestionVideoWrite.SaveAsync();
+            await _courseQuizUploadWrite.AddRangeAsync(courseUploads);
+            await _courseQuizUploadWrite.SaveAsync();
             newQuestion.Video = courseUploads;
         }
         if (model.QuizAnswers != null && model.QuizAnswers.Any())
@@ -476,12 +530,262 @@ public class CourseService : ICourseService
         return Response<CourseQuestionCommandResponse>.Success("Course question added");
     }
 
+    public async Task<Response<UpdateCourseSectionCommandResponse>> UpdateCourseSection(UpdateCourseSectionCommandRequest model)
+    {
+        var findCourse = await _inclusiveCourseRead.GetByIdAsync(model.CourseId.ToString());
+        if (findCourse == null)
+        {
+            return Response<UpdateCourseSectionCommandResponse>.Fail("Invalid CourseId");
+        }
+
+        var findSection = await _courseSectionRead.GetByIdAsync(model.CourseSectionId.ToString());
+        if (findSection == null)
+        {
+            return Response<UpdateCourseSectionCommandResponse>.Fail("Invalid SectionId");
+        }
+
+        // Güncelleme için gönderilen her özellik için modeldeki değeri kontrol et, yoksa mevcut veriyi koru
+        findSection.LanguageId = model.LanguageId ?? findSection.LanguageId;
+        findSection.Title = model.Title ?? findSection.Title;
+        findSection.IsActive = model.IsActive ?? findSection.IsActive;
+        findSection.PassAllParts = model.PassAllParts ?? findSection.PassAllParts;
+
+        _courseSectionWrite.Update(findSection);
+        await _courseSectionWrite.SaveAsync();
+
+        return Response<UpdateCourseSectionCommandResponse>.Success("Course section updated");
+    }
+
+    public async Task<Response<UploadCourseQuizCommandResponse>> UploadCourseQuiz(UploadCourseQuizCommandRequest model)
+    {
+        var findSection = await _courseSectionRead.GetByIdAsync(model.SectionId.ToString());
+        if (findSection == null)
+        {
+            return Response<UploadCourseQuizCommandResponse>.Fail("Section not found");
+        }
+        var findQuiz = await _courseQuizesRead.GetWhere(q => q.Id == model.QuizId).FirstOrDefaultAsync();
+        if (findQuiz == null)
+        {
+            return Response<UploadCourseQuizCommandResponse>.Fail("Quiz not found");
+        }
+        findQuiz.Attempts = model.Attempts ?? findQuiz.Attempts;
+        findQuiz.Language = model.Language ?? findQuiz.Language;
+        findQuiz.Title = model.Title ?? findQuiz.Title;
+        findQuiz.Time = model.Time ?? findQuiz.Time;
+        findQuiz.PassingScore = model.PassingScore ?? findQuiz.PassingScore;
+        findQuiz.ExpiryDate = model.ExpiryDate ?? findQuiz.ExpiryDate;
+        findQuiz.LimitedQuestion = model.LimitedQuestion ?? findQuiz.LimitedQuestion;
+        findQuiz.RandomizeQuestion = model.RandomizeQuestion ?? findQuiz.RandomizeQuestion;
+        findQuiz.QuestionCount = model.QuestionCount ?? findQuiz.QuestionCount;
+        findQuiz.Certificate = model.Certificate ?? findQuiz.Certificate;
+        findQuiz.IsActive = model.IsActive ?? findQuiz.IsActive;
+        findQuiz.CourseSections = findSection;
+
+        _courseQuizesWrite.Update(findQuiz);
+        await _courseQuizesWrite.SaveAsync();
+        return Response<UploadCourseQuizCommandResponse>.Success("Course quiz updated");
+    }
+
+    public async Task<Response<UpdateCourseQuestionCommandResponse>> UpdateCourseQuestion(UpdateCourseQuestionCommandRequest model)
+    {
+        var userId = _servicesHelper.GetUserIdFromContext();
+        var user = await _servicesHelper.GetUserById(userId);
+
+        var findQuiz = await _courseQuizesRead.GetWhere(q => q.Id == model.quizId).FirstOrDefaultAsync();
+        if (findQuiz == null)
+        {
+            return Response<UpdateCourseQuestionCommandResponse>.Fail("Quiz not found");
+        }
+
+        var findQuestion = await _courseQuizQuestionRead.GetWhere(q => q.Id == model.questionId)
+            .Include(x => x.Image)
+            .Include(x => x.Video)
+            .Include(x => x.CourseQuizAnswers)
+            .FirstOrDefaultAsync();
+
+        if (findQuestion == null)
+        {
+            return Response<UpdateCourseQuestionCommandResponse>.Fail("Question not found");
+        }
+
+        findQuestion.LanguageId = model.LanguageId ?? findQuestion.LanguageId;
+        findQuestion.Title = model.Title ?? findQuestion.Title;
+        findQuestion.Grade = model.Grade ?? findQuestion.Grade;
+        findQuestion.QuestionType = model.QuestionType ?? findQuestion.QuestionType;
+
+        if (model.Image != null && await _fileCheckHelper.CheckImageFormat(model.Image))
+        {
+            var result = await UpdateQuizQuestionImage(model.Image, user, findQuestion);
+            findQuestion.Image = result;
+        }
+        else if (model.Video != null && await _fileCheckHelper.CheckVideoFormat(model.Video))
+        {
+            var data = await _storageService.UploadVideoAsync("files", model.Video);
+
+            var courseUploads = data.Select(d => new CourseQuizUpload
+            {
+                FileName = d.fileName,
+                Path = d.pathOrContainerName,
+                Storage = _storageService.StorageName,
+                AppUser = user
+            }).ToList();
+
+            await _courseQuizUploadWrite.AddRangeAsync(courseUploads);
+            await _courseQuizUploadWrite.SaveAsync();
+            findQuestion.Video = courseUploads;
+        }
+
+        if (model.QuizAnswers != null)
+        {
+            var newAnswers = new List<CourseQuizAnswer>();
+            foreach (var answer in model.QuizAnswers)
+            {
+                var existingAnswer = findQuestion.CourseQuizAnswers.FirstOrDefault(x => x.Id == answer.Id);
+                if (existingAnswer != null)
+                {
+                    existingAnswer.Title = answer.Title ?? existingAnswer.Title;
+                    existingAnswer.IsCorrect = answer.IsCorrect ?? existingAnswer.IsCorrect;
+                    existingAnswer.Description = answer.Description ?? existingAnswer.Description;
+                }
+                else
+                {
+                    var createAnswer = new CourseQuizAnswer()
+                    {
+                        Title = answer?.Title,
+                        IsCorrect = answer?.IsCorrect,
+                        Description = answer?.Description,
+                        CourseQuestionId = findQuestion.Id,
+                        CourseQuestion = findQuestion
+                    };
+                    newAnswers.Add(createAnswer);
+                }
+            }
+
+
+            var answersToRemove = findQuestion.CourseQuizAnswers
+                .Where(existingAnswer => model.QuizAnswers.All(answer => answer.Id != existingAnswer.Id))
+                .ToList();
+
+            foreach (var answerToRemove in answersToRemove)
+            {
+                findQuestion.CourseQuizAnswers.Remove(answerToRemove);
+                _courseQuizAnswerWrite.Remove(answerToRemove);
+            }
+
+            findQuestion.CourseQuizAnswers.AddRange(newAnswers);
+        }
+
+
+        _courseQuizQuestionWrite.Update(findQuestion);
+        await _courseQuizQuestionWrite.SaveAsync();
+
+        return Response<UpdateCourseQuestionCommandResponse>.Success("Course question updated");
+    }
+
+    public async Task<Response<GetBasicInformationCommandResponse>> GetCourseBasicInformation(GetBasicInformationCommandRequest model)
+    {
+        var result = await _inclusiveCourseRead
+            .GetWhere(ux => ux.Id == model.CourseId)
+            .Include(x => x.CourseBasicInformation)
+            .Include(x => x.CourseBasicInformation.CoverImage)
+            .Include(x => x.CourseBasicInformation.Thumbnail)
+            .FirstOrDefaultAsync();
+        var response = new GetBasicInformationCommandResponse
+        {
+            Data = new BasicInformationResponseDto
+            {
+                Title = result.CourseBasicInformation.Title,
+                CourseType = result.CourseBasicInformation.CourseType,
+                Language = result.CourseBasicInformation.Language,
+                SeoDescription = result.CourseBasicInformation.SeoDescription,
+                Thumbnail = result.CourseBasicInformation.Thumbnail.Path,
+                CoverImage = result.CourseBasicInformation.CoverImage.Path,
+                Description = result.CourseBasicInformation.Description
+            }
+        };
+
+        return Response<GetBasicInformationCommandResponse>.Success(response);
+    }
+
 
     public async Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model)
     {
         await _courseSectionWrite.RemoveAsync(model.SectionId.ToString());
         await _courseSectionWrite.SaveAsync();
         return Response<DeleteCourseSectionCommandResponse>.Success("Course section deleted");
+    }
+
+    public async Task<Response<DeleteCourseQuestionCommandResponse>> DeleteCourseQuestion(DeleteCourseQuestionCommandRequest model)
+    {
+        var result = await _courseQuizQuestionRead.GetWhere(x=>x.Id == model.questionId)       
+            .Include(x => x.Image)
+                       .Include(x => x.Video)
+                       .Include(x => x.CourseQuizAnswers)
+                       .FirstOrDefaultAsync();
+
+        if (result == null)
+        {
+            return Response<DeleteCourseQuestionCommandResponse>.Fail("Question not found");
+        }
+
+        if (result.Image != null)
+        {
+            await _storageService.DeleteAsync(result.Image.Path.Split(Path.DirectorySeparatorChar)[0], result.Image.FileName);
+            _courseQuizUploadWrite.Remove(result.Image);
+        }
+
+        if (result.Video != null)
+        {
+            foreach (var quizVideo in result.Video)
+            {
+                await _storageService.DeleteAsync(quizVideo.Path.Split(Path.DirectorySeparatorChar)[0], quizVideo.FileName);
+                _courseQuizUploadWrite.Remove(quizVideo);
+            }
+       
+        }
+
+        foreach (var answer in result.CourseQuizAnswers)
+        {
+            _courseQuizAnswerWrite.Remove(answer);
+        }
+
+        _courseQuizQuestionWrite.Remove(result);
+        await _courseQuizQuestionWrite.SaveAsync();
+
+        return Response<DeleteCourseQuestionCommandResponse>.Success("Course question deleted");
+    }
+
+
+    private async Task<CourseQuizUpload> UpdateQuizQuestionImage(IFormFile image, AppUser user, CourseQuestions question)
+    {
+        var questionPhoto = await _courseQuizQuestionRead?.GetWhere(ux => ux.Id == question.Id)
+            .Include(x => x.Image)
+            .SingleOrDefaultAsync();
+
+
+        if (questionPhoto == null)
+        {
+            var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
+            question.Image = new CourseQuizUpload();
+            question.Image.FileName = fileName;
+            question.Image.Path = pathOrContainerName;
+            question.Image.Storage = _storageService.StorageName;
+            question.Image.AppUser = user;
+
+            await _courseQuizUploadWrite.AddAsync(question.Image);
+            await _courseQuizUploadWrite.SaveAsync();
+            return question.Image;
+        }
+        else
+        {
+            await _storageService.DeleteAsync(questionPhoto.Image.Path.Split(Path.DirectorySeparatorChar)[0], questionPhoto.Image.FileName);
+            var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
+            questionPhoto.Image.FileName = fileName;
+            questionPhoto.Image.Path = pathOrContainerName;
+            _courseQuizUploadWrite.Update(question.Image);
+            await _courseQuizUploadWrite.SaveAsync();
+            return questionPhoto.Image;
+        }
     }
 
     private async Task<InclusiveCourse> GetInclusiveCourse(Guid courseId)
@@ -491,12 +795,9 @@ public class CourseService : ICourseService
             .Include(x => x.CourseExtraInformation)
             .Include(x => x.CoursePricing)
             .ThenInclude(x => x.NewCoursePricingPlan)
-            .Include(x => x.CourseContent)
-            .ThenInclude(x => x.Sections)
+            .Include(x => x.Sections)
             .ThenInclude(x => x.CourseSources)
             .ThenInclude(x => x.CourseUpload)
             .FirstOrDefaultAsync();
     }
-
-
 }

@@ -51,19 +51,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "7bc98da2-2332-4f16-8ba2-a6a9109c12a0",
+                            Id = "b8920c04-9a97-4c67-acb0-1a966dbe4bc8",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "e505342b-ac8b-4b4a-9cae-f89175105bd4",
+                            Id = "eec147d0-a1ed-42d4-a179-0788ef5a595e",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
-                            Id = "ec51d3bf-fcb4-4c4f-b610-8379faffc55a",
+                            Id = "08d3f93d-2d09-493d-8736-65d8deeb24f4",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -135,9 +135,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "ec51d3bf-fcb4-4c4f-b610-8379faffc55a",
+                            Id = "08d3f93d-2d09-493d-8736-65d8deeb24f4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2b7cb147-238c-4a00-875d-97e1e6b2124c",
+                            ConcurrencyStamp = "f088031e-ec5d-454a-9494-b946637d832a",
                             Email = "student@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -150,9 +150,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
-                            Id = "e505342b-ac8b-4b4a-9cae-f89175105bd4",
+                            Id = "eec147d0-a1ed-42d4-a179-0788ef5a595e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6b0db498-689e-403a-b881-e5fe6868ee93",
+                            ConcurrencyStamp = "b15ce839-1fe2-4804-874f-de75fdefa910",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -441,40 +441,23 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CourseContent", "Identity");
-                });
-
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseSections", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CourseContentId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("InclusiveCourseId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LanguageId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("PassAllParts")
                         .HasColumnType("boolean");
@@ -488,7 +471,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseContentId");
+                    b.HasIndex("InclusiveCourseId");
 
                     b.ToTable("CourseSections", "Identity");
                 });
@@ -518,8 +501,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<bool>("IsFree")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LanguageId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Link")
                         .HasColumnType("text");
@@ -559,8 +542,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<Guid?>("ImageId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("LanguageId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("QuestionType")
                         .HasColumnType("integer");
@@ -605,8 +588,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("Language")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Language")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("LimitedQuestion")
                         .HasColumnType("boolean");
@@ -687,8 +670,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("Language")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Language")
+                        .HasColumnType("integer");
 
                     b.Property<string>("SeoDescription")
                         .IsRequired()
@@ -735,6 +718,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<int>("Duration")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("InclusiveCourseId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("IsCourseForm")
                         .HasColumnType("boolean");
 
@@ -760,6 +746,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("InclusiveCourseId")
+                        .IsUnique();
 
                     b.HasIndex("PartnerId");
 
@@ -801,12 +790,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<Guid>("CourseBasicInformationId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CourseContentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("CourseExtraInformationId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("CoursePricingId")
                         .HasColumnType("uuid");
 
@@ -821,10 +804,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("CourseBasicInformationId");
-
-                    b.HasIndex("CourseContentId");
-
-                    b.HasIndex("CourseExtraInformationId");
 
                     b.HasIndex("CoursePricingId");
 
@@ -852,8 +831,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("Language")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Language")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Price")
                         .HasColumnType("integer");
@@ -882,7 +861,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .HasColumnType("uuid");
 
                     b.Property<string>("AppUserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
@@ -918,12 +896,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Language", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("boolean");
@@ -939,9 +916,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.HasKey("Id");
 
                     b.ToTable("Language", "Identity");
@@ -949,23 +923,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a2148c9c-f647-48e9-bbc6-23ebecc0f871"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Id = 1,
                             IsPrimary = true,
                             Name = "Türkçe",
                             Published = true,
-                            SeoCode = "tr",
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            SeoCode = "tr"
                         },
                         new
                         {
-                            Id = new Guid("710dd364-ce6f-4de3-abf5-2bc8cf9a1ee7"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Id = 2,
                             IsPrimary = false,
                             Name = "İngilizce",
                             Published = true,
-                            SeoCode = "en",
-                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            SeoCode = "en"
                         });
                 });
 
@@ -1119,13 +1089,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            UserId = "e505342b-ac8b-4b4a-9cae-f89175105bd4",
-                            RoleId = "e505342b-ac8b-4b4a-9cae-f89175105bd4"
+                            UserId = "eec147d0-a1ed-42d4-a179-0788ef5a595e",
+                            RoleId = "eec147d0-a1ed-42d4-a179-0788ef5a595e"
                         },
                         new
                         {
-                            UserId = "ec51d3bf-fcb4-4c4f-b610-8379faffc55a",
-                            RoleId = "ec51d3bf-fcb4-4c4f-b610-8379faffc55a"
+                            UserId = "08d3f93d-2d09-493d-8736-65d8deeb24f4",
+                            RoleId = "08d3f93d-2d09-493d-8736-65d8deeb24f4"
                         });
                 });
 
@@ -1187,7 +1157,12 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 {
                     b.HasBaseType("BetelgeuseAPI.Domain.Entities.File.File");
 
+                    b.Property<Guid?>("CourseQuestionsId")
+                        .HasColumnType("uuid");
+
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("CourseQuestionsId");
 
                     b.HasDiscriminator().HasValue("CourseQuizUpload");
                 });
@@ -1217,29 +1192,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasIndex("AppUserId");
 
                     b.HasDiscriminator().HasValue("CourseThumbnail");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.Quiz.CourseQuizQuestionImage", b =>
-                {
-                    b.HasBaseType("BetelgeuseAPI.Domain.Entities.File.File");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasDiscriminator().HasValue("CourseQuizQuestionImage");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.Quiz.CourseQuizQuestionVideo", b =>
-                {
-                    b.HasBaseType("BetelgeuseAPI.Domain.Entities.File.File");
-
-                    b.Property<Guid?>("CourseQuestionsId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("CourseQuestionsId");
-
-                    b.HasDiscriminator().HasValue("CourseQuizQuestionVideo");
                 });
 
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.UserProfileBackgroundImage", b =>
@@ -1338,9 +1290,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseSections", b =>
                 {
-                    b.HasOne("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", null)
+                    b.HasOne("BetelgeuseAPI.Domain.Entities.Course.InclusiveCourse", null)
                         .WithMany("Sections")
-                        .HasForeignKey("CourseContentId");
+                        .HasForeignKey("InclusiveCourseId");
                 });
 
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseSource", b =>
@@ -1362,7 +1314,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BetelgeuseAPI.Domain.Entities.File.Quiz.CourseQuizQuestionImage", "Image")
+                    b.HasOne("BetelgeuseAPI.Domain.Entities.Course.Content.Quiz.CourseQuizUpload", "Image")
                         .WithMany()
                         .HasForeignKey("ImageId");
 
@@ -1420,11 +1372,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BetelgeuseAPI.Domain.Entities.Course.InclusiveCourse", "InclusiveCourse")
+                        .WithOne("CourseExtraInformation")
+                        .HasForeignKey("BetelgeuseAPI.Domain.Entities.Course.CourseExtraInformation", "InclusiveCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "Partner")
                         .WithMany()
                         .HasForeignKey("PartnerId");
 
                     b.Navigation("Category");
+
+                    b.Navigation("InclusiveCourse");
 
                     b.Navigation("Partner");
                 });
@@ -1441,14 +1401,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", "CourseContent")
-                        .WithMany()
-                        .HasForeignKey("CourseContentId");
-
-                    b.HasOne("BetelgeuseAPI.Domain.Entities.Course.CourseExtraInformation", "CourseExtraInformation")
-                        .WithMany()
-                        .HasForeignKey("CourseExtraInformationId");
-
                     b.HasOne("BetelgeuseAPI.Domain.Entities.Course.CoursePricing", "CoursePricing")
                         .WithMany()
                         .HasForeignKey("CoursePricingId");
@@ -1456,10 +1408,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("AppUser");
 
                     b.Navigation("CourseBasicInformation");
-
-                    b.Navigation("CourseContent");
-
-                    b.Navigation("CourseExtraInformation");
 
                     b.Navigation("CoursePricing");
                 });
@@ -1556,9 +1504,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("BetelgeuseAPI.Domain.Entities.Course.Content.CourseSource", null)
                         .WithMany("CourseUpload")
@@ -1571,64 +1517,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.BlogImage", b =>
-                {
-                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.CourseCoverImage", b =>
-                {
-                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.CourseThumbnail", b =>
-                {
-                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.Quiz.CourseQuizQuestionImage", b =>
-                {
-                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.Quiz.CourseQuizQuestionVideo", b =>
-                {
-                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.HasOne("BetelgeuseAPI.Domain.Entities.Course.Content.Quiz.CourseQuestions", null)
                         .WithMany("Video")
@@ -1637,13 +1526,38 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.BlogImage", b =>
+                {
+                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.CourseCoverImage", b =>
+                {
+                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.CourseThumbnail", b =>
+                {
+                    b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.File.UserProfileBackgroundImage", b =>
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
                         .WithMany("UserProfileBackgroundImage")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.Navigation("AppUser");
                 });
@@ -1652,9 +1566,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 {
                     b.HasOne("BetelgeuseAPI.Domain.Auth.AppUser", "AppUser")
                         .WithMany("UserProfileImage")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppUserId");
 
                     b.Navigation("AppUser");
                 });
@@ -1693,11 +1605,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Navigation("ChildCategories");
                 });
 
-            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseContent", b =>
-                {
-                    b.Navigation("Sections");
-                });
-
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.Content.CourseSections", b =>
                 {
                     b.Navigation("CourseQuizzes");
@@ -1725,6 +1632,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
             modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.CoursePricing", b =>
                 {
                     b.Navigation("NewCoursePricingPlan");
+                });
+
+            modelBuilder.Entity("BetelgeuseAPI.Domain.Entities.Course.InclusiveCourse", b =>
+                {
+                    b.Navigation("CourseExtraInformation");
+
+                    b.Navigation("Sections");
                 });
 #pragma warning restore 612, 618
         }

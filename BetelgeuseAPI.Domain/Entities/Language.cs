@@ -2,8 +2,9 @@
 
 namespace BetelgeuseAPI.Domain.Entities;
 
-public class Language:BaseEntity
+public class Language
 {
+    public int Id { get; set; }
     public bool IsPrimary { get; set; }
     public string Name { get; set; }
     public string SeoCode { get; set; }

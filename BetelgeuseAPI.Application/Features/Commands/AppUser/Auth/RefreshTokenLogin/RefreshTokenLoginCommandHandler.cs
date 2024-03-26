@@ -17,7 +17,7 @@ namespace BetelgeuseAPI.Application.Features.Commands.AppUser.Auth.CreateTokenBy
             var response = await _authService.RefreshTokenLoginAsync(request);
             return new RefreshTokenLoginCommandResponse()
             {
-                Data = response.Data.Data,
+                Data = response?.Data?.Data,
                 Message = response.Message,
                 Succeeded = response.Succeeded,
             };

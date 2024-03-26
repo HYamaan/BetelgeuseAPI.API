@@ -1,4 +1,5 @@
-﻿using BetelgeuseAPI.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities.File.Quiz;
 using BetelgeuseAPI.Domain.Enum;
 
@@ -6,12 +7,13 @@ namespace BetelgeuseAPI.Domain.Entities.Course.Content.Quiz;
 
 public class CourseQuestions:BaseEntity
 {
-    public Guid LanguageId { get; set; }
-    public required string Title { get; set; }
+    public Languages LanguageId { get; set; }
+    public  string Title { get; set; }
     public required int Grade { get; set; }
     public CourseQuizQuestionType QuestionType { get; set; }
-    public List<CourseQuizQuestionVideo>? Video { get; set; }
-    public CourseQuizQuestionImage? Image { get; set; }
+    public List<CourseQuizUpload>? Video { get; set; }
+
+    public CourseQuizUpload? Image { get; set; }
   
 
     public List<CourseQuizAnswer> CourseQuizAnswers { get; set; }

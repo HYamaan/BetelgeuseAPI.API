@@ -46,7 +46,7 @@ public class ImageService<T, R, W> : IImageService<T, R, W>
 
     public async Task<T> UpdateImage(IFormFile image, string userId)
     {
-        var profilePhoto = await _readRepository.GetWhere(ux => typeof(T).GetProperty("AppUserId").GetValue(ux).ToString() == userId).FirstOrDefaultAsync();
+        var profilePhoto = await _readRepository.GetWhere(ux => typeof(T).GetProperty("AppUserId").GetValue(ux) == userId).FirstOrDefaultAsync();
 
         if (profilePhoto == null)
         {
@@ -74,4 +74,5 @@ public class ImageService<T, R, W> : IImageService<T, R, W>
             return profilePhoto;
         }
     }
+
 }

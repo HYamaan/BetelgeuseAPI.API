@@ -5,7 +5,7 @@ namespace BetelgeuseAPI.Domain.Entities.Course.Content;
 
 public class CourseSource:BaseEntity
 {
-    public Guid LanguageId { get; set; }
+    public Languages LanguageId { get; set; }
     public string Title { get; set; }
     public bool IsFree { get; set; }
     public string Description { get; set; }

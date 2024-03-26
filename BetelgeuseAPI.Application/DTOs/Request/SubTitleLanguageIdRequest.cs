@@ -1,6 +1,8 @@
-﻿namespace BetelgeuseAPI.Application.DTOs.Request;
+﻿using BetelgeuseAPI.Domain.Enum;
+
+namespace BetelgeuseAPI.Application.DTOs.Request;
 
 public class SubTitleLanguageIdRequest
 {
-    public Guid language { get; set; }
+    public Languages language { get; set; }
 }

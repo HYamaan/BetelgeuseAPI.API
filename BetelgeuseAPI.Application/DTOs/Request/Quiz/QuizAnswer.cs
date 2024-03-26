@@ -4,6 +4,7 @@ namespace BetelgeuseAPI.Application.DTOs.Request.Quiz;
 
 public class QuizAnswer
 {
+    public Guid? Id { get; set; }
     public string? Title { get; set; }
     public bool? IsCorrect { get; set; }
     public string? Description { get; set; }

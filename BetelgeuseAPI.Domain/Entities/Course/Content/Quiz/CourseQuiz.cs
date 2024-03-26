@@ -1,10 +1,11 @@
 ﻿using BetelgeuseAPI.Domain.Common;
+using BetelgeuseAPI.Domain.Enum;
 
 namespace BetelgeuseAPI.Domain.Entities.Course.Content.Quiz;
 
 public class CourseQuiz : BaseEntity
 {
-    public Guid Language { get; set; }
+    public Languages Language { get; set; }
     public required string Title { get; set; }
     public int? Time { get; set; }
     public int? Attempts { get; set; }
