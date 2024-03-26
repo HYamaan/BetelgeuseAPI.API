@@ -51,19 +51,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "b8920c04-9a97-4c67-acb0-1a966dbe4bc8",
+                            Id = "3962a76f-239a-484d-a270-8c752e7d5202",
                             Name = "Admin",
                             NormalizedName = "ADMİN"
                         },
                         new
                         {
-                            Id = "eec147d0-a1ed-42d4-a179-0788ef5a595e",
+                            Id = "c20684c7-e91a-4333-aa0a-cb9275b46e2a",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
-                            Id = "08d3f93d-2d09-493d-8736-65d8deeb24f4",
+                            Id = "42939637-1300-4f42-bc6c-a8f57ed6330c",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -135,9 +135,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            Id = "08d3f93d-2d09-493d-8736-65d8deeb24f4",
+                            Id = "42939637-1300-4f42-bc6c-a8f57ed6330c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f088031e-ec5d-454a-9494-b946637d832a",
+                            ConcurrencyStamp = "811ee7a3-1ab4-4630-a318-5f3cf92da3fa",
                             Email = "student@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -150,9 +150,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         },
                         new
                         {
-                            Id = "eec147d0-a1ed-42d4-a179-0788ef5a595e",
+                            Id = "c20684c7-e91a-4333-aa0a-cb9275b46e2a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b15ce839-1fe2-4804-874f-de75fdefa910",
+                            ConcurrencyStamp = "4a53b134-531f-4b14-9e2f-46100002db7c",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
@@ -721,6 +721,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.Property<Guid>("InclusiveCourseId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("IsCertificate")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsCourseForm")
                         .HasColumnType("boolean");
 
@@ -1089,13 +1092,13 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     b.HasData(
                         new
                         {
-                            UserId = "eec147d0-a1ed-42d4-a179-0788ef5a595e",
-                            RoleId = "eec147d0-a1ed-42d4-a179-0788ef5a595e"
+                            UserId = "c20684c7-e91a-4333-aa0a-cb9275b46e2a",
+                            RoleId = "c20684c7-e91a-4333-aa0a-cb9275b46e2a"
                         },
                         new
                         {
-                            UserId = "08d3f93d-2d09-493d-8736-65d8deeb24f4",
-                            RoleId = "08d3f93d-2d09-493d-8736-65d8deeb24f4"
+                            UserId = "42939637-1300-4f42-bc6c-a8f57ed6330c",
+                            RoleId = "42939637-1300-4f42-bc6c-a8f57ed6330c"
                         });
                 });
 

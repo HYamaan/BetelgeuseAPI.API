@@ -552,6 +552,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     Duration = table.Column<int>(type: "integer", nullable: false),
                     IsCourseForm = table.Column<bool>(type: "boolean", nullable: false),
                     IsSupport = table.Column<bool>(type: "boolean", nullable: false),
+                    IsCertificate = table.Column<bool>(type: "boolean", nullable: false),
                     IsDownloadable = table.Column<bool>(type: "boolean", nullable: false),
                     IsPartnered = table.Column<bool>(type: "boolean", nullable: false),
                     Tag = table.Column<string>(type: "text", nullable: false),
@@ -782,9 +783,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "08d3f93d-2d09-493d-8736-65d8deeb24f4", null, "Student", "STUDENT" },
-                    { "b8920c04-9a97-4c67-acb0-1a966dbe4bc8", null, "Admin", "ADMİN" },
-                    { "eec147d0-a1ed-42d4-a179-0788ef5a595e", null, "Moderator", "MODERATOR" }
+                    { "3962a76f-239a-484d-a270-8c752e7d5202", null, "Admin", "ADMİN" },
+                    { "42939637-1300-4f42-bc6c-a8f57ed6330c", null, "Student", "STUDENT" },
+                    { "c20684c7-e91a-4333-aa0a-cb9275b46e2a", null, "Moderator", "MODERATOR" }
                 });
 
             migrationBuilder.InsertData(
@@ -793,8 +794,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "08d3f93d-2d09-493d-8736-65d8deeb24f4", 0, "f088031e-ec5d-454a-9494-b946637d832a", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" },
-                    { "eec147d0-a1ed-42d4-a179-0788ef5a595e", 0, "b15ce839-1fe2-4804-874f-de75fdefa910", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" }
+                    { "42939637-1300-4f42-bc6c-a8f57ed6330c", 0, "811ee7a3-1ab4-4630-a318-5f3cf92da3fa", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" },
+                    { "c20684c7-e91a-4333-aa0a-cb9275b46e2a", 0, "4a53b134-531f-4b14-9e2f-46100002db7c", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -803,8 +804,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "08d3f93d-2d09-493d-8736-65d8deeb24f4", "08d3f93d-2d09-493d-8736-65d8deeb24f4" },
-                    { "eec147d0-a1ed-42d4-a179-0788ef5a595e", "eec147d0-a1ed-42d4-a179-0788ef5a595e" }
+                    { "42939637-1300-4f42-bc6c-a8f57ed6330c", "42939637-1300-4f42-bc6c-a8f57ed6330c" },
+                    { "c20684c7-e91a-4333-aa0a-cb9275b46e2a", "c20684c7-e91a-4333-aa0a-cb9275b46e2a" }
                 });
 
             migrationBuilder.CreateIndex(

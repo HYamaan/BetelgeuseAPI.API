@@ -20,6 +20,7 @@ using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
+using BetelgeuseAPI.Application.DTOs.Request;
 using BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.UploadCourseQuiz;
 using BetelgeuseAPI.Application.Features.Commands.Course.CourseSection.UpdateCourseSection;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseQuestion;
@@ -38,6 +39,9 @@ using BetelgeuseAPI.Application.Repositories.Course.CourseQuizUpload;
 using BetelgeuseAPI.Domain.Auth;
 using Microsoft.AspNetCore.Http;
 using BetelgeuseAPI.Application.DTOs.Response.Course;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetContent;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetExtraInformation;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;
 
 namespace BetelgeuseAPI.Persistence.Services;
 
@@ -211,11 +215,16 @@ public class CourseService : ICourseService
             courseExtraInformation.CategoryId = model.CategoryId;
             courseExtraInformation.Duration = model.Duration;
             courseExtraInformation.IsCourseForm = model.IsCourseForm;
+            courseExtraInformation.IsCertificate = model.IsCertificate;
             courseExtraInformation.IsSupport = model.IsSupport;
             courseExtraInformation.IsDownloadable = model.IsDownloadable;
             courseExtraInformation.IsPartnered = model.IsPartnered;
-            courseExtraInformation.Tag = model.Tag;
             courseExtraInformation.CourseLevel = model.CourseLevel;
+
+            if (model.Tag != null)
+            {
+                courseExtraInformation.Tag = string.Join(",", model.Tag.Select(ux => ux.Tag.ToString()));
+            }
 
             if (model.CourseSubLanguages != null && model.CourseSubLanguages.Any())
             {
@@ -303,7 +312,7 @@ public class CourseService : ICourseService
                         Price = planDto.Price,
                         StartDate = planDto.StartDate,
                         EndDate = planDto.EndDate,
-                        Language = planDto.Language.language
+                        Language = planDto.Language
                     });
                 }
             }
@@ -347,95 +356,106 @@ public class CourseService : ICourseService
 
     public async Task<Response<CourseSourceCommandResponse>> AddCourseSource(CourseSourceCommandRequest model)
     {
-        var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
-
-        if (inclusiveCourse == null)
+        try
         {
-            return Response<CourseSourceCommandResponse>.Fail("Course not found");
-        }
+            var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
 
-        var section = inclusiveCourse?.Sections?.FirstOrDefault(s => s.Id == model.SectionId);
-
-        if (section == null)
-        {
-            return Response<CourseSourceCommandResponse>.Fail("Section not found");
-        }
-
-
-        var newCourseSource = new CourseSource
-        {
-            Title = model.Title,
-            LanguageId = model.LanguageId,
-            IsActive = model.IsActive,
-            IsFree = model.IsFree,
-            Description = model.Description,
-            Source = model.Source,
-            FileType = model.FileType
-        };
-
-        if (model.Source == CourseUploadSourceType.Upload || model.Source == CourseUploadSourceType.AmazonS3)
-        {
-            var userId = _servicesHelper.GetUserIdFromContext();
-            var user = await _servicesHelper.GetUserById(userId);
-            if (model.FileType == CourseUploadFileType.Video && await _fileCheckHelper.CheckVideoFormat(model.uploadFile))
+            if (inclusiveCourse == null)
             {
-
-                var data = await _storageService.UploadVideoAsync("files", model.uploadFile);
-
-                var courseUploads = data.Select(d => new CourseUpload
-                {
-                    FileName = d.fileName,
-                    Path = d.pathOrContainerName,
-                    Storage = _storageService.StorageName,
-                    AppUser = user
-                }).ToList();
-
-                await _UploadFileWriteRepository.AddRangeAsync(courseUploads);
-                await _UploadFileWriteRepository.SaveAsync();
-
-                newCourseSource.CourseUpload = courseUploads;
+                return Response<CourseSourceCommandResponse>.Fail("Course not found");
             }
-            else if ((model.FileType == CourseUploadFileType.Pdf && await _fileCheckHelper.CheckPdfFormat(model.uploadFile)) ||
-                     (model.FileType == CourseUploadFileType.PowerPoint && await _fileCheckHelper.CheckPPTFormat(model.uploadFile)) ||
-                     (model.FileType == CourseUploadFileType.Image && await _fileCheckHelper.CheckImageFormat(model.uploadFile))
-                     )
+
+            var section = inclusiveCourse?.Sections?.FirstOrDefault(s => s.Id == model.SectionId);
+
+            if (section == null)
             {
-                var data = await _storageService.UploadAsync("files", model.uploadFile);
-                var courseUploads = new CourseUpload
+                return Response<CourseSourceCommandResponse>.Fail("Section not found");
+            }
+
+
+            var newCourseSource = new CourseSource
+            {
+                Title = model.Title,
+                LanguageId = model.LanguageId,
+                IsActive = model.IsActive,
+                IsFree = model.IsFree,
+                Description = model.Description,
+                Source = model.Source,
+                FileType = model.FileType
+            };
+
+            if (model.Source == CourseUploadSourceType.Upload || model.Source == CourseUploadSourceType.AmazonS3)
+            {
+                var userId = _servicesHelper.GetUserIdFromContext();
+                var user = await _servicesHelper.GetUserById(userId);
+                if (model.FileType == CourseUploadFileType.Video &&
+                    await _fileCheckHelper.CheckVideoFormat(model.uploadFile))
                 {
-                    FileName = data.fileName,
-                    Path = data.pathOrContainerName,
-                    Storage = _storageService.StorageName,
-                    AppUser = user
-                };
 
-                await _UploadFileWriteRepository.AddAsync(courseUploads);
-                await _UploadFileWriteRepository.SaveAsync();
-                newCourseSource.CourseUpload = new List<CourseUpload> { courseUploads };
+                    var data = await _storageService.UploadVideoAsync("files", model.uploadFile);
 
+                    var courseUploads = data.Select(d => new CourseUpload
+                    {
+                        FileName = d.fileName,
+                        Path = d.pathOrContainerName,
+                        Storage = _storageService.StorageName,
+                        AppUser = user
+                    }).ToList();
+
+                    await _UploadFileWriteRepository.AddRangeAsync(courseUploads);
+                    await _UploadFileWriteRepository.SaveAsync();
+
+                    newCourseSource.CourseUpload = courseUploads;
+                }
+                else if ((model.FileType == CourseUploadFileType.Pdf &&
+                          await _fileCheckHelper.CheckPdfFormat(model.uploadFile)) ||
+                         (model.FileType == CourseUploadFileType.PowerPoint &&
+                          await _fileCheckHelper.CheckPPTFormat(model.uploadFile)) ||
+                         (model.FileType == CourseUploadFileType.Image &&
+                          await _fileCheckHelper.CheckImageFormat(model.uploadFile))
+                        )
+                {
+                    var data = await _storageService.UploadAsync("files", model.uploadFile);
+                    var courseUploads = new CourseUpload
+                    {
+                        FileName = data.fileName,
+                        Path = data.pathOrContainerName,
+                        Storage = _storageService.StorageName,
+                        AppUser = user
+                    };
+
+                    await _UploadFileWriteRepository.AddAsync(courseUploads);
+                    await _UploadFileWriteRepository.SaveAsync();
+                    newCourseSource.CourseUpload = new List<CourseUpload> { courseUploads };
+
+                }
+                else
+                {
+                    return Response<CourseSourceCommandResponse>.Fail($"Invalid {model.uploadFile.FileName} format");
+                }
             }
             else
             {
-                return Response<CourseSourceCommandResponse>.Fail($"Invalid {model.uploadFile.FileName} format");
+                if (model.Source != null)
+                {
+                    newCourseSource.Link = model.Link;
+                }
             }
+
+
+
+            section.CourseSources ??= new List<CourseSource>();
+            section.CourseSources.Add(newCourseSource);
+
+            _inclusiveCourseWrite.Update(inclusiveCourse);
+            await _inclusiveCourseWrite.SaveAsync();
+
+            return Response<CourseSourceCommandResponse>.Success("Course source added");
         }
-        else
+        catch (Exception e)
         {
-            if (model.Source != null)
-            {
-                newCourseSource.Link = model.Link;
-            }
+          return Response<CourseSourceCommandResponse>.Fail(e.Message);
         }
-
-
-
-        section.CourseSources ??= new List<CourseSource>();
-        section.CourseSources.Add(newCourseSource);
-
-        _inclusiveCourseWrite.Update(inclusiveCourse);
-        await _inclusiveCourseWrite.SaveAsync();
-
-        return Response<CourseSourceCommandResponse>.Success("Course source added");
     }
 
     public async Task<Response<CourseQuizCommandResponse>> AddCourseQuiz(CourseQuizCommandRequest model)
@@ -515,7 +535,7 @@ public class CourseService : ICourseService
                 var newAnswer = new CourseQuizAnswer()
                 {
                     Title = answer?.Title,
-                    IsCorrect = answer?.IsCorrect,
+                    IsCorrect = answer.IsCorrect ?? false,
                     Description = answer?.Description,
                     CourseQuestionId = newQuestion.Id,
                     CourseQuestion = newQuestion
@@ -707,6 +727,154 @@ public class CourseService : ICourseService
         return Response<GetBasicInformationCommandResponse>.Success(response);
     }
 
+    public async Task<Response<GetExtraInformationCommandResponse>> GetExtraInformation(GetExtraInformationCommandRequest model)
+    {
+        var extraInfo = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
+            .Include(x => x.CourseExtraInformation).FirstOrDefaultAsync();
+
+        var response = new GetExtraInformationCommandResponse
+        {
+            Data = new ExtraInformationResponseDto
+            {
+                CategoryId = extraInfo.CourseExtraInformation.CategoryId,
+                CourseLevel = extraInfo.CourseExtraInformation.CourseLevel,
+                Duration = extraInfo.CourseExtraInformation.Duration,
+                IsCourseForm = extraInfo.CourseExtraInformation.IsCourseForm,
+                IsDownloadable = extraInfo.CourseExtraInformation.IsDownloadable,
+                IsCertificate = extraInfo.CourseExtraInformation.IsCertificate,
+                IsPartnered = extraInfo.CourseExtraInformation.IsPartnered,
+                IsSupport = extraInfo.CourseExtraInformation.IsSupport,
+                Tag = extraInfo.CourseExtraInformation.Tag.Split(',')
+                    .Select(ux => new courseExtraInformationTags { Tag = ux }).ToList(),
+                CourseSubLanguages = extraInfo.CourseExtraInformation.CourseSubLanguage.Split(',')
+                    .Select(ux => new SubTitleLanguageId { language = (Languages)Enum.Parse(typeof(Languages), ux.Trim()) }).ToList()
+
+            }
+        };
+
+        return Response<GetExtraInformationCommandResponse>.Success(response);
+    }
+
+    public async Task<Response<GetPricingCommandResponse>> GetPricing(GetPricingCommandRequest model)
+    {
+        var result = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Include(ux => ux.CoursePricing)
+            .ThenInclude(ux => ux.NewCoursePricingPlan)
+            .FirstOrDefaultAsync();
+
+        var response = new GetPricingCommandResponse
+        {
+            Price = result.CoursePricing.Price,
+            IsFree = result.CoursePricing.IsFree,
+            PricingPlan = result.CoursePricing.NewCoursePricingPlan.Select(ux => new NewCoursePricingPlanRequestDto
+            {
+                Title = ux.Title,
+                Discount = ux.Discount,
+                Capacity = ux.Capacity,
+                Price = ux.Price,
+                StartDate = ux.StartDate,
+                EndDate = ux.EndDate,
+                Language = ux.Language
+            }).ToList()
+        };
+
+        return Response<GetPricingCommandResponse>.Success(response);
+    }
+
+    public async Task<Response<GetContentCommandResponse>> GetContent(GetContentCommandRequest model)
+    {
+        var result = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Include(x => x.Sections)
+                .ThenInclude(x => x.CourseSources)
+                    .ThenInclude(x => x.CourseUpload)
+            .Include(x => x.Sections)
+                 .ThenInclude(ux => ux.CourseQuizzes)
+                    .ThenInclude(ux => ux.CourseQuestions)
+                        .ThenInclude(ux => ux.Image)
+            .Include(x => x.Sections)
+                .ThenInclude(ux => ux.CourseQuizzes)
+                    .ThenInclude(ux => ux.CourseQuestions)
+                        .ThenInclude(ux => ux.Video)
+            .Include(x => x.Sections)
+                .ThenInclude(ux => ux.CourseQuizzes)
+                    .ThenInclude(ux => ux.CourseQuestions)
+                        .ThenInclude(ux => ux.CourseQuizAnswers)
+            .FirstOrDefaultAsync();
+
+
+        var response = new GetContentCommandResponse
+        {
+            Data = result.Sections.Select(s => new ContentSectionResponseDto
+            {
+                Id = s.Id,
+                Title = s.Title,
+                LanguageId = s.LanguageId,
+                IsActive = s.IsActive,
+                PassAllParts = s.PassAllParts,
+                CourseSources = s.CourseSources.Select(c => new ContentSourceResponseDto
+                {
+                    CourseSectionsId = c.CourseSectionsId,
+                    Title = c.Title,
+                    LanguageId = c.LanguageId,
+                    IsActive = c.IsActive,
+                    IsFree = c.IsFree,
+                    Description = c.Description,
+                    Source = c.Source,
+                    FileType = c.FileType,
+                    Link = c.Link,
+                    ContentUpload = c.CourseUpload.Select(ux => new ContentUploadResponseDto
+                    {
+                        FileName = ux.FileName,
+                        Path = ux.Path
+                    }).ToList()
+                }).ToList(),
+                CourseQuizzes = s.CourseQuizzes.Select(c => new ContentQuizResponseDto
+                {
+                    CourseSectionsId = c.CourseSections.Id,
+                    Attempts = c.Attempts,
+                    Language = c.Language,
+                    Title = c.Title,
+                    Time = c.Time,
+                    PassingScore = c.PassingScore,
+                    ExpiryDate = c.ExpiryDate,
+                    LimitedQuestion = c.LimitedQuestion,
+                    RandomizeQuestion = c.RandomizeQuestion,
+                    QuestionCount = c.QuestionCount,
+                    Certificate = c.Certificate,
+                    IsActive = c.IsActive,
+                    CourseQuestions = c.CourseQuestions.Select(ux => new ContentQuizQuestionsResponseDto
+                    {
+                        LanguageId = ux.LanguageId,
+                        Title = ux.Title,
+                        Grade = ux.Grade,
+                        QuestionType = ux.QuestionType,
+                        Image = ux.Image != null ? new ContentUploadResponseDto
+                        {
+                            FileName = ux.Image.FileName,
+                            Path = ux.Image.Path,
+                        } : null,
+                        Video = ux.Video.Select(v => new ContentUploadResponseDto
+                        {
+                            FileName = v.FileName,
+                            Path = v.Path,
+                        }).ToList(),
+                        CourseQuizAnswers = ux.CourseQuizAnswers.Select(qa => new ContentQuizAnswerResponseDto
+                        {
+                            SectionId = c.Id,
+                            CourseQuestionId = qa.CourseQuestionId,
+                            Title = qa.Title,
+                            IsCorrect = qa.IsCorrect,
+                            Description = qa.Description
+                        }).ToList()
+                    }).ToList()
+                }).ToList()
+
+            }).ToList()
+        };
+
+        return Response<GetContentCommandResponse>.Success(response);
+    }
+
 
     public async Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model)
     {
@@ -717,7 +885,7 @@ public class CourseService : ICourseService
 
     public async Task<Response<DeleteCourseQuestionCommandResponse>> DeleteCourseQuestion(DeleteCourseQuestionCommandRequest model)
     {
-        var result = await _courseQuizQuestionRead.GetWhere(x=>x.Id == model.questionId)       
+        var result = await _courseQuizQuestionRead.GetWhere(x => x.Id == model.questionId)
             .Include(x => x.Image)
                        .Include(x => x.Video)
                        .Include(x => x.CourseQuizAnswers)
@@ -741,7 +909,7 @@ public class CourseService : ICourseService
                 await _storageService.DeleteAsync(quizVideo.Path.Split(Path.DirectorySeparatorChar)[0], quizVideo.FileName);
                 _courseQuizUploadWrite.Remove(quizVideo);
             }
-       
+
         }
 
         foreach (var answer in result.CourseQuizAnswers)

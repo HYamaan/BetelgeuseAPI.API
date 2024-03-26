@@ -14,5 +14,4 @@ public class InclusiveCourse:BaseEntity
     public List<CourseSections> Sections { get; set; }
     public AppUser AppUser { get; set; }
 
-
 }

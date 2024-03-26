@@ -11,6 +11,9 @@ using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseQuizes;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSections;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseSource;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetBasicInformation;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetContent;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetExtraInformation;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;
 using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities.Course.Content;
 
@@ -31,6 +34,9 @@ public interface ICourseService
     Task<Response<UpdateCourseQuestionCommandResponse>> UpdateCourseQuestion(UpdateCourseQuestionCommandRequest model);
 
     Task<Response<GetBasicInformationCommandResponse>> GetCourseBasicInformation(GetBasicInformationCommandRequest model);
+    Task<Response<GetExtraInformationCommandResponse>> GetExtraInformation(GetExtraInformationCommandRequest model);
+    Task<Response<GetPricingCommandResponse>> GetPricing(GetPricingCommandRequest model);
+    Task<Response<GetContentCommandResponse>> GetContent(GetContentCommandRequest model);
 
     Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model);
     Task<Response<DeleteCourseQuestionCommandResponse>> DeleteCourseQuestion(DeleteCourseQuestionCommandRequest model);
