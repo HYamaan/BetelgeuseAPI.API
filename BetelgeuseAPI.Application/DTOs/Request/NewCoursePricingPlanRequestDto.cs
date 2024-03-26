@@ -1,5 +1,6 @@
 ﻿using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Domain.Entities.Course;
+using BetelgeuseAPI.Domain.Enum;
 
 namespace BetelgeuseAPI.Application.DTOs.Request;
 
@@ -12,5 +13,5 @@ public class NewCoursePricingPlanRequestDto
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 
-    public SubTitleLanguageIdRequest Language { get; set; }
+    public Languages Language { get; set; }
 }

@@ -9,6 +9,6 @@ namespace BetelgeuseAPI.Application.Abstractions.Services.Authentications
     public interface IInternalAuthentication
     {
         Task<Response<LoginUserCommandResponse>> LoginAccountAsync(LoginAccountRequest request);
-        Task<Response<TokenDto>> RefreshTokenLoginAsync(RefreshTokenLoginCommandRequest request);
+        Task<Response<RefreshTokenLoginCommandResponse>> RefreshTokenLoginAsync(RefreshTokenLoginCommandRequest request);
     }
 }

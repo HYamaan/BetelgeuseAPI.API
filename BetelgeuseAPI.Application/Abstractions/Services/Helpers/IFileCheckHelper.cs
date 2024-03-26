@@ -7,4 +7,5 @@ public interface IFileCheckHelper
     Task<bool> CheckVideoFormat(IFormFile file);
     Task<bool> CheckPdfFormat(IFormFile file);
     Task<bool> CheckPPTFormat(IFormFile file);
+    Task<bool> CheckImageFormat(IFormFile file);
 }

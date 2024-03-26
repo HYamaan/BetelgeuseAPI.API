@@ -1,10 +1,11 @@
 ﻿using BetelgeuseAPI.Domain.Common;
+using BetelgeuseAPI.Domain.Enum;
 
 namespace BetelgeuseAPI.Domain.Entities.Course;
 
 public class NewCoursePricingPlan : BaseEntity
 {
-    public Guid Language { get; set; }
+    public Languages Language { get; set; }
     public string Title { get; set; }
     public int Discount { get; set; }
     public int Capacity { get; set; }

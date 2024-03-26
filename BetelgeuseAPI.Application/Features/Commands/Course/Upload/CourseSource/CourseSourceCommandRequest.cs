@@ -8,7 +8,7 @@ public class CourseSourceCommandRequest:IRequest<CourseSourceCommandResponse>
 {
     public Guid CourseId { get; set; }
     public Guid SectionId { get; set; }
-    public Guid LanguageId { get; set; }
+    public Languages LanguageId { get; set; }
     public string Title { get; set; }
     public bool IsFree { get; set; }
     public string Description { get; set; }

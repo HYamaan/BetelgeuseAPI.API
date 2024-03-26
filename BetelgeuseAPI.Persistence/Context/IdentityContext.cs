@@ -4,7 +4,9 @@ using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Domain.Entities.Category;
 using BetelgeuseAPI.Domain.Entities.Course;
 using BetelgeuseAPI.Domain.Entities.Course.Content;
+using BetelgeuseAPI.Domain.Entities.Course.Content.Quiz;
 using BetelgeuseAPI.Domain.Entities.File;
+using BetelgeuseAPI.Domain.Entities.File.Quiz;
 using BetelgeuseAPI.Persistence.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -46,10 +48,15 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<CoursePricing> CoursePricing { get; set; }
         public DbSet<NewCoursePricingPlan> NewCoursePricingPlan { get; set; }
 
-        public DbSet<CourseContent> CourseContent { get; set; }
         public DbSet<CourseSections> CourseSections { get; set; }
         public DbSet<CourseSource> CourseSource { get; set; }
         public DbSet<CourseUpload> CourseUpload { get; set; }
+
+        public DbSet<CourseQuiz> CourseQuiz { get; set; }
+        public DbSet<CourseQuestions> CourseQuestions { get; set; }
+        public DbSet<CourseQuizAnswer> CourseQuizAnswer { get; set; }
+        public DbSet<CourseQuizUpload> CourseQuizUpload { get; set; }
+
 
         public DbSet<Language> Language { get; set; }
 
@@ -94,7 +101,9 @@ namespace BetelgeuseAPI.Persistence.Context
             });
 
 
-            modelBuilder.Seed();
+
+             modelBuilder.Seed();
+            
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

@@ -35,8 +35,8 @@ namespace BetelgeuseAPI.Persistence.Seeds
         private static void Language(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Language>().HasData(
-                new Language { Id = Guid.NewGuid(), IsPrimary = true, Name = "Türkçe", SeoCode = "tr", Published = true },
-                new Language { Id = Guid.NewGuid(), IsPrimary = false, Name = "İngilizce", SeoCode = "en", Published = true }
+                new Language { Id = 1, IsPrimary = true, Name = "Türkçe", SeoCode = "tr", Published = true },
+                new Language { Id =2, IsPrimary = false, Name = "İngilizce", SeoCode = "en", Published = true }
             );
         }
     }
