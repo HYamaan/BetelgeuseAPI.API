@@ -2,7 +2,6 @@
 
 public class ContentQuizAnswerResponseDto
 {
-    public Guid SectionId { get; set; }
     public string? Title { get; set; }
     public bool? IsCorrect { get; set; }
 

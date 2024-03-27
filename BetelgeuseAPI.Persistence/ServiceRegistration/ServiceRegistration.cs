@@ -88,6 +88,7 @@ namespace BetelgeuseAPI.Persistence
             services.AddBlogServices();
             services.AddCategoryService();
             services.AddCourseServices();
+            services.AddPurchaseService();
         }
     }
 }

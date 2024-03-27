@@ -1,6 +1,8 @@
 ﻿using BetelgeuseAPI.Domain.Auth;
 using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities.Course.Content;
+using BetelgeuseAPI.Domain.Entities.Course.FAQ;
+using BetelgeuseAPI.Domain.Entities.Course.Pricing;
 
 namespace BetelgeuseAPI.Domain.Entities.Course;
 
@@ -12,6 +14,16 @@ public class InclusiveCourse:BaseEntity
     public CourseExtraInformation? CourseExtraInformation { get; set; }
     public CoursePricing? CoursePricing { get; set; }
     public List<CourseSections> Sections { get; set; }
+
+
+    public ICollection<FaqOption> Faqs { get; set; }
+    public ICollection<FaqLearningMaterial> FaqLearningMaterial { get; set; }
+    public ICollection<FaqUploadLogo> FaqUploadLogo { get; set; }
+    public ICollection<FaqRequirements> FaqRequirements { get; set; }
+    
+    public MessageToReviewer? MessageToReviewer { get; set; }
     public AppUser AppUser { get; set; }
+
+    public ICollection<Purchase.Purchase> Purchases { get; set; }
 
 }
