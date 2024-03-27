@@ -1,4 +1,4 @@
-﻿using BetelgeuseAPI.Application.DTOs.Request;
+﻿using BetelgeuseAPI.Application.DTOs.Request.Course;
 using BetelgeuseAPI.Domain.Common;
 
 namespace BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;

@@ -46,22 +46,33 @@ namespace BetelgeuseAPI.Application
                         c.NoResult();
                         c.Response.StatusCode = 500;
                         c.Response.ContentType = "text/plain";
-                        return c.Response.WriteAsync(c.Exception.ToString());
+                        var result = JsonConvert.SerializeObject(Response<string>.Fail($"{c.Exception}"));
+                        return c.Response.WriteAsync(result);
                     },
                     OnChallenge = context =>
                     {
-                        context.HandleResponse();
-                        context.Response.StatusCode = 401;
-                        context.Response.ContentType = "application/json";
-                        var result = JsonConvert.SerializeObject( Response<string>.Fail("You are not Authorized"));
-                        return context.Response.WriteAsync(result);
+                        if (!context.Response.HasStarted)
+                        {
+                            context.HandleResponse();
+                            context.Response.StatusCode = 401;
+                            context.Response.ContentType = "application/json";
+                            var result = JsonConvert.SerializeObject(Response<string>.Fail("You are not Authorized"));
+                            return context.Response.WriteAsync(result);
+                        }
+                        return Task.CompletedTask;
                     },
                     OnForbidden = context =>
                     {
-                        context.Response.StatusCode = 403;
-                        context.Response.ContentType = "application/json";
-                        var result = JsonConvert.SerializeObject(Response<string>.Fail("You are not authorized to access this resource"));
-                        return context.Response.WriteAsync(result);
+                        if (!context.Response.HasStarted)
+                        {
+                            context.Response.StatusCode = 403;
+                            context.Response.ContentType = "application/json";
+                            var result =
+                                JsonConvert.SerializeObject(
+                                    Response<string>.Fail("You are not authorized to access this resource"));
+                            return context.Response.WriteAsync(result);
+                        }
+                        return Task.CompletedTask;
                     },
                 };
             });

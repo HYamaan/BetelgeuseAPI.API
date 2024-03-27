@@ -5,6 +5,7 @@ namespace BetelgeuseAPI.Domain.Entities.Course.Content.Quiz;
 
 public class CourseQuiz : BaseEntity
 {
+    public int Order { get; set; }
     public Languages Language { get; set; }
     public required string Title { get; set; }
     public int? Time { get; set; }
@@ -18,6 +19,6 @@ public class CourseQuiz : BaseEntity
     public bool Certificate { get; set; }
     public bool IsActive { get; set; }
 
-    public List<CourseQuestions> CourseQuestions { get; set; }
+    public List<CourseQuestions>? CourseQuestions { get; set; }
     public CourseSections CourseSections { get; set; }
 }

@@ -5,6 +5,7 @@ namespace BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.UploadCo
 
 public class UploadCourseQuizCommandRequest:IRequest<UploadCourseQuizCommandResponse>
 {
+    public int Order { get; set; }
     public Guid SectionId { get; set; }
     public Guid QuizId { get; set; }
     public Languages? Language { get; set; }

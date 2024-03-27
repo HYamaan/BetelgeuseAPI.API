@@ -1,4 +1,4 @@
-﻿using BetelgeuseAPI.Application.DTOs.Request.Quiz;
+﻿using BetelgeuseAPI.Application.DTOs.Request.Course.Content.Quiz;
 using BetelgeuseAPI.Domain.Enum;
 using MediatR;
 using Microsoft.AspNetCore.Http;

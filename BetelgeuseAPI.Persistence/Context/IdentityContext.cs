@@ -5,12 +5,16 @@ using BetelgeuseAPI.Domain.Entities.Category;
 using BetelgeuseAPI.Domain.Entities.Course;
 using BetelgeuseAPI.Domain.Entities.Course.Content;
 using BetelgeuseAPI.Domain.Entities.Course.Content.Quiz;
+using BetelgeuseAPI.Domain.Entities.Course.FAQ;
+using BetelgeuseAPI.Domain.Entities.Course.Pricing;
 using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Domain.Entities.File.Quiz;
+using BetelgeuseAPI.Domain.Entities.Purchase;
 using BetelgeuseAPI.Persistence.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 namespace BetelgeuseAPI.Persistence.Context
 {
@@ -42,13 +46,14 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<CourseThumbnail> CourseThumbnail { get; set; }
 
 
-        public DbSet<InclusiveCourse> InclusiveCourse { get; set; }
+        public DbSet<InclusiveCourse> Course { get; set; }
         public DbSet<CourseBasicInformation> CourseBasicInformation { get; set; }
         public DbSet<CourseExtraInformation> CourseExtraInformation { get; set; }
         public DbSet<CoursePricing> CoursePricing { get; set; }
-        public DbSet<NewCoursePricingPlan> NewCoursePricingPlan { get; set; }
+        public DbSet<NewCoursePricingPlan> CoursePricingNewPlan { get; set; }
 
         public DbSet<CourseSections> CourseSections { get; set; }
+        public DbSet<CourseType> CourseType { get; set; }
         public DbSet<CourseSource> CourseSource { get; set; }
         public DbSet<CourseUpload> CourseUpload { get; set; }
 
@@ -58,6 +63,15 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<CourseQuizUpload> CourseQuizUpload { get; set; }
 
 
+        public DbSet<FaqOption> CourseFaq { get; set; }
+        public DbSet<FaqUploadLogo> CourseFaqLogo { get; set; }
+        public DbSet<FaqLearningMaterial> CourseFaqMaterial { get; set; }
+        public DbSet<FaqRequirements> CourseFaqRequirements { get; set; }
+
+        public DbSet<MessageToReviewer> CourseMessageToReviewer { get; set; }
+
+
+        public DbSet<Purchase> Purchase { get; set; }
         public DbSet<Language> Language { get; set; }
 
 

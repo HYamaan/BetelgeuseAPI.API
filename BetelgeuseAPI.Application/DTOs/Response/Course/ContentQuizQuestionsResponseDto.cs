@@ -1,6 +1,5 @@
 ﻿
 
-using BetelgeuseAPI.Domain.Entities.Course.Content.Quiz;
 using BetelgeuseAPI.Domain.Enum;
 
 namespace BetelgeuseAPI.Application.DTOs.Response.Course

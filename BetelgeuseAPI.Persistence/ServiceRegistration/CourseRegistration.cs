@@ -8,11 +8,15 @@ using BetelgeuseAPI.Application.Repositories.Course.CourseQuiz;
 using BetelgeuseAPI.Application.Repositories.Course.CourseQuizAnswer;
 using BetelgeuseAPI.Application.Repositories.Course.CourseQuizUpload;
 using BetelgeuseAPI.Application.Repositories.Course.CourseSource;
+using BetelgeuseAPI.Application.Repositories.Course.Faq;
+using BetelgeuseAPI.Application.Repositories.Course.FaqLearningMaterial;
+using BetelgeuseAPI.Application.Repositories.Course.FaqRequirements;
 using BetelgeuseAPI.Application.Repositories.Course.InclusiveCourse;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseCoverImage;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseQuizQuestionVideo;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseThumbnail;
 using BetelgeuseAPI.Application.Repositories.FileContent.CourseUpload;
+using BetelgeuseAPI.Application.Repositories.FileContent.FaqUploadLogo;
 using BetelgeuseAPI.Persistence.Repositories.Category.CourseCategory;
 using BetelgeuseAPI.Persistence.Repositories.Course.BasicInformation;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseContent;
@@ -22,11 +26,15 @@ using BetelgeuseAPI.Persistence.Repositories.Course.CourseQuiz;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseQuizAnswer;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseQuizUpload;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseSource;
+using BetelgeuseAPI.Persistence.Repositories.Course.FaqLearningMaterial;
+using BetelgeuseAPI.Persistence.Repositories.Course.FaqOptions;
+using BetelgeuseAPI.Persistence.Repositories.Course.FaqRequirements;
 using BetelgeuseAPI.Persistence.Repositories.Course.InclusiveCourse;
 using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseCoverImage;
 using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseQuizQuestionVideo;
 using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseThumbnail;
 using BetelgeuseAPI.Persistence.Repositories.FileContent.CourseUpload;
+using BetelgeuseAPI.Persistence.Repositories.FileContent.FaqUploadLogo;
 using BetelgeuseAPI.Persistence.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -81,6 +89,17 @@ public static class CourseRegistration
         services.AddScoped<ICourseQuizUploadReadRepository, CourseQuizUploadReadRepository>();
         services.AddScoped<ICourseQuizUploadWriteRepository, CourseQuizUploadWriteRepository>();
 
+        services.AddScoped<IFaqUploadLogoReadRepository, FaqUploadLogoReadRepository>();
+        services.AddScoped<IFaqUploadLogoWriteRepository, FaqUploadLogoWriteRepository>();
+
+        services.AddScoped<IFaqOptionReadRepository, FaqOptionReadRepository>();
+        services.AddScoped<IFaqOptionWriteRepository, FaqOptionWriteRepository>();
+
+        services.AddScoped<IFaqRequirementsReadRepository, FaqRequirementsReadRepository>();
+        services.AddScoped<IFaqRequirementsWriteRepository, FaqRequirementsWriteRepository>();
+
+        services.AddScoped<IFaqLearningMaterialReadRepository, FaqLearningMaterialReadRepository>();
+        services.AddScoped<IFaqLearningMaterialWriteRepository, FaqLearningMaterialWriteRepository>();
 
     }
 }

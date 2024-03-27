@@ -6,10 +6,11 @@ namespace BetelgeuseAPI.Domain.Entities.Course.Content;
 
 public class CourseSections:BaseEntity
 {
+    public int Order { get; set; }
     public Languages LanguageId { get; set; }
     public string Title { get; set; }
     public bool IsActive { get; set; }
     public bool PassAllParts { get; set; }
-    public List<CourseSource>? CourseSources { get; set; }
-    public List<CourseQuiz>? CourseQuizzes { get; set; }
+  
+    public List<CourseType>? CourseTypes { get; set; }
 }

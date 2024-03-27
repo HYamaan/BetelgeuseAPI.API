@@ -1,4 +1,5 @@
 ﻿using BetelgeuseAPI.Application.DTOs.Request;
+using BetelgeuseAPI.Application.DTOs.Request.Course;
 using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Domain.Enum;
 using MediatR;
