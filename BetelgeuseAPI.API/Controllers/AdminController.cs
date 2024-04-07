@@ -1,5 +1,6 @@
 ﻿using BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.AddUserSkills;
 using BetelgeuseAPI.Application.Features.Commands.Admin.AllUserSkills.DeleteUserSkills;
+using BetelgeuseAPI.Application.Features.Commands.Admin.Course.CourseControl;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,13 @@ public class AdminController:Controller
     public async Task<IActionResult> AddAllUserSkill ([FromBody] AddAllUserSkillCommandRequest model)
     {
         AddAllUserSkillCommandResponse response = await _mediator.Send(model);
+        return Ok(response);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> CoursePublished([FromBody] CoursePublishedCommandRequest model)
+    {
+        CoursePublishedCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
 

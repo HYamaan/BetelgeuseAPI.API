@@ -12,5 +12,5 @@ public class CourseSections:BaseEntity
     public bool IsActive { get; set; }
     public bool PassAllParts { get; set; }
   
-    public List<CourseType>? CourseTypes { get; set; }
+    public ICollection<CourseType>? CourseTypes { get; set; }
 }

@@ -225,7 +225,7 @@ public class UserService:IUserService
         try
         {
             var userId = _servicesHelper.GetUserIdFromContext();
-            await _imageService.SaveImage(request.profileImage, userId);
+            await _imageService.UpdateImage(request.profileImage, userId);
             return Response<UploadProfileImageCommandResponse>.Success("Resim başarılı bir şekilde yüklendi.");
         }
         catch (Exception e)
@@ -239,7 +239,7 @@ public class UserService:IUserService
         try
         {
             var userId = _servicesHelper.GetUserIdFromContext();
-            await _imageBackgroundService.SaveImage(request.profileBackgroundImage, userId);    
+            await _imageBackgroundService.UpdateImage(request.profileBackgroundImage, userId);    
             return Response<UploadProfileBackgroundImageCommandResponse>.Success("Resim başarılı bir şekilde yüklendi.");
         }
         catch (Exception e)

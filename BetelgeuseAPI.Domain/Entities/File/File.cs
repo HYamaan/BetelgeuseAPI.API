@@ -13,7 +13,7 @@ namespace BetelgeuseAPI.Domain.Entities.File
         public string Path { get; set; }
         public string Storage { get; set; }
         public override DateTime UpdatedDate { get => base.UpdatedDate; set => base.UpdatedDate = value; }
-        public AppUser? AppUser { get; set; }
+        public AppUser AppUser { get; set; }
 
     }
 }

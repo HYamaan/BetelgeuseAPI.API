@@ -21,8 +21,11 @@ using BetelgeuseAPI.Application.Features.Commands.Course.Upload.BasicInformation
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseExtraInformation;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CoursePricing;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.MessageToReview;
+using BetelgeuseAPI.Application.Features.Queries.Course.CoursesPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetBasicInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetContent;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseDetailPage;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseLearningPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetExtraInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetQuizAndCertification;
@@ -57,6 +60,10 @@ public interface ICourseService
     Task<Response<GetPricingCommandResponse>> GetPricing(GetPricingCommandRequest model);
     Task<Response<GetContentCommandResponse>> GetContent(GetContentCommandRequest model);
     Task<Response<GetQuizAndCertificationCommandResponse>> GetQuizAndCertification(GetQuizAndCertificationCommandRequest model);
+    Task<Response<GetCourseLearningPageCommandResponse>> GetCourseLearningPage(GetCourseLearningPageCommandRequest model);
+    Task<Response<GetCoursesPageCommandResponse>> GetCoursesPage(GetCoursesPageCommandRequest model);
+    Task<Response<GetCourseDetailPageCommandResponse>> GetCourseDetailPage(GetCourseDetailPageCommandRequest model);
+
 
     Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model);
     Task<Response<DeleteCourseQuestionCommandResponse>> DeleteCourseQuestion(DeleteCourseQuestionCommandRequest model);
@@ -64,4 +71,7 @@ public interface ICourseService
     Task<Response<DeleteRequirementsCommandResponse>> DeleteRequirements(DeleteRequirementsCommandRequest model);
     Task<Response<DeleteCompanyLogoCommandResponse>> DeleteCompanyLogo(DeleteCompanyLogoCommandRequest model);
     Task<Response<DeleteFaqLearningMaterialCommandResponse>> DeleteFaqLearningMaterial(DeleteFaqLearningMaterialCommandRequest model);
+
+
+
 }

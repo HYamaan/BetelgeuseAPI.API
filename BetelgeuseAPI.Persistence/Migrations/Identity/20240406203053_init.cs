@@ -507,6 +507,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    isActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Published = table.Column<bool>(type: "boolean", nullable: false),
                     CourseBasicInformationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CoursePricingId = table.Column<Guid>(type: "uuid", nullable: true),
                     MessageToReviewerId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -551,7 +553,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     IsDownloadable = table.Column<bool>(type: "boolean", nullable: false),
                     IsPartnered = table.Column<bool>(type: "boolean", nullable: false),
                     Tag = table.Column<string>(type: "text", nullable: false),
-                    CourseSubLanguage = table.Column<string>(type: "text", nullable: false),
                     CourseLevel = table.Column<int>(type: "integer", nullable: false),
                     PartnerId = table.Column<string>(type: "text", nullable: true),
                     InclusiveCourseId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -713,6 +714,36 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "CourseSubLanguage",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LanguageId = table.Column<int>(type: "integer", nullable: false),
+                    CourseExtraInformationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseSubLanguage", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseSubLanguage_CourseExtraInformation_CourseExtraInforma~",
+                        column: x => x.CourseExtraInformationId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseExtraInformation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseSubLanguage_Language_LanguageId",
+                        column: x => x.LanguageId,
+                        principalSchema: "Identity",
+                        principalTable: "Language",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CourseQuiz",
                 schema: "Identity",
                 columns: table => new
@@ -721,7 +752,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     Order = table.Column<int>(type: "integer", nullable: false),
                     Language = table.Column<int>(type: "integer", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
-                    Time = table.Column<int>(type: "integer", nullable: true),
+                    Time = table.Column<int>(type: "integer", nullable: false),
                     Attempts = table.Column<int>(type: "integer", nullable: true),
                     PassingScore = table.Column<int>(type: "integer", nullable: false),
                     ExpiryDate = table.Column<int>(type: "integer", nullable: true),
@@ -949,9 +980,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0e4dc680-125b-486d-9987-3505a26141bb", null, "Student", "STUDENT" },
-                    { "4bac70c3-7143-4ebd-8339-5065668fc084", null, "Admin", "ADMİN" },
-                    { "b3daa2e4-66f9-449a-8f97-da913ba7c2ca", null, "Moderator", "MODERATOR" }
+                    { "4d953260-69f6-4c94-9c21-1f1a4243fa0b", null, "Moderator", "MODERATOR" },
+                    { "d1dfafb7-85c0-4a27-9660-1883f236c72a", null, "Student", "STUDENT" },
+                    { "eeb12abb-2276-4e1d-8c46-ad01f6ac2077", null, "Admin", "ADMİN" }
                 });
 
             migrationBuilder.InsertData(
@@ -960,8 +991,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "0e4dc680-125b-486d-9987-3505a26141bb", 0, "d502070e-5360-4cbc-9c1c-2e4a7cb58b97", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" },
-                    { "b3daa2e4-66f9-449a-8f97-da913ba7c2ca", 0, "f4007352-58e4-4809-8d1a-072cf1dbe8e8", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" }
+                    { "4d953260-69f6-4c94-9c21-1f1a4243fa0b", 0, "44054acd-f22d-4090-ac29-bed6844ef366", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" },
+                    { "d1dfafb7-85c0-4a27-9660-1883f236c72a", 0, "d30c49d1-f6df-4029-bbce-3594953b73fc", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -970,8 +1001,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "0e4dc680-125b-486d-9987-3505a26141bb", "0e4dc680-125b-486d-9987-3505a26141bb" },
-                    { "b3daa2e4-66f9-449a-8f97-da913ba7c2ca", "b3daa2e4-66f9-449a-8f97-da913ba7c2ca" }
+                    { "4d953260-69f6-4c94-9c21-1f1a4243fa0b", "4d953260-69f6-4c94-9c21-1f1a4243fa0b" },
+                    { "d1dfafb7-85c0-4a27-9660-1883f236c72a", "d1dfafb7-85c0-4a27-9660-1883f236c72a" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1112,6 +1143,18 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity",
                 table: "CourseSource",
                 column: "CourseSectionsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseSubLanguage_CourseExtraInformationId",
+                schema: "Identity",
+                table: "CourseSubLanguage",
+                column: "CourseExtraInformationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseSubLanguage_LanguageId",
+                schema: "Identity",
+                table: "CourseSubLanguage",
+                column: "LanguageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CourseType_CourseQuizzesId",
@@ -1329,10 +1372,6 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "CourseExtraInformation",
-                schema: "Identity");
-
-            migrationBuilder.DropTable(
                 name: "CourseFaq",
                 schema: "Identity");
 
@@ -1353,11 +1392,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "CourseType",
+                name: "CourseSubLanguage",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "Language",
+                name: "CourseType",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1413,7 +1452,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "Category",
+                name: "CourseExtraInformation",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "Language",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1422,6 +1465,10 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "AllUserSkills",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "Category",
                 schema: "Identity");
 
             migrationBuilder.DropTable(

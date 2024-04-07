@@ -1,15 +1,12 @@
-﻿using System.Net;
-using BetelgeuseAPI.Application.Abstractions.Services;
+﻿using BetelgeuseAPI.Application.Abstractions.Services;
 using BetelgeuseAPI.Application.Abstractions.Storage;
 using BetelgeuseAPI.Application.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using File = BetelgeuseAPI.Domain.Entities.File.File;
 
-namespace BetelgeuseAPI.Persistence.Services;
-
 public class ImageService<T, R, W> : IImageService<T, R, W>
-    where T : File
+    where T : File, new()
     where R : IReadRepository<T>
     where W : IWriteRepository<T>
 {
@@ -32,47 +29,41 @@ public class ImageService<T, R, W> : IImageService<T, R, W>
             return null;
         }
 
-        var userProfileImage = Activator.CreateInstance<T>();
-        typeof(T).GetProperty("FileName")?.SetValue(userProfileImage, fileName);
-        typeof(T).GetProperty("Path")?.SetValue(userProfileImage, pathOrContainerName);
-        typeof(T).GetProperty("Storage")?.SetValue(userProfileImage, _storageService.StorageName);
-        typeof(T).GetProperty("AppUserId")?.SetValue(userProfileImage, userId);
+        var file = new T
+        {
+            FileName = fileName,
+            Path = pathOrContainerName,
+            Storage = _storageService.StorageName,
+            AppUserId = userId
+        };
 
-        await _writeRepository.AddAsync(userProfileImage);
+        await _writeRepository.AddAsync(file);
         await _writeRepository.SaveAsync();
 
-        return userProfileImage;
+        return file;
     }
 
     public async Task<T> UpdateImage(IFormFile image, string userId)
     {
-        var profilePhoto = await _readRepository.GetWhere(ux => typeof(T).GetProperty("AppUserId").GetValue(ux) == userId).FirstOrDefaultAsync();
+        var profilePhoto = await _readRepository.GetWhere(ux => ux.AppUserId == userId).FirstOrDefaultAsync();
 
         if (profilePhoto == null)
         {
-            var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
-            var userProfileImage = Activator.CreateInstance<T>();
-            typeof(T).GetProperty("FileName")?.SetValue(userProfileImage, fileName);
-            typeof(T).GetProperty("Path")?.SetValue(userProfileImage, pathOrContainerName);
-            typeof(T).GetProperty("Storage")?.SetValue(userProfileImage, _storageService.StorageName);
-            typeof(T).GetProperty("AppUserId")?.SetValue(userProfileImage, userId);
-
-            await _writeRepository.AddAsync(userProfileImage);
-            await _writeRepository.SaveAsync();
-
-            return userProfileImage;
+            return await SaveImage(image, userId);
         }
         else
         {
-            await _storageService.DeleteAsync(profilePhoto.Path.Split(Path.DirectorySeparatorChar)[0], profilePhoto.FileName);
+            await _storageService.DeleteAsync(profilePhoto.Path, profilePhoto.FileName);
+
             var (fileName, pathOrContainerName) = await _storageService.UploadAsync("files", image);
-            typeof(T).GetProperty("FileName")?.SetValue(profilePhoto, fileName);
-            typeof(T).GetProperty("Path")?.SetValue(profilePhoto, pathOrContainerName);
+
+            profilePhoto.FileName = fileName;
+            profilePhoto.Path = pathOrContainerName;
+
             _writeRepository.Update(profilePhoto);
             await _writeRepository.SaveAsync();
 
             return profilePhoto;
         }
     }
-
 }

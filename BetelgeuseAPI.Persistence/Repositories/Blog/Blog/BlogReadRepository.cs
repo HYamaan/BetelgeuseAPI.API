@@ -44,7 +44,7 @@ namespace BetelgeuseAPI.Persistence.Repositories.Blog.CreateBlog
                         UserName = ux.BlogImage.AppUser.UserName,
                         Email = ux.BlogImage.AppUser.Email,
                         slug = ux.BlogImage.AppUser.Id,
-                        Image = ux.BlogImage.AppUser.UserProfileImage
+                        Image = ux.BlogImage.AppUser.UserProfileImage[0]
                     },
                     BlogCategory = new GetAllCategoryResponseDto
                     {

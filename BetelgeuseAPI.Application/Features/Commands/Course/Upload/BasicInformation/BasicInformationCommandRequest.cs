@@ -8,7 +8,7 @@ public class BasicInformationCommandRequest : IRequest<BasicInformationCommandRe
 {
     public Guid? CourseId { get; set; }
     public Languages Language { get; set; }
-    public int CourseType { get; set; }
+    public CourseClassType CourseType { get; set; }
     public string Title { get; set; }
     public string SeoDescription { get; set; }
     public IFormFile Thumbnail { get; set; }

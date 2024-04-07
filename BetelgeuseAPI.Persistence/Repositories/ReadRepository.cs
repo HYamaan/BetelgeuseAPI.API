@@ -43,7 +43,7 @@ namespace BetelgeuseAPI.Persistence.Repositories
             }
             catch (Exception ex)
             {
-                return null;
+                throw;
             }
         }
 

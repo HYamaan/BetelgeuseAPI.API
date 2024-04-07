@@ -14,7 +14,6 @@ public class CourseExtraInformation:BaseEntity
     public bool IsDownloadable { get; set; }
     public bool IsPartnered { get; set; }
     public string Tag { get; set; }
-    public string CourseSubLanguage { get; set; }
     public CourseLevel CourseLevel { get; set; }
 
     public Category.Category Category { get; set; }
@@ -23,4 +22,5 @@ public class CourseExtraInformation:BaseEntity
     public Guid InclusiveCourseId { get; set; }
     public InclusiveCourse InclusiveCourse { get; set; }
 
+    public ICollection<CourseSubLanguage> CourseSubLanguages { get; set; }
 }

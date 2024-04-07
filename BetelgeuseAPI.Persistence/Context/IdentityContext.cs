@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using File = BetelgeuseAPI.Domain.Entities.File.File;
 
 namespace BetelgeuseAPI.Persistence.Context
 {
@@ -115,9 +116,8 @@ namespace BetelgeuseAPI.Persistence.Context
             });
 
 
-
-             modelBuilder.Seed();
-            
+            modelBuilder.Seed();
+             
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

@@ -7,6 +7,7 @@ using BetelgeuseAPI.Application.Features.Queries.Category.CourseCategory.GetCour
 using BetelgeuseAPI.Application.Features.Queries.Category.GetAllCategory;
 using BetelgeuseAPI.Application.Features.Queries.Category.GetEBookCategory.GetEBookCategory;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BetelgeuseAPI.API.Controllers
@@ -31,6 +32,7 @@ namespace BetelgeuseAPI.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpDelete("[action]")]
         public async Task<IActionResult> DeleteCategory([FromQuery] DeleteCategoryCommandRequest request)
         {
@@ -38,19 +40,23 @@ namespace BetelgeuseAPI.API.Controllers
             return Ok(response);
         }
 
-
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadBlogCategory([FromBody] UploadBlogCategoryCommandRequest request)
         {
             UploadBlogCategoryCommandResponse response = await _mediator.Send(request);
             return Ok(response);
         }
+
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadEBookCategory([FromBody] UploadEBookCategoryCommandRequest request)
         {
             UploadEBookCategoryCommandResponse response = await _mediator.Send(request);
             return Ok(response);
         }
+
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadCourseCategory([FromBody] UploadCourseCategoryCommandRequest request)
         {

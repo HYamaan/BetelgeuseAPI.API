@@ -5,6 +5,7 @@ using BetelgeuseAPI.Application.Repositories.Course.InclusiveCourse;
 using BetelgeuseAPI.Application.Repositories.Purchase;
 using BetelgeuseAPI.Domain.Common;
 using BetelgeuseAPI.Domain.Entities.Purchase;
+using Microsoft.EntityFrameworkCore;
 
 namespace BetelgeuseAPI.Persistence.Services;
 
@@ -31,23 +32,37 @@ public class PurchaseService: IPurchaseService
     {
         try
         {
-
-            var user = _servicesHelper.GetUserIdFromContext();
-            var userId = _servicesHelper.GetUserById(user);
+            var userId = _servicesHelper.GetUserIdFromContext();
+            var user = await _servicesHelper.GetUserById(userId);
 
             var course = await _inclusiveCourseRead.GetByIdAsync(request.CourseId.ToString());
-            if (userId == null || course == null)
+            if (userId == null || course == null || !course.isActive)
             {
                 return Response<PurchaseCourseCommandResponse>.Fail("Course or User not found");
             }
 
+            var isValidPurchase = await _purchaseRead
+                .GetWhere(x => x.AppUserId == userId && x.InclusiveCourseId == course.Id).FirstOrDefaultAsync();
 
+            if (isValidPurchase != null)
+            {
+                return Response<PurchaseCourseCommandResponse>.Fail("Course already purchased");
+            }
+
+            var purchase = new Purchase
+            {
+                AppUserId = userId,
+                InclusiveCourseId = request.CourseId
+            };
+            await _purchaseWrite.AddAsync(purchase);
+            await _purchaseWrite.SaveAsync();
 
             return Response<PurchaseCourseCommandResponse>.Success("Course purchased successfully");
         }
         catch (Exception e)
         {
-           return Response<PurchaseCourseCommandResponse>.Fail(e.Message);
+            return Response<PurchaseCourseCommandResponse>.Fail(e.Message);
         }
     }
+
 }

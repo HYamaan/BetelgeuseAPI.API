@@ -22,7 +22,7 @@ public class BlogController : Controller
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Moderator")]
     [HttpPost("[action]")]
     public async Task<IActionResult> CreateBlog([FromForm] CreateBlogCommandRequest model)
     {

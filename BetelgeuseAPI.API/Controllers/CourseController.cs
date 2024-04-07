@@ -21,8 +21,11 @@ using BetelgeuseAPI.Application.Features.Commands.Course.Upload.BasicInformation
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseExtraInformation;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CoursePricing;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.MessageToReview;
+using BetelgeuseAPI.Application.Features.Queries.Course.CoursesPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetBasicInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetContent;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseDetailPage;
+using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseLearningPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetExtraInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetQuizAndCertification;
@@ -35,7 +38,6 @@ namespace BetelgeuseAPI.API.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CourseController : ControllerBase
     {
 
@@ -46,6 +48,7 @@ namespace BetelgeuseAPI.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadBasicInformation([FromForm] BasicInformationCommandRequest model)
         {
@@ -55,6 +58,7 @@ namespace BetelgeuseAPI.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadExtraInformation([FromBody] CourseExtraInformationCommandRequest model)
         {
@@ -63,6 +67,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadPricing([FromBody] CoursePricingCommandRequest model)
         {
@@ -71,7 +76,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
-
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadSections([FromBody] CourseSectionsCommandRequest model)
         {
@@ -80,6 +85,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadSource([FromForm] CourseSourceCommandRequest model)
         {
@@ -92,6 +98,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadQuiz([FromBody] CourseQuizCommandRequest model)
         {
@@ -100,6 +107,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadQuestion([FromForm] CourseQuestionCommandRequest model)
         {
@@ -108,6 +116,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadFaqOption([FromBody] UploadFaqCommandRequest model)
         {
@@ -116,6 +125,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadLearningMaterial([FromBody] UploadLearningMaterialCommandRequest model)
         {
@@ -124,6 +134,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadCompanyLogo([FromForm] UploadCompanyLogoCommandRequest model)
         {
@@ -136,6 +147,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadRequirements([FromBody] UploadRequirementsCommandRequest model)
         {
@@ -143,6 +155,8 @@ namespace BetelgeuseAPI.API.Controllers
             return Ok(response);
 
         }
+
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UploadMessageToReview([FromBody] MessageToReviewCommandRequest model)
         {
@@ -151,72 +165,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
-        [HttpPut("[action]")]
-        public async Task<IActionResult> UpdateSection([FromBody] UpdateCourseSectionCommandRequest model)
-        {
-            UpdateCourseSectionCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
-        [HttpPut("[action]")]
-        public async Task<IActionResult> UpdateQuiz([FromBody] UploadCourseQuizCommandRequest model)
-        {
-            UploadCourseQuizCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
-        [HttpPut("[action]")]
-        public async Task<IActionResult> UpdateQuestion([FromForm] UpdateCourseQuestionCommandRequest model)
-        {
-            UpdateCourseQuestionCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
-  
-
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetBasicInformation([FromBody] GetBasicInformationCommandRequest model)
-        {
-            GetBasicInformationCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetExtraInformation([FromBody] GetExtraInformationCommandRequest model)
-        {
-            GetExtraInformationCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetPricing([FromBody] GetPricingCommandRequest model)
-        {
-            GetPricingCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetContent([FromBody] GetContentCommandRequest model)
-        {
-            GetContentCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
-        [HttpGet("[action]")]
-        public async Task<IActionResult> GetQuizAndCertification([FromBody] GetQuizAndCertificationCommandRequest model)
-        {
-            GetQuizAndCertificationCommandResponse response = await _mediator.Send(model);
-            return Ok(response);
-
-        }
-
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UpdateCourseTypeOrder([FromBody] CourseTypeOrderCommandRequest model)
         {
@@ -225,6 +174,7 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         [HttpPost("[action]")]
         public async Task<IActionResult> UpdateFaqTypeOrder([FromBody] FaqTypeOrderCommandRequest model)
         {
@@ -233,8 +183,104 @@ namespace BetelgeuseAPI.API.Controllers
 
         }
 
-        
+        [Authorize(Roles = "Moderator")]
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateSection([FromBody] UpdateCourseSectionCommandRequest model)
+        {
+            UpdateCourseSectionCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
 
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateQuiz([FromBody] UploadCourseQuizCommandRequest model)
+        {
+            UploadCourseQuizCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateQuestion([FromForm] UpdateCourseQuestionCommandRequest model)
+        {
+            UpdateCourseQuestionCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetBasicInformation([FromBody] GetBasicInformationCommandRequest model)
+        {
+            GetBasicInformationCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetExtraInformation([FromBody] GetExtraInformationCommandRequest model)
+        {
+            GetExtraInformationCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetPricing([FromBody] GetPricingCommandRequest model)
+        {
+            GetPricingCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetContent([FromBody] GetContentCommandRequest model)
+        {
+            GetContentCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetQuizAndCertification([FromBody] GetQuizAndCertificationCommandRequest model)
+        {
+            GetQuizAndCertificationCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetCourseLearningPage([FromBody] GetCourseLearningPageCommandRequest model)
+        {
+            GetCourseLearningPageCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetCoursesPage([FromBody] GetCoursesPageCommandRequest model)
+        {
+            GetCoursesPageCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetCourseDetailPage([FromBody] GetCourseDetailPageCommandRequest model)
+        {
+            GetCourseDetailPageCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+        
     
         [HttpDelete("[action]")]
         public async Task<IActionResult> DeleteSection([FromBody] DeleteCourseSectionCommandRequest model)

@@ -3,6 +3,7 @@ using BetelgeuseAPI.Domain.Entities.Course;
 using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Domain.Entities.Purchase;
 using Microsoft.AspNetCore.Identity;
+using File = BetelgeuseAPI.Domain.Entities.File.File;
 
 namespace BetelgeuseAPI.Domain.Auth
 {
