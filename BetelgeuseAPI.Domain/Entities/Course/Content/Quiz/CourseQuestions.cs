@@ -11,12 +11,12 @@ public class CourseQuestions:BaseEntity
     public  string Title { get; set; }
     public required int Grade { get; set; }
     public CourseQuizQuestionType QuestionType { get; set; }
-    public List<CourseQuizUpload>? Video { get; set; }
+    public ICollection<CourseQuizUpload>? Video { get; set; }
 
     public CourseQuizUpload? Image { get; set; }
   
 
-    public List<CourseQuizAnswer> CourseQuizAnswers { get; set; }
+    public ICollection<CourseQuizAnswer> CourseQuizAnswers { get; set; }
     public Guid CourseQuizId { get; set; }
     public CourseQuiz CourseQuiz { get; set; }
 }

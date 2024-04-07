@@ -43,32 +43,39 @@ public class BlogService : IBlogService
 
     public async Task<Response<CreateBlogCommandResponse>> CreateBlog(CreateBlogCommandRequest request)
     {
-        var userID = _servicesHelper.GetUserIdFromContext();
-        var seoTitle = NameOperation.CharacterRegulatory(request.Title.ToLower());
-        var url = await _blogRead.BlogUrlControl(seoTitle.Replace(" ", "-"));
-
-        var newBlogs = new Blogs()
+        try
         {
-            Title = request.Title,
-            BlogCategoryId = request.BlogCategoriesID,
-            Description = request.Description,
-            Content = request.Content,
-            BlogImage = new BlogImage(),
-            Status = BlogType.Pending.ToString(),
-            MetaData = new MetaData()
-            {
-                MetaTitle = seoTitle,
-                MetaKeywords = request.Keywords,
-                Url = url
-            }
-        };
-        var profilePhoto = await _blogImageService.SaveImage(request.BlogImage, userID);
-        newBlogs.BlogImage = profilePhoto;
-        newBlogs.BlogImageID = profilePhoto.Id;
+            var userID = _servicesHelper.GetUserIdFromContext();
+            var seoTitle = NameOperation.CharacterRegulatory(request.Title.ToLower());
+            var url = await _blogRead.BlogUrlControl(seoTitle.Replace(" ", "-"));
 
-        await _blogWrite.AddAsync(newBlogs);
-        await _blogWrite.SaveAsync();
-        return Response<CreateBlogCommandResponse>.Success("Blog eklendi");
+            var newBlogs = new Blogs()
+            {
+                Title = request.Title,
+                BlogCategoryId = request.BlogCategoriesID,
+                Description = request.Description,
+                Content = request.Content,
+                BlogImage = new BlogImage(),
+                Status = BlogType.Pending.ToString(),
+                MetaData = new MetaData()
+                {
+                    MetaTitle = seoTitle,
+                    MetaKeywords = request.Keywords,
+                    Url = url
+                }
+            };
+            var profilePhoto = await _blogImageService.SaveImage(request.BlogImage, userID);
+            newBlogs.BlogImage = profilePhoto;
+            newBlogs.BlogImageID = profilePhoto.Id;
+
+            await _blogWrite.AddAsync(newBlogs);
+            await _blogWrite.SaveAsync();
+            return Response<CreateBlogCommandResponse>.Success("Blog eklendi");
+        }
+        catch (Exception e)
+        {
+            return Response<CreateBlogCommandResponse>.Fail(e.Message);
+        }
     }
 
     public async Task<Response<GetAllBlogsCommandResponse>> GetAllBlogsAsync()
@@ -84,21 +91,29 @@ public class BlogService : IBlogService
 
     public async Task<Response<GetBlogByCategoryCommandResponse>> GetBlogByCategoryAsync(GetBlogByCategoryCommandRequest request)
     {
-        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogCategoryId == request.CategoryId).Include(ux => ux.BlogCategoryID).ToListAsync();
-
-        if (filteredBlogs.Count == 0)
-            return Response<GetBlogByCategoryCommandResponse>.Fail("Kategoriye uygun bir veri bulunamadı");
-
-        return Response<GetBlogByCategoryCommandResponse>.Success(new GetBlogByCategoryCommandResponse
+        try
         {
-            Data = filteredBlogs
-        });
+            var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogCategoryId == request.CategoryId)
+               .ToListAsync();
+
+            if (filteredBlogs.Count == 0)
+                return Response<GetBlogByCategoryCommandResponse>.Fail("Kategoriye uygun bir veri bulunamadı");
+
+            return Response<GetBlogByCategoryCommandResponse>.Success(new GetBlogByCategoryCommandResponse
+            {
+                Data = filteredBlogs
+            });
+        }
+        catch (Exception e)
+        {
+            return Response<GetBlogByCategoryCommandResponse>.Fail(e.Message);
+        }
     }
 
     public async Task<Response<GetBlogByPaginationCommandResponse>> GetBlogByPaginationAsync(GetBlogByPaginationCommandRequest request)
     {
         var take = 10;
-        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => true).Skip(int.Parse(request.Index)).Take(take).ToListAsync();
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => true).Skip(request.Index).Take(take).ToListAsync();
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByPaginationCommandResponse>.Fail("Uygun bir veri bulunamadı");
         return Response<GetBlogByPaginationCommandResponse>.Success(new GetBlogByPaginationCommandResponse

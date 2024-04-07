@@ -19,6 +19,6 @@ public class CourseQuiz : BaseEntity
     public bool Certificate { get; set; }
     public bool IsActive { get; set; }
 
-    public List<CourseQuestions>? CourseQuestions { get; set; }
+    public ICollection<CourseQuestions>? CourseQuestions { get; set; }
     public CourseSections CourseSections { get; set; }
 }

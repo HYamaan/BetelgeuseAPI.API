@@ -19,7 +19,7 @@ public class InclusiveCourse:BaseEntity
     public CourseBasicInformation CourseBasicInformation { get; set; }
     public CourseExtraInformation? CourseExtraInformation { get; set; }
     public CoursePricing? CoursePricing { get; set; }
-    public List<CourseSections> Sections { get; set; }
+    public ICollection<CourseSections> Sections { get; set; }
 
 
     public ICollection<FaqOption> Faqs { get; set; }

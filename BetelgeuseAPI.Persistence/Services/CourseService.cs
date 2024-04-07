@@ -132,8 +132,8 @@ public class CourseService : ICourseService
 
 
 
-    private readonly IImageService<CourseThumbnail,ICourseThumbnailReadRepository,ICourseThumbnailWriteRepository> _courseThumbnailService;
-    private readonly IImageService<CourseCoverImage,ICourseCoverImageReadRepository,ICourseCoverImageWriteRepository> _courseCoverImageService;
+    private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> _courseThumbnailService;
+    private readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> _courseCoverImageService;
 
 
 
@@ -157,14 +157,14 @@ public class CourseService : ICourseService
         ICourseQuizAnswerReadRepository courseQuizAnswerRead,
         ICourseExtraInformationWriteRepository courseExtraInformationWrite,
         ICourseExtraInformationReadRepository courseExtraInformationRead,
-        ICourseQuestionWriteRepository courseQuizQuestionWrite, 
+        ICourseQuestionWriteRepository courseQuizQuestionWrite,
         ICourseQuestionReadRepository courseQuizQuestionRead,
-        ICourseQuizUploadReadRepository courseQuizUploadRead, 
-        ICourseQuizUploadWriteRepository courseQuizUploadWrite, 
+        ICourseQuizUploadReadRepository courseQuizUploadRead,
+        ICourseQuizUploadWriteRepository courseQuizUploadWrite,
         IFaqUploadLogoReadRepository faqUploadLogoRead,
         IFaqUploadLogoWriteRepository faqUploadLogoWrite,
         IFaqOptionReadRepository faqOptionRead,
-        IFaqOptionWriteRepository faqOptionWrite, 
+        IFaqOptionWriteRepository faqOptionWrite,
         IFaqRequirementsReadRepository faqRequirementsRead,
         IFaqRequirementsWriteRepository faqRequirementsWrite,
         IFaqLearningMaterialReadRepository faqLearningMaterialRead,
@@ -271,7 +271,7 @@ public class CourseService : ICourseService
         {
             var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
               .Include(x => x.CourseExtraInformation)
-              .ThenInclude(x=>x.CourseSubLanguages)
+              .ThenInclude(x => x.CourseSubLanguages)
               .FirstOrDefaultAsync();
 
             var defaultValue = false;
@@ -391,12 +391,13 @@ public class CourseService : ICourseService
 
             if (model.NewCoursePricingPlanRequestDto != null && model.NewCoursePricingPlanRequestDto.Any())
             {
-                if (inclusiveCourse.CoursePricingId is not null)
+                if (inclusiveCourse.CoursePricingId != null)
                 {
-                    inclusiveCourse.CoursePricing.NewCoursePricingPlan.RemoveAll(plan =>
-                        plan.CoursePricingId == inclusiveCourse.CoursePricingId);
+                    inclusiveCourse.CoursePricing.NewCoursePricingPlan =
+                        inclusiveCourse.CoursePricing.NewCoursePricingPlan
+                            .Where(plan => plan.CoursePricingId != inclusiveCourse.CoursePricingId)
+                            .ToList();
                 }
-
                 inclusiveCourse.CoursePricing.NewCoursePricingPlan = new List<NewCoursePricingPlan>();
 
                 foreach (var planDto in model.NewCoursePricingPlanRequestDto)
@@ -848,8 +849,9 @@ public class CourseService : ICourseService
                 findQuestion.CourseQuizAnswers.Remove(answerToRemove);
                 _courseQuizAnswerWrite.Remove(answerToRemove);
             }
-
-            findQuestion.CourseQuizAnswers.AddRange(newAnswers);
+            var answersList = findQuestion.CourseQuizAnswers.ToList();
+            answersList.AddRange(newAnswers);
+            findQuestion.CourseQuizAnswers = answersList;
         }
 
 
@@ -1170,7 +1172,7 @@ public class CourseService : ICourseService
     {
         var extraInfo = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
             .Include(x => x.CourseExtraInformation)
-            .ThenInclude(x=>x.CourseSubLanguages)
+            .ThenInclude(x => x.CourseSubLanguages)
             .FirstOrDefaultAsync();
 
         var response = new GetExtraInformationCommandResponse
@@ -1190,7 +1192,7 @@ public class CourseService : ICourseService
                 CourseSubLanguages = extraInfo.CourseExtraInformation?.CourseSubLanguages.Select(x => new SubTitleLanguageId()
                 {
                     language = x.LanguageId
-                 }).ToList()
+                }).ToList()
             }
         };
 
@@ -1434,7 +1436,7 @@ public class CourseService : ICourseService
                         Title = ct.CourseSources.Title,
                         Description = ct.CourseSources.Description,
                         FileType = ct.CourseSources.FileType,
-                    }:null,
+                    } : null,
                     contetnQuizzes = ct.CourseQuizzes != null ? new LearningPageContentQuizzesResponseDto()
                     {
                         Id = ct.CourseQuizzes.Id,
@@ -1496,7 +1498,7 @@ public class CourseService : ICourseService
                     .FirstOrDefault());
                 break;
             case CourseSortOrder.ReviewCount:
-               // query = query.OrderByDescending(ux => ux.ReviewsCount); // ReviewsCount, varsa
+                // query = query.OrderByDescending(ux => ux.ReviewsCount); // ReviewsCount, varsa
                 break;
             case CourseSortOrder.Newest:
                 query = query.OrderByDescending(ux => ux.CreatedDate);
@@ -1505,8 +1507,8 @@ public class CourseService : ICourseService
                 query = query.OrderBy(ux => ux.CreatedDate);
                 break;
             case CourseSortOrder.All:
-            default: 
-                query = query.OrderBy(ux => ux.Id); 
+            default:
+                query = query.OrderBy(ux => ux.Id);
                 break;
         }
 
@@ -1579,183 +1581,181 @@ public class CourseService : ICourseService
     {
         var currentDate = DateTime.UtcNow;
 
-        IQueryable<InclusiveCourse> query =  _inclusiveCourseRead.GetWhere(ux => ux.isActive && ux.Published && ux.Id == model.CourseId)
-            .Include(ux => ux.CourseBasicInformation)
-                .ThenInclude(ux => ux.CoverImage)
-            .Include(ux=>ux.CourseBasicInformation)
-                .ThenInclude(ux=>ux.Thumbnail)
-                    .ThenInclude(x => x.AppUser)
-                        .ThenInclude(x => x.UserProfileImage)
-            .Include(ux => ux.CourseExtraInformation)
-                .ThenInclude(ux => ux.CourseSubLanguages)
-            .Include(ux => ux.CourseExtraInformation)
-                .ThenInclude(ux => ux.Category)
-            .Include(x => x.CoursePricing)
-                .ThenInclude(x => x.NewCoursePricingPlan)
-            .Include(x => x.Sections)
-            .ThenInclude(x => x.CourseTypes)
-                    .ThenInclude(x => x.CourseSources)
-            .ThenInclude(x => x.CourseUpload)
-            .Include(x => x.Sections)
-                .ThenInclude(ux=>ux.CourseTypes)
-                    .ThenInclude(ux=>ux.CourseQuizzes)
-                        .ThenInclude(ux=>ux.CourseQuestions)
-            .Include(ux=>ux.Faqs)
-            .Include(ux=>ux.FaqLearningMaterial)
-            .Include(ux=>ux.FaqRequirements)
-            .Include(ux=>ux.FaqUploadLogo)
-            .Include(ux=>ux.AppUser)
-            .Include(x=>x.CourseExtraInformation)
-            .ThenInclude(x=>x.Partner);
-
-        var result = await query.Select(ux => new
+        var response = await _inclusiveCourseRead.GetWhere(ux => ux.isActive && ux.Published && ux.Id == model.CourseId)
+            .Select(ux => new
             {
-                Course = ux,
-                ApplicablePrice = ux.CoursePricing.NewCoursePricingPlan
+                Course = new 
+                {
+                    Id = ux.Id,
+                    CreatedDate = ux.CreatedDate
+                },
+                UserInformation = new
+                {
+                    Name =ux.AppUser.UserName,
+                    ProfilePicture = ux.AppUser.UserProfileImage.Select(ux=>ux.Path).FirstOrDefault(),
+                    JobTitle = ux.AppUser.UserAccountAbout.JobTitle
+                },
+                CourseBasicInformation = new
+                {
+                    Title = ux.CourseBasicInformation.Title,
+                    Description = ux.CourseBasicInformation.Description,
+                    Language = ux.CourseBasicInformation.Language,
+                    CoverImage = ux.CourseBasicInformation.CoverImage.Path,
+                    Thumbnail = ux.CourseBasicInformation.Thumbnail.Path,
+                },
+                CourseExtraInformation = new
+                {
+                    CategoryId = ux.CourseExtraInformation.CategoryId,
+                    Category = ux.CourseExtraInformation.Category.Name,
+                    CourseLevel= ux.CourseExtraInformation.CourseLevel,
+                    Duration = ux.CourseExtraInformation.Duration,
+                    IsCertificate = ux.CourseExtraInformation.IsCertificate,
+                    IsDownloadable = ux.CourseExtraInformation.IsDownloadable,
+                    IsSupport = ux.CourseExtraInformation.IsSupport,
+                    Tag = ux.CourseExtraInformation.Tag,
+                    Partner = ux.CourseExtraInformation.Partner,
+                },
+                Price = ux.CoursePricing.Price,
+                NewCoursePricingPlan = ux.CoursePricing.NewCoursePricingPlan
                     .Where(x => x.StartDate <= currentDate && x.EndDate >= currentDate && x.Capacity > 0)
                     .OrderByDescending(x => x.Discount)
-                    .FirstOrDefault()
+                    .FirstOrDefault(),
+                FaqLearningMaterialTitles = ux.FaqLearningMaterial.Select(x => x.Title),
+                FaqUploadLogoPaths = ux.FaqUploadLogo.Select(x => x.Path),
+                FaqRequirementsTitles = ux.FaqRequirements.Select(x => x.Title),
+                Faqs = ux.Faqs.Select(x => new Faq { Title = x.Title, Description = x.Answer }),
+                Sections = ux.Sections.Select(s => new
+                {
+                    s.Title,
+                    CourseContentDetails = s.CourseTypes.OrderBy(x => x.Order).ThenBy(x => x.CreatedDate).Select(x => new
+                    {
+                        ContentSourceType = x.CourseSources != null ? new ContentSourceTypeRequestDto
+                        {
+                            Title = x.CourseSources.Title,
+                            Description = x.CourseSources.Description,
+                            IsFree = x.CourseSources.IsFree,
+                            ContentUploads = x.CourseSources.IsFree && x.CourseSources.CourseUpload != null && x.CourseSources.CourseUpload.Any()
+                                ? x.CourseSources.CourseUpload.Select(cu => new ContentUploadResponseDto { FileName = cu.FileName, Path = cu.Path }).ToList()
+                                : (string.IsNullOrEmpty(x.CourseSources.Link) || !x.CourseSources.IsFree ? 
+                                    null :
+                                    new List<ContentUploadResponseDto> { new ContentUploadResponseDto { FileName = "", Path = x.CourseSources.Link } })
+                        } : null,
+                        ContentQuizzesType = x.CourseQuizzes != null ? new ContentQuizzesTypeResponseDto
+                        {
+                            AttemptCount = x.CourseQuizzes.Attempts,
+                            Duration = x.CourseQuizzes.Time,
+                            Grade = x.CourseQuizzes.PassingScore,
+                            QuestionCount = x.CourseQuizzes.CourseQuestions.Count,
+                        } : null
+                    }).ToList()
+                }).ToList()
+
             })
             .FirstOrDefaultAsync();
 
-        var course = result.Course;
-        var coursePrice = result.ApplicablePrice != null ? result.ApplicablePrice.Price : (course.CoursePricing?.Price ?? null);
-  
+        if (response == null || response.Course == null)
+        {
+            return Response<GetCourseDetailPageCommandResponse>.Fail("Course not found.");
+        }
+        var coursePrice = response.NewCoursePricingPlan?.Price ?? response?.Price ?? 0;
 
-        var durationInMinutes = course.CourseExtraInformation.Duration;
+        var durationInMinutes =response.CourseExtraInformation.Duration;
         TimeSpan duration = TimeSpan.FromMinutes(durationInMinutes);
-        var hours = duration.Hours;
-        var minutes = duration.Minutes;
-        string courseTime = $"{hours}:{minutes:D2}";
+        var courseTime = $"{duration.Hours}:{duration.Minutes:D2}";
 
-        var CourseInformation = new CourseInformationResponseDto()
+        var CourseInformation = new CourseInformationResponseDto
         {
-            Id = course.Id,
-            CategoryId = course.CourseExtraInformation.CategoryId,
-            CategoryName = course.CourseExtraInformation.Category.Name,
-            Language = course.CourseBasicInformation.Language,
-            CourseTitle = course.CourseBasicInformation.Title,
-            CourseRating = 0, // You might want to replace these with actual data
-            CourseLevel = course.CourseExtraInformation.CourseLevel,
-            CourseReviewsCount = 0, // You might want to replace these with actual data
-            CourseDescription = course.CourseBasicInformation.Description,
-            LearningMaterials = course.FaqLearningMaterial.Select(x => x.Title).ToList(),
-            CourseLogo = course.FaqUploadLogo.Select(x => x.Path).ToList(),
-            CourseRequirements = course.FaqRequirements.Select(x => x.Title).ToList(),
-            CourseFaq = course.Faqs.Select(x => new Faq
-            {
-                Title = x.Title,
-                Description = x.Answer
-            }).ToList(),
-            Price = course.CoursePricing.Price,
-            DiscountedPrice =coursePrice,
-            Discount = result.ApplicablePrice.Discount,
-            DiscountEndDate = result.ApplicablePrice.EndDate,
+            Id = response.Course.Id,
+            CategoryId = response.CourseExtraInformation.CategoryId,
+            CategoryName = response.CourseExtraInformation.Category,
+            Language = response.CourseBasicInformation.Language,
+            CourseTitle = response.CourseBasicInformation.Title,
+            CourseRating = 0,
+            CourseLevel = response.CourseExtraInformation.CourseLevel,
+            CourseReviewsCount = 0,
+            CourseDescription = response.CourseBasicInformation.Description,
+            LearningMaterials = response.FaqLearningMaterialTitles.ToList(),
+            CourseLogo = response.FaqUploadLogoPaths.ToList(),
+            CourseRequirements = response.FaqRequirementsTitles.ToList(),
+            CourseFaq = response.Faqs.ToList(),
+            Price = response.Price,
+            DiscountedPrice = coursePrice,
+            Discount = response.NewCoursePricingPlan?.Discount ?? 0,
+            DiscountEndDate = response.NewCoursePricingPlan?.EndDate ?? DateTime.MinValue,
             IsFree = coursePrice == 0,
-            Tags = course.CourseExtraInformation.Tag.Split(',').ToList(),
+            Tags = response.CourseExtraInformation.Tag.Split(',').ToList(),
         };
 
-        var CourseIncludes = new CourseIncludesResponseDto()
+        var CourseIncludes = new CourseIncludesResponseDto
         {
-            IsCertificate = course.CourseExtraInformation.IsCertificate,
-            IsDownloadable = course.CourseExtraInformation.IsDownloadable,
-            IsSupport = course.CourseExtraInformation.IsSupport,
-            QuizzesCount = course.Sections.SelectMany(x => x.CourseTypes).Select(x => x.CourseQuizzes).Count(),
+            IsCertificate = response.CourseExtraInformation.IsCertificate,
+            IsDownloadable = response.CourseExtraInformation.IsDownloadable,
+            IsSupport = response.CourseExtraInformation.IsSupport,
+            QuizzesCount = response.Sections.SelectMany(s => s.CourseContentDetails).Sum(x => x.ContentQuizzesType != null ? 1 : 0),
         };
 
-        var CourseSpecifications = new CourseSpecificationsResponseDto()
+        var CourseSpecifications = new CourseSpecificationsResponseDto
         {
             Capacity = "Unlimited",
-            CreatedDate = course.CreatedDate.ToString("d MMM yyyy"),
+            CreatedDate = response.Course.CreatedDate.ToString("d MMM yyyy"),
             Duration = courseTime,
-            StudentCount = 0, // You might want to replace these with actual data
-            DownloadableFileCount = 0 // You might want to replace these with actual data
+            StudentCount = 0,
+            DownloadableFileCount = 0
         };
 
         var Moderator = new List<ModeratorInformation>();
 
-        if (course.AppUser != null)
+        if (response.UserInformation != null)
         {
             Moderator.Add(new ModeratorInformation
             {
-                Name = course.AppUser.UserName ?? "",
-                ProfilePicture = course.AppUser.UserProfileImage.FirstOrDefault()?.Path ?? "",
-                JobTitle = course.AppUser.UserAccountAbout?.JobTitle ?? "", 
-                Rating = 0, // You might want to replace these with actual data
-                LinkedIn = "", // You might want to replace these with actual data
-                Github = "" // You might want to replace these with actual data
+                Name = response.UserInformation.Name ?? "",
+                ProfilePicture = response.UserInformation.ProfilePicture ?? "",
+                JobTitle = response.UserInformation.JobTitle ?? "",
+                Rating = 0,
+                LinkedIn = "",
+                Github = ""
             });
         }
 
-        if (course.CourseExtraInformation?.Partner != null)
+        if (response.CourseExtraInformation?.Partner != null)
         {
-            Moderator.Add(new ModeratorInformation()
+            Moderator.Add(new ModeratorInformation
             {
-                Name = course.CourseExtraInformation.Partner.UserName ?? "",
-                ProfilePicture = course.CourseExtraInformation.Partner.UserProfileImage.FirstOrDefault()?.Path ?? "", 
-                JobTitle = course.CourseExtraInformation.Partner.UserAccountAbout?.JobTitle ?? "", 
-                Rating = 0, // You might want to replace these with actual data
-                LinkedIn = "", // You might want to replace these with actual data
-                Github = "" // You might want to replace these with actual data
+                Name = response.CourseExtraInformation.Partner.UserName ?? "",
+                ProfilePicture = response.CourseExtraInformation.Partner.UserProfileImage.FirstOrDefault()?.Path ?? "",
+                JobTitle = response.CourseExtraInformation.Partner.UserAccountAbout?.JobTitle ?? "",
+                Rating = 0,
+                LinkedIn = "",
+                Github = ""
             });
         }
 
-        var result2 = course.Sections.SelectMany(x => x.CourseTypes).Select(x => x.CourseSources);
-        var Content = course.Sections.Select(s => new CourseContentResponseDto()
+        var Content = response.Sections.Select(s => new CourseContentResponseDto
         {
             Title = s.Title,
-            CourseContentDetails = s.CourseTypes.OrderBy(x=>x.Order).ThenBy(x=>x.CreatedDate).Select(x=> new CourseContentDetailResponseDto()
+            CourseContentDetails = s.CourseContentDetails.Select(x => new CourseContentDetailResponseDto
             {
-                ContentSourceType = x.CourseSources != null ? new ContentSourceTypeRequestDto()
-                {
-                    Title = x.CourseSources.Title,
-                    Description = x.CourseSources.Description,
-                    IsFree = x.CourseSources.IsFree,
-                    ContentUploads = x.CourseSources.IsFree && x.CourseSources.CourseUpload != null && x.CourseSources.CourseUpload.Any()
-                        ? x.CourseSources.CourseUpload.Select(cu => new ContentUploadResponseDto()
-                        {
-                            FileName = cu.FileName,
-                            Path = cu.Path
-                        }).ToList()
-                        : (string.IsNullOrEmpty(x.CourseSources.Link) ? null : new List<ContentUploadResponseDto>
-                        {
-                            new ContentUploadResponseDto
-                            {
-                                // Here you can decide whether to use Link for FileName, Path, or both
-                                FileName = "",
-                                Path = x.CourseSources.Link // or another appropriate property
-                            }
-                        })
-                } : null,
-
-                ContentQuizzesType = x.CourseQuizzes !=null ? new ContentQuizzesTypeResponseDto()
-                {
-                    AttemptCount = x.CourseQuizzes.Attempts,
-                    Duration = x.CourseQuizzes.Time,
-                    Grade = x.CourseQuizzes.PassingScore,
-                    QuestionCount = x.CourseQuizzes.CourseQuestions.Count,
-                }:null
+                ContentSourceType = x.ContentSourceType,
+                ContentQuizzesType = x.ContentQuizzesType
             }).ToList()
-
         }).ToList();
 
-        
 
-        var response = new GetCourseDetailPageCommandResponse()
+
+        var finalResponse = new GetCourseDetailPageCommandResponse
         {
-            Data = new GetCourseDetailPage()
+            Data = new GetCourseDetailPage
             {
-               CourseInformation = CourseInformation,
-               CourseIncludes = CourseIncludes,
-               CourseSpecifications = CourseSpecifications,
-               CourseModeratorInformation = Moderator,
-               CourseContentDetail = Content
+                CourseInformation = CourseInformation,
+                CourseIncludes = CourseIncludes,
+                CourseSpecifications = CourseSpecifications,
+                CourseModeratorInformation = Moderator,
+                CourseContentDetail = Content
             }
         };
 
-
-
-        return Response<GetCourseDetailPageCommandResponse>.Success(response);
+        return Response<GetCourseDetailPageCommandResponse>.Success(finalResponse);
     }
 
 

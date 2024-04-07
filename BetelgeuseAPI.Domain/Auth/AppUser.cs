@@ -13,13 +13,13 @@ namespace BetelgeuseAPI.Domain.Auth
         public UserAccountAbout UserAccountAbout { get; set; }
         public ICollection<UserSkills> UserSkills { get; set; }
 
-        public List<RefreshToken> RefreshTokens { get; set; }
-        public List<UserProfileImage> UserProfileImage { get; set; }
-        public List<UserProfileBackgroundImage> UserProfileBackgroundImage { get; set; }
-        public List<UserAccountEducation> UserAccountEducations { get; set; }
-        public List<UserAccountExperiences> UserAccountExperiences { get; set; }
+        public ICollection<RefreshToken> RefreshTokens { get; set; }
+        public ICollection<UserProfileImage> UserProfileImage { get; set; }
+        public ICollection<UserProfileBackgroundImage> UserProfileBackgroundImage { get; set; }
+        public ICollection<UserAccountEducation> UserAccountEducations { get; set; }
+        public ICollection<UserAccountExperiences> UserAccountExperiences { get; set; }
 
-        public List<InclusiveCourse> InclusiveCourse { get; set; }
+        public ICollection<InclusiveCourse> InclusiveCourse { get; set; }
         public ICollection<Purchase> Purchases { get; set; }
 
         //TODO: Kullanıcıların kişisel bilgilerini içeren bir sayfa tasarımını yapıldığında Meta ile bağlantılı olacak şekilde bir MetaData tablosu oluşturulacak.
