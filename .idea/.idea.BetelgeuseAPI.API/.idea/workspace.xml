@@ -10,16 +10,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1044f0ce-0174-433f-b398-f2f5cc693a64" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/global.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.API/Controllers/CourseController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.API/Controllers/CourseController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Abstractions/Services/ICourseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Abstractions/Services/ICourseService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Course/Content/Quiz/CourseQuiz.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Course/Content/Quiz/CourseQuiz.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Course/InclusiveCourse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Course/InclusiveCourse.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240327211359_init.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240327211359_init.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByCategory/GetBlogByCategoryCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByCategory/GetBlogByCategoryCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByPagination/GetBlogByPaginationCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByPagination/GetBlogByPaginationCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByUser/GetBlogByUserCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByUser/GetBlogByUserCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/GetAllBlogs/GetAllBlogsCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/GetAllBlogs/GetAllBlogsCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogReadRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogReadRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogWriteRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogWriteRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/Blogs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/Blogs.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/BetelgeuseAPI.Persistence.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/BetelgeuseAPI.Persistence.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Context/IdentityContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Context/IdentityContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240406203053_init.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240406203053_init.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/IdentityContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/IdentityContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/CourseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/CourseService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/PurchaseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/PurchaseService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogReadRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogReadRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogWriteRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogWriteRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/ServiceRegistration/ServiceRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/ServiceRegistration/ServiceRegistration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/BlogService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/BlogService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,6 +181,7 @@
       <workItem from="1710103843954" duration="32000" />
       <workItem from="1710893613585" duration="61000" />
       <workItem from="1712394141291" duration="513000" />
+      <workItem from="1712943236927" duration="1932000" />
     </task>
     <servers />
   </component>

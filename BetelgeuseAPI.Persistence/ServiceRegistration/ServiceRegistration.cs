@@ -67,23 +67,11 @@ namespace BetelgeuseAPI.Persistence
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IVideoUploadFileWriteRepository, VideoUploadFileWriteRepository>();
             services.AddScoped<IVideoUploadFileReadRepository, VideoUploadFileReadRepository>();
-            services.AddScoped<IUserRefreshTokenReadRepository, UserRefreshTokenReadRepository>();
-            services.AddScoped<IUserRefreshTokenWriteRepository, UserRefreshTokenWriteRepository>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
-            services.AddScoped<IUserAccountInformationWriteRepository, UserAccountInformationWriteRepository>();
-            services.AddScoped<IUserAccountInformationReadRepository, UserAccountInformationReadRepository>();
-            services.AddScoped<IUserAccountAboutReadRepository, UserAccountAboutReadRepository>();
-            services.AddScoped<IUserAccountAboutWriteRepository, UserAccountAboutWriteRepository>();
-            services.AddScoped<IUserAccountEducationReadRepository, UserAccountEducationReadRepository>();
-            services.AddScoped<IUserAccountEducationWriteRepository, UserAccountEducationWriteRepository>();
-            services.AddScoped<IUserAccountExperiencesReadRepository, UserAccountExperiencesReadRepository>();
-            services.AddScoped<IUserAccountExperiencesWriteRepository, UserAccountExperiencesWriteRepository>();
-            services.AddScoped<IUserProfileBackgroundImageFileReadRepository, UserProfileBackgroundImageFileReadRepository>();
-            services.AddScoped<IUserProfileBackgroundImageFileWriteRepository, UserProfileBackgroundImageFileWriteRepository>();
-            services.AddScoped<IUserProfileImageFileWriteRepository, UserProfileImageFileWriteRepository>();
-            services.AddScoped<IUserProfileImageFileReadRepository, UserProfileImageFileReadRepository>();
-            services.AddScoped<IUserAccountSkillsWriteRepository, UserAccountSkillsWriteRepository>();
-            services.AddScoped<IUserAccountSkillsReadRepository, UserAccountSkillsReadRepository>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.NotificationServices();
+            services.AddUserServices();
             services.AddAdminServices();
             services.AddBlogServices();
             services.AddCategoryService();

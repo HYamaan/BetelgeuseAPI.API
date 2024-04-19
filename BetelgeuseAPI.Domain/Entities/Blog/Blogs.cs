@@ -19,6 +19,7 @@ public class Blogs : BaseEntity
     public BlogImage BlogImage { get; set; }
     public BlogCategory BlogCategory { get; set; }
     public MetaData MetaData { get; set; }
+    public ICollection<BlogVisit> BlogVisits { get; set; }
 
 
 }

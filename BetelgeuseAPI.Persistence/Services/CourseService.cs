@@ -66,11 +66,13 @@ using BetelgeuseAPI.Application.Features.Commands.Course.Upload.MessageToReview;
 using BetelgeuseAPI.Application.Features.Queries.Course.CoursesPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseDetailPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseLearningPage;
+using BetelgeuseAPI.Application.Features.Queries.GetQuizPage;
 using BetelgeuseAPI.Application.Repositories.Course.CourseSubLanguage;
 using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Domain.Entities.Purchase;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Crypto.Engines;
+using BetelgeuseAPI.Application.Features.Queries.Purchases.GetPurchaseCourse;
 
 
 namespace BetelgeuseAPI.Persistence.Services;
@@ -130,6 +132,7 @@ public class CourseService : ICourseService
     private readonly ICourseSubLanguageReadRepository _courseSubLanguageRead;
     private readonly ICourseSubLanguageWriteRepository _courseSubLanguageWrite;
 
+    private readonly INotificationService _notificationService;
 
 
     private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> _courseThumbnailService;
@@ -172,7 +175,7 @@ public class CourseService : ICourseService
         ICourseSubLanguageReadRepository courseSubLanguageRead,
         ICourseSubLanguageWriteRepository courseSubLanguageWrite,
         IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> courseThumbnailService,
-        IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> courseCoverImageService)
+        IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> courseCoverImageService, INotificationService notificationService)
     {
         _servicesHelper = servicesHelper;
         _courseBasicInformationRead = courseBasicInformationRead;
@@ -210,6 +213,7 @@ public class CourseService : ICourseService
         _courseSubLanguageWrite = courseSubLanguageWrite;
         _courseThumbnailService = courseThumbnailService;
         _courseCoverImageService = courseCoverImageService;
+        _notificationService = notificationService;
 
         _storageService = storageService;
     }
@@ -228,6 +232,7 @@ public class CourseService : ICourseService
             {
                 var result = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
                     .Include(x => x.CourseBasicInformation)
+                    .Include(x => x.Purchases)
                     .FirstOrDefaultAsync();
                 if (result != null) inclusiveCourse = result;
                 defaultValue = true;
@@ -250,12 +255,14 @@ public class CourseService : ICourseService
             if (defaultValue)
             {
                 _inclusiveCourseWrite.Update(inclusiveCourse);
+
             }
             else
             {
                 await _inclusiveCourseWrite.AddAsync(inclusiveCourse);
             }
             await _inclusiveCourseWrite.SaveAsync();
+            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, model.Title);
             return Response<BasicInformationCommandResponse>.Success("Course basic information added");
         }
         catch (Exception e)
@@ -270,8 +277,11 @@ public class CourseService : ICourseService
         try
         {
             var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
-              .Include(x => x.CourseExtraInformation)
+                .Include(x=>x.CourseBasicInformation)
+                .Include(x => x.Purchases)
+                .Include(x => x.CourseExtraInformation)
               .ThenInclude(x => x.CourseSubLanguages)
+              .Include(x=>x.Purchases)
               .FirstOrDefaultAsync();
 
             var defaultValue = false;
@@ -354,7 +364,7 @@ public class CourseService : ICourseService
             }
 
             await _courseExtraInformationWrite.SaveAsync();
-
+            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
             return Response<CourseExtraInformationCommandResponse>.Success("Course extra information added");
         }
         catch (Exception e)
@@ -367,7 +377,12 @@ public class CourseService : ICourseService
     {
         try
         {
-            var inclusiveCourse = await GetInclusiveCourse(model.CourseId);
+            var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
+                .Include(x => x.CourseBasicInformation)
+                .Include(x => x.Purchases)
+                .Include(x => x.CoursePricing)
+                .ThenInclude(x => x.NewCoursePricingPlan)
+                .FirstOrDefaultAsync();
             if (inclusiveCourse == null)
             {
                 throw new Exception("Course not found");
@@ -417,6 +432,8 @@ public class CourseService : ICourseService
 
             _inclusiveCourseWrite.Update(inclusiveCourse);
             await _inclusiveCourseWrite.SaveAsync();
+
+            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
             return Response<CoursePricingCommandResponse>.Success("Course pricing added");
         }
         catch (Exception e)
@@ -427,7 +444,10 @@ public class CourseService : ICourseService
 
     public async Task<Response<CourseSectionsCommandResponse>> AddCourseSections(CourseSectionsCommandRequest model)
     {
-        var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId).Include(x => x.Sections).FirstOrDefaultAsync();
+        var inclusiveCourse = await _inclusiveCourseRead.GetWhere(c => c.Id == model.CourseId)
+            .Include(x=>x.CourseBasicInformation)
+            .Include(x => x.Purchases)
+            .Include(x => x.Sections).FirstOrDefaultAsync();
         var defaultValue = false;
         var courseSection = new CourseSections();
         if (inclusiveCourse.Sections == null)
@@ -449,6 +469,7 @@ public class CourseService : ICourseService
         inclusiveCourse.Sections.Add(newSection);
         _inclusiveCourseWrite.Update(inclusiveCourse);
         await _inclusiveCourseWrite.SaveAsync();
+        await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
         return Response<CourseSectionsCommandResponse>.Success("Course section added");
     }
 
@@ -458,6 +479,8 @@ public class CourseService : ICourseService
         try
         {
             var inclusiveCourse = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+                .Include(x=>x.CourseBasicInformation)
+                .Include(x => x.Purchases)
                 .Include(x => x.Sections)
                 .ThenInclude(x => x.CourseTypes).FirstOrDefaultAsync();
 
@@ -554,7 +577,7 @@ public class CourseService : ICourseService
 
             _inclusiveCourseWrite.Update(inclusiveCourse);
             await _inclusiveCourseWrite.SaveAsync();
-
+            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
             return Response<CourseSourceCommandResponse>.Success("Course source added");
         }
         catch (Exception e)
@@ -565,8 +588,11 @@ public class CourseService : ICourseService
 
     public async Task<Response<CourseQuizCommandResponse>> AddCourseQuiz(CourseQuizCommandRequest model)
     {
-
         var findSection = await _courseSectionRead.GetWhere(ux => ux.Id == model.SectionId)
+            .Include(x=>x.InclusiveCourse)
+            .ThenInclude(x=>x.CourseBasicInformation)
+            .Include(x=>x.InclusiveCourse)
+            .ThenInclude(x=>x.Purchases)
             .Include(x => x.CourseTypes)
             .FirstOrDefaultAsync();
 
@@ -599,7 +625,7 @@ public class CourseService : ICourseService
         });
         _courseSectionWrite.Update(findSection);
         await _courseSectionWrite.SaveAsync();
-
+        await _notificationService.SendCourseUpdatedNotifications(findSection.InclusiveCourse, NotificationsTitleStrings.UpdatedCourse, findSection.InclusiveCourse.CourseBasicInformation.Title);
         return Response<CourseQuizCommandResponse>.Success("Course quiz added");
     }
 
@@ -702,7 +728,9 @@ public class CourseService : ICourseService
 
     public async Task<Response<UpdateCourseSectionCommandResponse>> UpdateCourseSection(UpdateCourseSectionCommandRequest model)
     {
-        var findCourse = await _inclusiveCourseRead.GetByIdAsync(model.CourseId.ToString());
+        var findCourse = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Include(x => x.Purchases)
+            .Include(x => x.CourseBasicInformation).FirstOrDefaultAsync();
         if (findCourse == null)
         {
             return Response<UpdateCourseSectionCommandResponse>.Fail("Invalid CourseId");
@@ -722,7 +750,7 @@ public class CourseService : ICourseService
 
         _courseSectionWrite.Update(findSection);
         await _courseSectionWrite.SaveAsync();
-
+        await _notificationService.SendCourseUpdatedNotifications(findCourse, NotificationsTitleStrings.UpdatedCourse, findCourse.CourseBasicInformation.Title);
         return Response<UpdateCourseSectionCommandResponse>.Success("Course section updated");
     }
 
@@ -1023,6 +1051,8 @@ public class CourseService : ICourseService
     public async Task<Response<UploadFaqCommandResponse>> UploadFaq(UploadFaqCommandRequest model)
     {
         var result = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Include(x=>x.CourseBasicInformation)
+            .Include(x => x.Purchases)
             .Include(x => x.Faqs)
             .FirstOrDefaultAsync();
 
@@ -1045,12 +1075,15 @@ public class CourseService : ICourseService
 
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
+        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
         return Response<UploadFaqCommandResponse>.Success("Faq added");
     }
 
     public async Task<Response<UploadLearningMaterialCommandResponse>> UploadLearningMaterial(UploadLearningMaterialCommandRequest model)
     {
         var result = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Include(x=>x.CourseBasicInformation)
+            .Include(x=>x.Purchases)
             .Include(x => x.FaqLearningMaterial)
             .FirstOrDefaultAsync();
 
@@ -1073,12 +1106,15 @@ public class CourseService : ICourseService
 
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
+        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
         return Response<UploadLearningMaterialCommandResponse>.Success("Faq added");
     }
 
     public async Task<Response<UploadCompanyLogoCommandResponse>> UploadCompanyLogo(UploadCompanyLogoCommandRequest model)
     {
         var result = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Include(x=>x.CourseBasicInformation)
+            .Include(x=>x.Purchases)
             .Include(x => x.FaqUploadLogo)
             .FirstOrDefaultAsync();
 
@@ -1112,13 +1148,14 @@ public class CourseService : ICourseService
         }
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
-
+        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
         return Response<UploadCompanyLogoCommandResponse>.Success("Company logo added");
     }
 
     public async Task<Response<UploadRequirementsCommandResponse>> UploadRequirements(UploadRequirementsCommandRequest model)
     {
         var result = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Include(x=>x.CourseBasicInformation)
             .Include(x => x.FaqUploadLogo)
             .FirstOrDefaultAsync();
 
@@ -1139,6 +1176,7 @@ public class CourseService : ICourseService
         });
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
+        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
         return Response<UploadRequirementsCommandResponse>.Success("Requirements added");
     }
 
@@ -1758,6 +1796,65 @@ public class CourseService : ICourseService
         return Response<GetCourseDetailPageCommandResponse>.Success(finalResponse);
     }
 
+    public async Task<Response<GetQuizPageCommandResponse>> GetQuizPage(GetQuizPageCommandRequest model)
+    {
+        var userId = _servicesHelper.GetUserIdFromContext();
+        if (userId == null)
+        {
+            return Response<GetQuizPageCommandResponse>.Fail("User not found");
+        }
+
+        var result = await _courseQuizesRead.GetWhere(ux => ux.Id == model.QuizId)
+            .Select(ct => new ContentQuizResponseDto
+            {
+                Id = ct.Id,
+                Title = ct.Title,
+                Time = ct.Time,
+                CourseSectionsId = ct.CourseSections.Id,
+                Attempts = ct.Attempts,
+                PassingScore = ct.PassingScore,
+                ExpiryDate = ct.ExpiryDate,
+                LimitedQuestion = ct.LimitedQuestion,
+                QuestionCount = ct.CourseQuestions.Count,
+                RandomizeQuestion = ct.RandomizeQuestion,
+                Certificate = ct.Certificate,
+                IsActive = ct.IsActive,
+                CourseQuestions = ct.CourseQuestions.Select(cqq => new ContentQuizQuestionsResponseDto
+                {
+                    Id = cqq.Id,
+                    Title = cqq.Title,
+                    Grade = cqq.Grade,
+                    QuestionType = cqq.QuestionType,
+                    Video = cqq.Video.Count!= 0 ? cqq.Video.Select(v => new ContentUploadResponseDto
+                    {
+                        FileName = v.FileName,
+                        Path = v.Path
+                    }).ToList() : null,
+                    Image = cqq.Image != null
+                        ? new ContentUploadResponseDto
+                        {
+                            FileName = cqq.Image.FileName,
+                            Path = cqq.Image.Path
+                        }
+                        : null,
+                    CourseQuizAnswers = cqq.CourseQuizAnswers.Select(cqa => new ContentQuizAnswerResponseDto
+                    {
+                        Title = cqa.Title,
+                        IsCorrect = cqa.IsCorrect,
+                        Description = cqa.Description,
+                        CourseQuestionId = cqa.CourseQuestionId
+                    }).ToList()
+                }).ToList()
+            }).FirstOrDefaultAsync();
+
+        var response = new GetQuizPageCommandResponse
+        {
+            Data = result
+        };
+
+        return Response<GetQuizPageCommandResponse>.Success(response);
+    }
+
 
     public async Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model)
     {
@@ -1918,19 +2015,5 @@ public class CourseService : ICourseService
             await _courseQuizUploadWrite.SaveAsync();
             return questionPhoto.Image;
         }
-    }
-
-    private async Task<InclusiveCourse> GetInclusiveCourse(Guid courseId)
-    {
-        return await _inclusiveCourseRead.GetWhere(c => c.Id == courseId)
-            .Include(x => x.CourseBasicInformation)
-            .Include(x => x.CourseExtraInformation)
-            .Include(x => x.CoursePricing)
-            .ThenInclude(x => x.NewCoursePricingPlan)
-            .Include(x => x.Sections)
-            .ThenInclude(x => x.CourseTypes)
-            .ThenInclude(x => x.CourseSources)
-            .ThenInclude(x => x.CourseUpload)
-            .FirstOrDefaultAsync();
     }
 }

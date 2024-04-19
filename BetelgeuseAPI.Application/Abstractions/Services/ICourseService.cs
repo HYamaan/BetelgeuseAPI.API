@@ -29,6 +29,7 @@ using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseLearningPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetExtraInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetQuizAndCertification;
+using BetelgeuseAPI.Application.Features.Queries.GetQuizPage;
 using BetelgeuseAPI.Domain.Common;
 
 namespace BetelgeuseAPI.Application.Abstractions.Services;
@@ -63,7 +64,7 @@ public interface ICourseService
     Task<Response<GetCourseLearningPageCommandResponse>> GetCourseLearningPage(GetCourseLearningPageCommandRequest model);
     Task<Response<GetCoursesPageCommandResponse>> GetCoursesPage(GetCoursesPageCommandRequest model);
     Task<Response<GetCourseDetailPageCommandResponse>> GetCourseDetailPage(GetCourseDetailPageCommandRequest model);
-
+    Task<Response<GetQuizPageCommandResponse>> GetQuizPage(GetQuizPageCommandRequest model);
 
     Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model);
     Task<Response<DeleteCourseQuestionCommandResponse>> DeleteCourseQuestion(DeleteCourseQuestionCommandRequest model);

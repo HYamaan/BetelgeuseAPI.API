@@ -17,6 +17,7 @@ using BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
 using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Application.Repositories.FileContent.BlogImage;
 using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace BetelgeuseAPI.Persistence.Services;
 
@@ -26,17 +27,19 @@ public class BlogService : IBlogService
 
     private readonly IBlogWriteRepository _blogWrite;
     private readonly IBlogReadRepository _blogRead;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IImageService<BlogImage,IBlogImageReadRepository, IBlogImageWriteRepository> _blogImageService;
 
 
     public BlogService(IServicesHelper servicesHelper, IStorageService storageService,
         IBlogWriteRepository blogWrite, IBlogReadRepository blogRead,
-        IImageService<BlogImage, IBlogImageReadRepository,IBlogImageWriteRepository> blogImageService)
+        IImageService<BlogImage, IBlogImageReadRepository,IBlogImageWriteRepository> blogImageService, IHttpContextAccessor httpContextAccessor)
     {
         _servicesHelper = servicesHelper;
         _blogWrite = blogWrite;
         _blogRead = blogRead;
         _blogImageService = blogImageService;
+        _httpContextAccessor = httpContextAccessor;
     }
 
 
@@ -80,7 +83,7 @@ public class BlogService : IBlogService
 
     public async Task<Response<GetAllBlogsCommandResponse>> GetAllBlogsAsync()
     {
-        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.Status == BlogType.Pending.ToString()).ToListAsync();
+        var filteredBlogs = await _blogRead.GetBlogs(ux => ux.Status == BlogType.Pending.ToString()).ToListAsync();
         if (filteredBlogs.Count == 0)
             return Response<GetAllBlogsCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
         return Response<GetAllBlogsCommandResponse>.Success(new GetAllBlogsCommandResponse
@@ -93,7 +96,7 @@ public class BlogService : IBlogService
     {
         try
         {
-            var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogCategoryId == request.CategoryId)
+            var filteredBlogs = await _blogRead.GetBlogs(ux => ux.BlogCategoryId == request.CategoryId)
                .ToListAsync();
 
             if (filteredBlogs.Count == 0)
@@ -113,19 +116,19 @@ public class BlogService : IBlogService
     public async Task<Response<GetBlogByPaginationCommandResponse>> GetBlogByPaginationAsync(GetBlogByPaginationCommandRequest request)
     {
         var take = 10;
-        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => true).Skip(request.Index).Take(take).ToListAsync();
+        var filteredBlogs = await _blogRead.GetBlogs(ux => true).Skip(request.Index).Take(take).ToListAsync();
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByPaginationCommandResponse>.Fail("Uygun bir veri bulunamadı");
         return Response<GetBlogByPaginationCommandResponse>.Success(new GetBlogByPaginationCommandResponse
         {
             Data = filteredBlogs
         });
-
     }
 
     public async Task<Response<GetBlogByIdCommandResponse>> GetBlogById(GetBlogByIdCommandRequest request)
     {
-        await _blogWrite.IncrementViewCount(request.Id);
+        HttpContext httpContext = _httpContextAccessor.HttpContext;
+        await _blogWrite.IncrementViewCount(request.Id, httpContext);
 
         var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.Id == request.Id).ToListAsync();
 
@@ -141,7 +144,7 @@ public class BlogService : IBlogService
 
     public async Task<Response<GetBlogByUserCommandResponse>> GetBlogByUserAsync(GetBlogByUserCommandRequest request)
     {
-        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.BlogImage.AppUserId == request.Id).ToListAsync();
+        var filteredBlogs = await _blogRead.GetBlogs(ux => ux.BlogImage.AppUserId == request.Id).ToListAsync();
 
         if (filteredBlogs.Count == 0)
             return Response<GetBlogByUserCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");

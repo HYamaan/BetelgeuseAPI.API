@@ -29,6 +29,7 @@ using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseLearningPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetExtraInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetQuizAndCertification;
+using BetelgeuseAPI.Application.Features.Queries.GetQuizPage;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -261,6 +262,15 @@ namespace BetelgeuseAPI.API.Controllers
         public async Task<IActionResult> GetCourseLearningPage([FromBody] GetCourseLearningPageCommandRequest model)
         {
             GetCourseLearningPageCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetQuizPage([FromBody] GetQuizPageCommandRequest model)
+        {
+            GetQuizPageCommandResponse response = await _mediator.Send(model);
             return Ok(response);
 
         }

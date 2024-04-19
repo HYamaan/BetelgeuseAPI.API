@@ -219,6 +219,31 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notification",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    IsRead = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notification", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notification_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshToken",
                 schema: "Identity",
                 columns: table => new
@@ -502,6 +527,28 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlogVisits",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BlogId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IpAddress = table.Column<string>(type: "text", nullable: false),
+                    VisitTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogVisits", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlogVisits_Blogs_BlogId",
+                        column: x => x.BlogId,
+                        principalSchema: "Identity",
+                        principalTable: "Blogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Course",
                 schema: "Identity",
                 columns: table => new
@@ -658,6 +705,36 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "CourseFavorite",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseFavorite", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CourseFavorite_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalSchema: "Identity",
+                        principalTable: "Course",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseFavorite_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CourseSections",
                 schema: "Identity",
                 columns: table => new
@@ -668,7 +745,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     Title = table.Column<string>(type: "text", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     PassAllParts = table.Column<bool>(type: "boolean", nullable: false),
-                    InclusiveCourseId = table.Column<Guid>(type: "uuid", nullable: true),
+                    InclusiveCourseId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -680,7 +757,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         column: x => x.InclusiveCourseId,
                         principalSchema: "Identity",
                         principalTable: "Course",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -707,6 +785,37 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                     table.ForeignKey(
                         name: "FK_Purchase_User_AppUserId",
                         column: x => x.AppUserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShoppingCartItem",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    CourseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingCartItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShoppingCartItem_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalSchema: "Identity",
+                        principalTable: "Course",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShoppingCartItem_User_UserId",
+                        column: x => x.UserId,
                         principalSchema: "Identity",
                         principalTable: "User",
                         principalColumn: "Id",
@@ -964,6 +1073,53 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserQuizInteraction",
+                schema: "Identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsPassed = table.Column<bool>(type: "boolean", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    CourseQuizId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CourseQuestionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CourseQuizAnswerId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserQuizInteraction", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserQuizInteraction_CourseQuestions_CourseQuestionId",
+                        column: x => x.CourseQuestionId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseQuestions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserQuizInteraction_CourseQuizAnswer_CourseQuizAnswerId",
+                        column: x => x.CourseQuizAnswerId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseQuizAnswer",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserQuizInteraction_CourseQuiz_CourseQuizId",
+                        column: x => x.CourseQuizId,
+                        principalSchema: "Identity",
+                        principalTable: "CourseQuiz",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserQuizInteraction_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Identity",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 schema: "Identity",
                 table: "Language",
@@ -980,9 +1136,9 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4d953260-69f6-4c94-9c21-1f1a4243fa0b", null, "Moderator", "MODERATOR" },
-                    { "d1dfafb7-85c0-4a27-9660-1883f236c72a", null, "Student", "STUDENT" },
-                    { "eeb12abb-2276-4e1d-8c46-ad01f6ac2077", null, "Admin", "ADMİN" }
+                    { "295935b1-f896-40bf-9f4d-ff0a7300a455", null, "Admin", "ADMİN" },
+                    { "ed809cac-6827-4679-bbfd-38b3ab1818ec", null, "Moderator", "MODERATOR" },
+                    { "f787d37e-2cc0-4f5a-b813-905ca225b413", null, "Student", "STUDENT" }
                 });
 
             migrationBuilder.InsertData(
@@ -991,8 +1147,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "4d953260-69f6-4c94-9c21-1f1a4243fa0b", 0, "44054acd-f22d-4090-ac29-bed6844ef366", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" },
-                    { "d1dfafb7-85c0-4a27-9660-1883f236c72a", 0, "d30c49d1-f6df-4029-bbce-3594953b73fc", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" }
+                    { "ed809cac-6827-4679-bbfd-38b3ab1818ec", 0, "1e4f8457-67fe-44b6-a066-9c2df1665685", "moderator@gmail.com", true, false, null, "MODERATOR@GMAIL.COM", "MODERATOR@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "moderator@gmail.com" },
+                    { "f787d37e-2cc0-4f5a-b813-905ca225b413", 0, "7608d0e8-2897-4f83-85f6-688afdc4b2e1", "student@gmail.com", true, false, null, "STUDENT@GMAIL.COM", "STUDENT@GMAIL.COM", "AQAAAAEAACcQAAAAEBLjouNqaeiVWbN0TbXUS3+ChW3d7aQIk/BQEkWBxlrdRRngp14b0BIH0Rp65qD6mA==", null, true, null, false, "student@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -1001,8 +1157,8 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "4d953260-69f6-4c94-9c21-1f1a4243fa0b", "4d953260-69f6-4c94-9c21-1f1a4243fa0b" },
-                    { "d1dfafb7-85c0-4a27-9660-1883f236c72a", "d1dfafb7-85c0-4a27-9660-1883f236c72a" }
+                    { "ed809cac-6827-4679-bbfd-38b3ab1818ec", "ed809cac-6827-4679-bbfd-38b3ab1818ec" },
+                    { "f787d37e-2cc0-4f5a-b813-905ca225b413", "f787d37e-2cc0-4f5a-b813-905ca225b413" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1022,6 +1178,12 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity",
                 table: "Blogs",
                 column: "MetaDataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlogVisits_BlogId",
+                schema: "Identity",
+                table: "BlogVisits",
+                column: "BlogId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Category_ParentCategoryID",
@@ -1101,6 +1263,18 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity",
                 table: "CourseFaqRequirements",
                 column: "InclusiveCourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseFavorite_CourseId",
+                schema: "Identity",
+                table: "CourseFavorite",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CourseFavorite_UserId",
+                schema: "Identity",
+                table: "CourseFavorite",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CoursePricingNewPlan_CoursePricingId",
@@ -1199,6 +1373,12 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 column: "InclusiveCourseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notification_UserId",
+                schema: "Identity",
+                table: "Notification",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Purchase_AppUserId",
                 schema: "Identity",
                 table: "Purchase",
@@ -1228,6 +1408,18 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity",
                 table: "RoleClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCartItem_CourseId",
+                schema: "Identity",
+                table: "ShoppingCartItem",
+                column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCartItem_UserId",
+                schema: "Identity",
+                table: "ShoppingCartItem",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -1278,6 +1470,30 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 name: "IX_UserLogins_UserId",
                 schema: "Identity",
                 table: "UserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserQuizInteraction_CourseQuestionId",
+                schema: "Identity",
+                table: "UserQuizInteraction",
+                column: "CourseQuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserQuizInteraction_CourseQuizAnswerId",
+                schema: "Identity",
+                table: "UserQuizInteraction",
+                column: "CourseQuizAnswerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserQuizInteraction_CourseQuizId",
+                schema: "Identity",
+                table: "UserQuizInteraction",
+                column: "CourseQuizId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserQuizInteraction_UserId",
+                schema: "Identity",
+                table: "UserQuizInteraction",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -1368,7 +1584,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 table: "CourseQuestions");
 
             migrationBuilder.DropTable(
-                name: "Blogs",
+                name: "BlogVisits",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1384,11 +1600,11 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "CoursePricingNewPlan",
+                name: "CourseFavorite",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "CourseQuizAnswer",
+                name: "CoursePricingNewPlan",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1397,6 +1613,10 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "CourseType",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "Notification",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1409,6 +1629,10 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "RoleClaims",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "ShoppingCartItem",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1436,6 +1660,10 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
+                name: "UserQuizInteraction",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
                 name: "UserRoles",
                 schema: "Identity");
 
@@ -1448,7 +1676,7 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "MetaData",
+                name: "Blogs",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
@@ -1460,11 +1688,19 @@ namespace BetelgeuseAPI.Persistence.Migrations.Identity
                 schema: "Identity");
 
             migrationBuilder.DropTable(
+                name: "CourseQuizAnswer",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
                 name: "Role",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
                 name: "AllUserSkills",
+                schema: "Identity");
+
+            migrationBuilder.DropTable(
+                name: "MetaData",
                 schema: "Identity");
 
             migrationBuilder.DropTable(
