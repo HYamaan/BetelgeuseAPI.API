@@ -8,11 +8,11 @@ namespace BetelgeuseAPI.Application.DTOs.Response.Blog
         public required Guid Id { get; set; }
         public required string Title { get; set; }
 
-        public required Guid BlogCategoryID { get; set; }
-        public required string Description { get; set; }
-        public required string Content { get; set; }
-        public required string BlogImage { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public  Guid BlogCategoryID { get; set; }
+        public  string Description { get; set; }
+        public  string Content { get; set; }
+        public  string BlogImage { get; set; }
+        public string CreatedDate { get; set; }
         public int ViewCount { get; set; }  
 
         public BlogAppUserDto Author { get; set; }

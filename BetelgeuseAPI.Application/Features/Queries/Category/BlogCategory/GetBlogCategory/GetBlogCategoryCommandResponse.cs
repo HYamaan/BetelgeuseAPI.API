@@ -5,5 +5,5 @@ namespace BetelgeuseAPI.Application.Features.Queries.Category.BlogCategory.GetBl
 
 public class GetBlogCategoryCommandResponse:ResponseMessageAndSucceeded
 {
-    public List<GetAllCategoryResponseDto> Data { get; set; }
+    public List<GetCategories> Data { get; set; }
 }

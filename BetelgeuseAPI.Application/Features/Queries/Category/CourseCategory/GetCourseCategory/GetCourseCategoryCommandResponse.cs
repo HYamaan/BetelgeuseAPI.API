@@ -5,5 +5,5 @@ namespace BetelgeuseAPI.Application.Features.Queries.Category.CourseCategory.Get
 
 public class GetCourseCategoryCommandResponse:ResponseMessageAndSucceeded
 {
-    public List<GetAllCategoryResponseDto> Data { get; set; }
+    public List<GetCategories> Data { get; set; }
 }

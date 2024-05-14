@@ -3,7 +3,7 @@ using MediatR;
 
 namespace BetelgeuseAPI.Application.Features.Queries.Course.GetPricing;
 
-public class GetPricingCommandHandler:IRequestHandler<GetPricingCommandRequest,GetPricingCommandResponse>
+public class GetPricingCommandHandler : IRequestHandler<GetPricingCommandRequest, GetPricingCommandResponse>
 {
     private readonly ICourseService _courseService;
 
@@ -14,17 +14,31 @@ public class GetPricingCommandHandler:IRequestHandler<GetPricingCommandRequest,G
 
     public async Task<GetPricingCommandResponse> Handle(GetPricingCommandRequest request, CancellationToken cancellationToken)
     {
-       var result = await _courseService.GetPricing(request);
+        var result = await _courseService.GetPricing(request);
+        var response = new GetPricingCommandResponse();
 
-       var response = new GetPricingCommandResponse()
-       {
-           IsFree = result.Data.IsFree,
-           Price = result.Data.Price,
-           PricingPlan = result.Data?.PricingPlan,
-              Message = result.Message,
-              Succeeded = result.Succeeded
-         };
-         return response;
-  
+
+        if (result.Data == null)
+        {
+            response = new GetPricingCommandResponse()
+            {
+                Message = result.Message,
+                Succeeded = result.Succeeded
+            };
+        }
+        else
+        {
+            response = new GetPricingCommandResponse()
+            {
+                IsFree = result.Data.IsFree,
+                Price = result.Data.Price,
+                PricingPlan = result.Data?.PricingPlan,
+                Message = result.Message,
+                Succeeded = result.Succeeded
+            };
+        }
+
+        return response;
+
     }
 }

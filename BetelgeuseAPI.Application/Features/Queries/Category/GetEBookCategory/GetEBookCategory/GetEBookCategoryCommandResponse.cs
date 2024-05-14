@@ -5,5 +5,5 @@ namespace BetelgeuseAPI.Application.Features.Queries.Category.GetEBookCategory.G
 
 public class GetEBookCategoryCommandResponse:ResponseMessageAndSucceeded
 {
-    public List<GetAllCategoryResponseDto> Data { get; set; }
+    public List<GetCategories> Data { get; set; }
 }

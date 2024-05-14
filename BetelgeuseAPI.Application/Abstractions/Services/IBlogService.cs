@@ -5,6 +5,8 @@ using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByPagination;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByUser;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetAllBlogs;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
+using BetelgeuseAPI.Application.Features.Queries.Blog.GetPanelBlogById;
+using BetelgeuseAPI.Application.Features.Queries.Blog.GetPanelBlogEdit;
 using BetelgeuseAPI.Domain.Common;
 
 namespace BetelgeuseAPI.Application.Abstractions.Services;
@@ -19,7 +21,10 @@ public interface IBlogService
 
     Task<Response<GetBlogByPaginationCommandResponse>> GetBlogByPaginationAsync(GetBlogByPaginationCommandRequest request);
 
+    Task<Response<GetPanelBlogByIdCommandResponse>> GetPanelBlogByIdAsync();
+
     Task<Response<GetBlogByIdCommandResponse>> GetBlogById(GetBlogByIdCommandRequest request);
+    Task<Response<GetPanelBlogEditCommandResponse>> GetPanelBlogEditAsync(GetPanelBlogEditCommandRequest request);
 
     Task<Response<DeleteBlogCommandResponse>> DeleteBlog(DeleteBlogCommandRequest request);
 }

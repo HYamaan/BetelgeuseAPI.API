@@ -1,7 +1,9 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Services;
+using BetelgeuseAPI.Application.DTOs.Response.Purchases;
 using BetelgeuseAPI.Application.Repositories.NotificationService;
 using BetelgeuseAPI.Domain.Entities.Course;
 using BetelgeuseAPI.Domain.Entities.Notifications;
+using BetelgeuseAPI.Domain.Entities.Purchase;
 using BetelgeuseAPI.Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,18 +49,16 @@ public class NotificationService:INotificationService
             await _writeRepository.SaveAsync();
         }
     }
-    public async Task SendCourseUpdatedNotifications(InclusiveCourse course, string NotificationType, string m)
+    public async Task SendCourseUpdatedNotifications(List<PurchasesSerializerDTO> purchases, string NotificationType, string m)
     {
-        if (course == null || course.Purchases == null)
+        if (purchases == null)
             return;
 
-        foreach (var purchase in course.Purchases)
+        foreach (var purchase in purchases)
         {
             string message = GenerateMessageForNotification(NotificationType, m);
-            for (int i = 0; i < 10000; i++)
-            {
-                await SendAsync(purchase.AppUserId, NotificationsTitleStrings.UpdatedCourse, message);
-            }
+            await SendAsync(purchase.UserId, NotificationsTitleStrings.UpdatedCourse, message);
+            
         }
     }
 

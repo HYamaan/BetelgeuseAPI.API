@@ -17,6 +17,9 @@ using BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
 using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Application.Repositories.FileContent.BlogImage;
 using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
+using BetelgeuseAPI.Application.DTOs.Response.Blog;
+using BetelgeuseAPI.Application.Features.Queries.Blog.GetPanelBlogById;
+using BetelgeuseAPI.Application.Features.Queries.Blog.GetPanelBlogEdit;
 using Microsoft.AspNetCore.Http;
 
 namespace BetelgeuseAPI.Persistence.Services;
@@ -28,12 +31,12 @@ public class BlogService : IBlogService
     private readonly IBlogWriteRepository _blogWrite;
     private readonly IBlogReadRepository _blogRead;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IImageService<BlogImage,IBlogImageReadRepository, IBlogImageWriteRepository> _blogImageService;
+    private readonly IImageService<BlogImage, IBlogImageReadRepository, IBlogImageWriteRepository> _blogImageService;
 
 
     public BlogService(IServicesHelper servicesHelper, IStorageService storageService,
         IBlogWriteRepository blogWrite, IBlogReadRepository blogRead,
-        IImageService<BlogImage, IBlogImageReadRepository,IBlogImageWriteRepository> blogImageService, IHttpContextAccessor httpContextAccessor)
+        IImageService<BlogImage, IBlogImageReadRepository, IBlogImageWriteRepository> blogImageService, IHttpContextAccessor httpContextAccessor)
     {
         _servicesHelper = servicesHelper;
         _blogWrite = blogWrite;
@@ -49,29 +52,53 @@ public class BlogService : IBlogService
         try
         {
             var userID = _servicesHelper.GetUserIdFromContext();
-            var seoTitle = NameOperation.CharacterRegulatory(request.Title.ToLower());
-            var url = await _blogRead.BlogUrlControl(seoTitle.Replace(" ", "-"));
-
-            var newBlogs = new Blogs()
+            if (request.Id is not null)
             {
-                Title = request.Title,
-                BlogCategoryId = request.BlogCategoriesID,
-                Description = request.Description,
-                Content = request.Content,
-                BlogImage = new BlogImage(),
-                Status = BlogType.Pending.ToString(),
-                MetaData = new MetaData()
-                {
-                    MetaTitle = seoTitle,
-                    MetaKeywords = request.Keywords,
-                    Url = url
-                }
-            };
-            var profilePhoto = await _blogImageService.SaveImage(request.BlogImage, userID);
-            newBlogs.BlogImage = profilePhoto;
-            newBlogs.BlogImageID = profilePhoto.Id;
+                var blog = await _blogRead.GetByIdAsync(request.Id.ToString());
+                if (blog == null)
+                    return Response<CreateBlogCommandResponse>.Fail("Blog bulunamadı");
 
-            await _blogWrite.AddAsync(newBlogs);
+                blog.Title = request.Title;
+                blog.BlogCategoryId = request.BlogCategoriesID;
+                blog.Description = request.Description;
+                blog.Content = request.Content;
+                blog.Status = BlogType.Pending.ToString();
+                
+                if (request.BlogImage is not null)
+                {
+                    var profilePhoto = await _blogImageService.SaveImage(request.BlogImage, userID);
+                    blog.BlogImage = profilePhoto;
+                    blog.BlogImageID = profilePhoto.Id;
+                }
+                _blogWrite.Update(blog);
+
+            }
+            else
+            {
+                var seoTitle = NameOperation.CharacterRegulatory(request.Title.ToLower());
+                var url = await _blogRead.BlogUrlControl(seoTitle.Replace(" ", "-"));
+                var newBlogs = new Blogs()
+                {
+                    Title = request.Title,
+                    BlogCategoryId = request.BlogCategoriesID,
+                    Description = request.Description,
+                    Content = request.Content,
+                    BlogImage = new BlogImage(),
+                    Status = BlogType.Pending.ToString(),
+                    MetaData = new MetaData()
+                    {
+                        MetaTitle = seoTitle,
+                        MetaKeywords = request.Keywords,
+                        Url = url
+                    }
+                };
+                var profilePhoto = await _blogImageService.SaveImage(request.BlogImage, userID);
+                newBlogs.BlogImage = profilePhoto;
+                newBlogs.BlogImageID = profilePhoto.Id;
+
+                await _blogWrite.AddAsync(newBlogs);
+            }
+
             await _blogWrite.SaveAsync();
             return Response<CreateBlogCommandResponse>.Success("Blog eklendi");
         }
@@ -85,7 +112,7 @@ public class BlogService : IBlogService
     {
         var filteredBlogs = await _blogRead.GetBlogs(ux => ux.Status == BlogType.Pending.ToString()).ToListAsync();
         if (filteredBlogs.Count == 0)
-            return Response<GetAllBlogsCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
+            return Response<GetAllBlogsCommandResponse>.Fail("Blog verisine uygun bir veri bulunamadı");
         return Response<GetAllBlogsCommandResponse>.Success(new GetAllBlogsCommandResponse
         {
             Data = filteredBlogs
@@ -125,20 +152,70 @@ public class BlogService : IBlogService
         });
     }
 
+    public async Task<Response<GetPanelBlogByIdCommandResponse>> GetPanelBlogByIdAsync()
+    {
+        var user = _servicesHelper.GetUserIdFromContext();
+        var getPanelBlog = await _blogRead.GetWhere(ux => ux.BlogImage.AppUser.Id == user)
+            .Select(x => new GetPanelBlogByIdResponseDTO()
+            {
+                Title = x.Title,
+                Category = x.BlogCategory.Name,
+                Comments = 0,//TODO: Comment sayısı gelecek
+                CreatedAt = x.CreatedDate.ToString("d MMM yyyy HH:mm"),
+                Status = x.Status,
+                Views = x.ViewCount,
+                Id = x.Id
+
+            }).ToListAsync();
+
+        if (getPanelBlog == null)
+            return Response<GetPanelBlogByIdCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
+
+        return Response<GetPanelBlogByIdCommandResponse>.Success(new GetPanelBlogByIdCommandResponse()
+        {
+            Data = getPanelBlog
+        });
+    }
+
     public async Task<Response<GetBlogByIdCommandResponse>> GetBlogById(GetBlogByIdCommandRequest request)
     {
         HttpContext httpContext = _httpContextAccessor.HttpContext;
         await _blogWrite.IncrementViewCount(request.Id, httpContext);
 
-        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.Id == request.Id).ToListAsync();
+        var filteredBlogs = await _blogRead.GetFilteredBlogs(ux => ux.Id == request.Id).FirstOrDefaultAsync();
 
 
-        if (filteredBlogs.Count == 0)
+        if (filteredBlogs == null)
             return Response<GetBlogByIdCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
 
         return Response<GetBlogByIdCommandResponse>.Success(new GetBlogByIdCommandResponse
         {
             Data = filteredBlogs
+        });
+    }
+
+    public async Task<Response<GetPanelBlogEditCommandResponse>> GetPanelBlogEditAsync(GetPanelBlogEditCommandRequest request)
+    {
+        var user = _servicesHelper.GetUserIdFromContext();
+        var getPanelBlog = await _blogRead.GetWhere(ux => ux.BlogImage.AppUser.Id == user && ux.Id == request.Id)
+              .Select(x => new GetPanelBlogEditResponseDTO()
+              {
+                  Id = x.Id,
+                  Title = x.Title,
+                  CategoryId = x.BlogCategoryId,
+                  CategoryName = x.BlogCategory.Name,
+                  Description = x.Description,
+                  Content = x.Content,
+                  Keywords = x.MetaData.MetaKeywords,
+                  BlogImage = x.BlogImage.Path,
+              }).FirstOrDefaultAsync();
+
+        if (getPanelBlog == null)
+            return Response<GetPanelBlogEditCommandResponse>.Fail("Kullanıcıya uygun bir veri bulunamadı");
+
+        return Response<GetPanelBlogEditCommandResponse>.Success(new GetPanelBlogEditCommandResponse()
+        {
+            Data = getPanelBlog
         });
     }
 

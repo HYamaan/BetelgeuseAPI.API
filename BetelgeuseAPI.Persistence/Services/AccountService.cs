@@ -56,7 +56,8 @@ namespace BetelgeuseAPI.Persistence.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     Email = request.Email,
-                    UserName = request.Email.Split("@")[0]
+                    UserName = request.FullName,
+                    //UserName = request.Email.Split("@")[0]
                 };
                 var result = await _userManager.CreateAsync(user, request.Password);
                 var createUserResponse = new Response<CreateUserCommandResponse>();

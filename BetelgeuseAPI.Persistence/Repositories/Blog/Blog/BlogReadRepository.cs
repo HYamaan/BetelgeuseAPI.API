@@ -34,9 +34,9 @@ namespace BetelgeuseAPI.Persistence.Repositories.Blog.CreateBlog
                     Title = ux.Title,
                     Description = ux.Description,
                     Content = ux.Content,
-                    BlogCategoryID = ux.BlogImageID,
+                    BlogCategoryID = ux.BlogCategoryId,
                     BlogImage = ux.BlogImage.Path,
-                    CreatedDate=ux.CreatedDate,
+                    CreatedDate=ux.CreatedDate.ToString("d MMM yyyy"),
                     ViewCount = ux.ViewCount,
                     Author = new BlogAppUserDto
                     {
@@ -74,7 +74,8 @@ namespace BetelgeuseAPI.Persistence.Repositories.Blog.CreateBlog
                     Id = ux.Id,
                     Title = ux.Title,
                     Content = ux.Content,
-                    BlogCategoryId = ux.BlogImageID,
+                    BlogCategoryId = ux.BlogCategoryId,
+                    CategoryName = ux.BlogCategory.Name,
                     BlogImage = ux.BlogImage.Path,
                     CreatedDate = ux.CreatedDate.ToString("d MMM yyyy"),
                     ViewCount = ux.ViewCount,

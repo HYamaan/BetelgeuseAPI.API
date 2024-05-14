@@ -20,6 +20,7 @@ using BetelgeuseAPI.Application.Features.Commands.Course.FAQ.UploadRequirements;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.BasicInformation;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CourseExtraInformation;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CoursePricing;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.DeleteNewCoursePricing;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.MessageToReview;
 using BetelgeuseAPI.Application.Features.Queries.Course.CoursesPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetBasicInformation;
@@ -65,7 +66,8 @@ public interface ICourseService
     Task<Response<GetCoursesPageCommandResponse>> GetCoursesPage(GetCoursesPageCommandRequest model);
     Task<Response<GetCourseDetailPageCommandResponse>> GetCourseDetailPage(GetCourseDetailPageCommandRequest model);
     Task<Response<GetQuizPageCommandResponse>> GetQuizPage(GetQuizPageCommandRequest model);
-
+    
+    Task<Response<DeleteNewCoursePricingCommandResponse>> DeleteNewCoursePricing(DeleteNewCoursePricingCommandRequest model);
     Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model);
     Task<Response<DeleteCourseQuestionCommandResponse>> DeleteCourseQuestion(DeleteCourseQuestionCommandRequest model);
     Task<Response<DeleteFaqCommandResponse>> DeleteFaqOption(DeleteFaqCommandRequest model);

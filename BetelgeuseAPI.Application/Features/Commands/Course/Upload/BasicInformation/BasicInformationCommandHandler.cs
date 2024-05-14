@@ -18,6 +18,7 @@ public class BasicInformationCommandHandler : IRequestHandler<BasicInformationCo
 
         return new BasicInformationCommandResponse()
         {
+            Data = result.Data.Data,
             Succeeded = result.Succeeded,
             Message = result.Message
         };

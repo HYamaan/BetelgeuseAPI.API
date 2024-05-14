@@ -76,11 +76,26 @@ public class CategoryService : ICategoryService
                 ParentCategoryID = ux.ParentCategoryID,
                 ParentCategoryName = ux.ParentCategory.Name
             }).ToListAsync();
+            
+            var groupedCategories = allCategories
+                .GroupBy(c => c.ParentCategoryID)
+                .Select(g => new GetCategories()
+                {
+                    ParentCategoryID = g.Key,
+                    ParentCategoryName = g.FirstOrDefault()?.ParentCategoryName,
+                    Categories = g.Select(c => new Categories()
+                    {
+                        CategoryID = c.CategoryID,
+                        Name = c.Name
+                    }).ToList()
+                })
+                .ToList();
+
 
 
             return Response<GetBlogCategoryCommandResponse>.Success(new GetBlogCategoryCommandResponse()
             {
-                Data = allCategories
+                Data = groupedCategories
             }, "Categoryler başarılı bir şekilde getirildi");
 
         }
@@ -101,10 +116,23 @@ public class CategoryService : ICategoryService
                 ParentCategoryName = ux.ParentCategory.Name
             }).ToListAsync();
 
+            var groupedCategories = allCategories
+                .GroupBy(c => c.ParentCategoryID)
+                .Select(g => new GetCategories()
+                {
+                    ParentCategoryID = g.Key,
+                    ParentCategoryName = g.FirstOrDefault()?.ParentCategoryName,
+                    Categories = g.Select(c => new Categories()
+                    {
+                        CategoryID = c.CategoryID,
+                        Name = c.Name
+                    }).ToList()
+                })
+                .ToList();
 
             return Response<GetCourseCategoryCommandResponse>.Success(new GetCourseCategoryCommandResponse()
             {
-                Data = allCategories
+                Data = groupedCategories
             }, "Categoryler başarılı bir şekilde getirildi");
 
         }
@@ -124,11 +152,23 @@ public class CategoryService : ICategoryService
                 ParentCategoryID = ux.ParentCategoryID,
                 ParentCategoryName = ux.ParentCategory.Name
             }).ToListAsync();
-
+            var groupedCategories = allCategories
+                .GroupBy(c => c.ParentCategoryID)
+                .Select(g => new GetCategories()
+                {
+                    ParentCategoryID = g.Key,
+                    ParentCategoryName = g.FirstOrDefault()?.ParentCategoryName,
+                    Categories = g.Select(c => new Categories()
+                    {
+                        CategoryID = c.CategoryID,
+                        Name = c.Name
+                    }).ToList()
+                })
+                .ToList();
 
             return Response<GetEBookCategoryCommandResponse>.Success(new GetEBookCategoryCommandResponse()
             {
-                Data = allCategories
+                Data = groupedCategories
             }, "Categoryler başarılı bir şekilde getirildi");
 
         }

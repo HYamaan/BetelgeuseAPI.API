@@ -10,6 +10,7 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
     public class LocalStorage : Storage, ILocalStorage
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private string uploadPath = @"D:\Repos\Bitirme\betelgeuse\BetelgeuseClient.Client\public\assets\files\";
         public LocalStorage(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
@@ -59,7 +60,7 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
         }
         public async Task<(string fileName, string pathOrContainerName)> UploadAsync(string path, IFormFile file)
         {
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+           // string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
 
@@ -71,7 +72,7 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
         public async Task<List<(string fileName, string pathOrContainerName)>> UploadVideoAsync(string path, IFormFile file)
         {
 
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+           // string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
 

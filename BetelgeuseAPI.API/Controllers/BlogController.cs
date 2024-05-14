@@ -5,6 +5,8 @@ using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByPagination;
 using BetelgeuseAPI.Application.Features.Queries.Blog.BlogByUser;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetAllBlogs;
 using BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
+using BetelgeuseAPI.Application.Features.Queries.Blog.GetPanelBlogById;
+using BetelgeuseAPI.Application.Features.Queries.Blog.GetPanelBlogEdit;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -75,4 +77,23 @@ public class BlogController : Controller
         DeleteBlogCommandResponse response = await _mediator.Send(model);
         return Ok(response);
     }
+
+    [Authorize(Roles = "Moderator")]
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetPanelBlogById()
+    {
+        GetPanelBlogByIdCommandRequest request = new GetPanelBlogByIdCommandRequest();
+        GetPanelBlogByIdCommandResponse response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+
+    [Authorize(Roles = "Moderator")]
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetPanelBlogEdit([FromQuery]GetPanelBlogEditCommandRequest request)
+    {
+        GetPanelBlogEditCommandResponse response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
 }

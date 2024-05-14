@@ -4,6 +4,7 @@ namespace BetelgeuseAPI.Application.DTOs.Response.Course;
 
 public class BasicInformationResponseDto
 {
+    public Guid CourseId { get; set; }
     public Languages Language { get; set; }
     public CourseClassType CourseType { get; set; }
     public string Title { get; set; }

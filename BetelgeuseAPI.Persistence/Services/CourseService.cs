@@ -73,6 +73,10 @@ using BetelgeuseAPI.Domain.Entities.Purchase;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Crypto.Engines;
 using BetelgeuseAPI.Application.Features.Queries.Purchases.GetPurchaseCourse;
+using BetelgeuseAPI.Application.HangFire;
+using BetelgeuseAPI.Application.DTOs.Response.Purchases;
+using BetelgeuseAPI.Application.Features.Commands.Course.Upload.DeleteNewCoursePricing;
+using BetelgeuseAPI.Application.Repositories.Course.CourseNewPricing;
 
 
 namespace BetelgeuseAPI.Persistence.Services;
@@ -134,6 +138,9 @@ public class CourseService : ICourseService
 
     private readonly INotificationService _notificationService;
 
+    private readonly ICourseNewPricingWriteRepository _courseNewPricingWrite;
+    private readonly ICourseNewPricingReadRepository _courseNewPricingRead;
+
 
     private readonly IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> _courseThumbnailService;
     private readonly IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> _courseCoverImageService;
@@ -175,7 +182,7 @@ public class CourseService : ICourseService
         ICourseSubLanguageReadRepository courseSubLanguageRead,
         ICourseSubLanguageWriteRepository courseSubLanguageWrite,
         IImageService<CourseThumbnail, ICourseThumbnailReadRepository, ICourseThumbnailWriteRepository> courseThumbnailService,
-        IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> courseCoverImageService, INotificationService notificationService)
+        IImageService<CourseCoverImage, ICourseCoverImageReadRepository, ICourseCoverImageWriteRepository> courseCoverImageService, INotificationService notificationService, ICourseNewPricingWriteRepository courseNewPricingWrite, ICourseNewPricingReadRepository courseNewPricingRead)
     {
         _servicesHelper = servicesHelper;
         _courseBasicInformationRead = courseBasicInformationRead;
@@ -214,6 +221,8 @@ public class CourseService : ICourseService
         _courseThumbnailService = courseThumbnailService;
         _courseCoverImageService = courseCoverImageService;
         _notificationService = notificationService;
+        _courseNewPricingWrite = courseNewPricingWrite;
+        _courseNewPricingRead = courseNewPricingRead;
 
         _storageService = storageService;
     }
@@ -255,15 +264,22 @@ public class CourseService : ICourseService
             if (defaultValue)
             {
                 _inclusiveCourseWrite.Update(inclusiveCourse);
-
+                HangFireNotification(inclusiveCourse, inclusiveCourse.CourseBasicInformation.Title);
             }
             else
             {
                 await _inclusiveCourseWrite.AddAsync(inclusiveCourse);
             }
             await _inclusiveCourseWrite.SaveAsync();
-            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, model.Title);
-            return Response<BasicInformationCommandResponse>.Success("Course basic information added");
+
+
+            return Response<BasicInformationCommandResponse>.Success(new BasicInformationCommandResponse
+            {
+                Data = new BasicInformationResponsePostDto()
+                {
+                    CourseId = inclusiveCourse.Id
+                }
+            });
         }
         catch (Exception e)
         {
@@ -364,7 +380,8 @@ public class CourseService : ICourseService
             }
 
             await _courseExtraInformationWrite.SaveAsync();
-            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
+
+            HangFireNotification(inclusiveCourse, inclusiveCourse.CourseBasicInformation.Title);
             return Response<CourseExtraInformationCommandResponse>.Success("Course extra information added");
         }
         catch (Exception e)
@@ -417,12 +434,14 @@ public class CourseService : ICourseService
 
                 foreach (var planDto in model.NewCoursePricingPlanRequestDto)
                 {
+                    var discountPrice = model.Price * (planDto.Discount / 100);
+
                     inclusiveCourse.CoursePricing.NewCoursePricingPlan.Add(new NewCoursePricingPlan
                     {
                         Title = planDto.Title,
                         Discount = planDto.Discount,
                         Capacity = planDto.Capacity,
-                        Price = planDto.Price,
+                        Price = discountPrice,
                         StartDate = planDto.StartDate,
                         EndDate = planDto.EndDate,
                         Language = planDto.Language
@@ -433,7 +452,7 @@ public class CourseService : ICourseService
             _inclusiveCourseWrite.Update(inclusiveCourse);
             await _inclusiveCourseWrite.SaveAsync();
 
-            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
+            HangFireNotification(inclusiveCourse, inclusiveCourse.CourseBasicInformation.Title);
             return Response<CoursePricingCommandResponse>.Success("Course pricing added");
         }
         catch (Exception e)
@@ -469,7 +488,7 @@ public class CourseService : ICourseService
         inclusiveCourse.Sections.Add(newSection);
         _inclusiveCourseWrite.Update(inclusiveCourse);
         await _inclusiveCourseWrite.SaveAsync();
-        await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
+        HangFireNotification(inclusiveCourse, inclusiveCourse.CourseBasicInformation.Title);
         return Response<CourseSectionsCommandResponse>.Success("Course section added");
     }
 
@@ -577,7 +596,7 @@ public class CourseService : ICourseService
 
             _inclusiveCourseWrite.Update(inclusiveCourse);
             await _inclusiveCourseWrite.SaveAsync();
-            await _notificationService.SendCourseUpdatedNotifications(inclusiveCourse, NotificationsTitleStrings.UpdatedCourse, inclusiveCourse.CourseBasicInformation.Title);
+            HangFireNotification(inclusiveCourse, inclusiveCourse.CourseBasicInformation.Title);
             return Response<CourseSourceCommandResponse>.Success("Course source added");
         }
         catch (Exception e)
@@ -625,7 +644,7 @@ public class CourseService : ICourseService
         });
         _courseSectionWrite.Update(findSection);
         await _courseSectionWrite.SaveAsync();
-        await _notificationService.SendCourseUpdatedNotifications(findSection.InclusiveCourse, NotificationsTitleStrings.UpdatedCourse, findSection.InclusiveCourse.CourseBasicInformation.Title);
+        HangFireNotification(findSection.InclusiveCourse, findSection.InclusiveCourse.CourseBasicInformation.Title);
         return Response<CourseQuizCommandResponse>.Success("Course quiz added");
     }
 
@@ -750,7 +769,7 @@ public class CourseService : ICourseService
 
         _courseSectionWrite.Update(findSection);
         await _courseSectionWrite.SaveAsync();
-        await _notificationService.SendCourseUpdatedNotifications(findCourse, NotificationsTitleStrings.UpdatedCourse, findCourse.CourseBasicInformation.Title);
+        HangFireNotification(findCourse, findCourse.CourseBasicInformation.Title);
         return Response<UpdateCourseSectionCommandResponse>.Success("Course section updated");
     }
 
@@ -1075,7 +1094,7 @@ public class CourseService : ICourseService
 
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
-        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
+        HangFireNotification(result, result.CourseBasicInformation.Title);
         return Response<UploadFaqCommandResponse>.Success("Faq added");
     }
 
@@ -1106,7 +1125,7 @@ public class CourseService : ICourseService
 
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
-        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
+        HangFireNotification(result, result.CourseBasicInformation.Title);
         return Response<UploadLearningMaterialCommandResponse>.Success("Faq added");
     }
 
@@ -1148,7 +1167,7 @@ public class CourseService : ICourseService
         }
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
-        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
+        HangFireNotification(result, result.CourseBasicInformation.Title);
         return Response<UploadCompanyLogoCommandResponse>.Success("Company logo added");
     }
 
@@ -1176,7 +1195,7 @@ public class CourseService : ICourseService
         });
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
-        await _notificationService.SendCourseUpdatedNotifications(result, NotificationsTitleStrings.UpdatedCourse, result.CourseBasicInformation.Title);
+        HangFireNotification(result, result.CourseBasicInformation.Title);
         return Response<UploadRequirementsCommandResponse>.Success("Requirements added");
     }
 
@@ -1193,6 +1212,7 @@ public class CourseService : ICourseService
         {
             Data = new BasicInformationResponseDto
             {
+                CourseId = result.Id,
                 Title = result.CourseBasicInformation.Title,
                 CourseType = result.CourseBasicInformation.CourseType,
                 Language = result.CourseBasicInformation.Language,
@@ -1244,12 +1264,19 @@ public class CourseService : ICourseService
             .ThenInclude(ux => ux.NewCoursePricingPlan)
             .FirstOrDefaultAsync();
 
+        if (result.CoursePricingId == null)
+        {
+            return Response<GetPricingCommandResponse>.Fail("Course not found");
+        }
+
+
         var response = new GetPricingCommandResponse
         {
             Price = result.CoursePricing.Price,
             IsFree = result.CoursePricing.IsFree,
-            PricingPlan = result.CoursePricing.NewCoursePricingPlan.Select(ux => new NewCoursePricingPlanRequestDto
+            PricingPlan = result.CoursePricing.NewCoursePricingPlan.Select(ux => new NewCoursePricingPlanResponseDto()
             {
+                Id = ux.Id,
                 Title = ux.Title,
                 Discount = ux.Discount,
                 Capacity = ux.Capacity,
@@ -1855,6 +1882,17 @@ public class CourseService : ICourseService
         return Response<GetQuizPageCommandResponse>.Success(response);
     }
 
+    public async Task<Response<DeleteNewCoursePricingCommandResponse>> DeleteNewCoursePricing(DeleteNewCoursePricingCommandRequest model)
+    {
+        var result = await _courseNewPricingWrite.RemoveAsync(model.PricingId.ToString());
+        if (!result)
+        {
+            return Response<DeleteNewCoursePricingCommandResponse>.Fail("Course pricing not deleted");
+        }
+        await _courseNewPricingWrite.SaveAsync();
+        return Response<DeleteNewCoursePricingCommandResponse>.Success("Course pricing deleted");
+    }
+
 
     public async Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model)
     {
@@ -2015,5 +2053,14 @@ public class CourseService : ICourseService
             await _courseQuizUploadWrite.SaveAsync();
             return questionPhoto.Image;
         }
+    }
+
+    private void HangFireNotification(InclusiveCourse inclusiveCourse,string title)
+    {
+        var purchaseDTOs = inclusiveCourse.Purchases.Select(p => new PurchasesSerializerDTO()
+        {
+            UserId = p.AppUserId.ToString(),
+        }).ToList();
+        FireAndForgetJob.SendCourseUpdatedNotifications(purchaseDTOs, NotificationsTitleStrings.UpdatedCourse, title);
     }
 }
