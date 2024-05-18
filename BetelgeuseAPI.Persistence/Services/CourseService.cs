@@ -77,6 +77,8 @@ using BetelgeuseAPI.Application.HangFire;
 using BetelgeuseAPI.Application.DTOs.Response.Purchases;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.DeleteNewCoursePricing;
 using BetelgeuseAPI.Application.Repositories.Course.CourseNewPricing;
+using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseFaq;
+using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseLearningMaterial;
 
 
 namespace BetelgeuseAPI.Persistence.Services;
@@ -1084,18 +1086,25 @@ public class CourseService : ICourseService
         {
             result.Faqs = new List<FaqOption>();
         }
-        result.Faqs.Add(new FaqOption
+        var newFaq = new FaqOption
         {
             Order = model.Order,
             LanguageId = model.LanguageId,
             Title = model.Title,
             Answer = model.Answer
-        });
+        };
+
+        result.Faqs.Add(newFaq);
 
         _inclusiveCourseWrite.Update(result);
         await _inclusiveCourseWrite.SaveAsync();
         HangFireNotification(result, result.CourseBasicInformation.Title);
-        return Response<UploadFaqCommandResponse>.Success("Faq added");
+
+        var responseModel = new UploadFaqCommandResponse
+        {
+            FaqId = newFaq.Id
+        };
+        return Response<UploadFaqCommandResponse>.Success(responseModel, "Faq added");
     }
 
     public async Task<Response<UploadLearningMaterialCommandResponse>> UploadLearningMaterial(UploadLearningMaterialCommandRequest model)
@@ -1197,6 +1206,49 @@ public class CourseService : ICourseService
         await _inclusiveCourseWrite.SaveAsync();
         HangFireNotification(result, result.CourseBasicInformation.Title);
         return Response<UploadRequirementsCommandResponse>.Success("Requirements added");
+    }
+
+    public async Task<Response<GetCourseFaqQueryResponse>> GetCourseFaq(GetCourseFaqQueryRequest model)
+    {
+        var faqs = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Select(course => course.Faqs
+                .OrderBy(faq => faq.Order)
+                .Select(faq => new CourseFaqResponseDto
+                {
+                    Id = faq.Id,
+                    Title = faq.Title,
+                    Answer = faq.Answer,
+                    Order = faq.Order,
+                    LanguageId = faq.LanguageId
+                }).ToList())
+            .FirstOrDefaultAsync();
+   
+        var data = new GetCourseFaqQueryResponse
+        {
+            Data = faqs
+        };
+        return Response<GetCourseFaqQueryResponse>.Success(data);
+    }
+
+    public async Task<Response<GetCourseLearningMaterialQueryResponse>> GetCourseLearningMaterial(GetCourseLearningMaterialQueryRequest model)
+    {
+        var learningMaterial = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Select(course => course.FaqLearningMaterial
+                .OrderBy(faq => faq.Order)
+                .Select(faq => new CourseLearningMaterialResponseDto()
+                {
+                    Id = faq.Id,
+                    Title = faq.Title,
+                    Order = faq.Order,
+                    LanguageId = faq.LanguageId
+                }).ToList())
+            .FirstOrDefaultAsync();
+
+        var data = new GetCourseLearningMaterialQueryResponse
+        {
+            Data = learningMaterial
+        };
+        return Response<GetCourseLearningMaterialQueryResponse>.Success(data);
     }
 
 
@@ -1882,6 +1934,10 @@ public class CourseService : ICourseService
         return Response<GetQuizPageCommandResponse>.Success(response);
     }
 
+
+
+
+
     public async Task<Response<DeleteNewCoursePricingCommandResponse>> DeleteNewCoursePricing(DeleteNewCoursePricingCommandRequest model)
     {
         var result = await _courseNewPricingWrite.RemoveAsync(model.PricingId.ToString());
@@ -1892,7 +1948,6 @@ public class CourseService : ICourseService
         await _courseNewPricingWrite.SaveAsync();
         return Response<DeleteNewCoursePricingCommandResponse>.Success("Course pricing deleted");
     }
-
 
     public async Task<Response<DeleteCourseSectionCommandResponse>> DeleteCourseSection(DeleteCourseSectionCommandRequest model)
     {

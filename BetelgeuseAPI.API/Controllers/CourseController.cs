@@ -23,6 +23,8 @@ using BetelgeuseAPI.Application.Features.Commands.Course.Upload.CoursePricing;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.DeleteNewCoursePricing;
 using BetelgeuseAPI.Application.Features.Commands.Course.Upload.MessageToReview;
 using BetelgeuseAPI.Application.Features.Queries.Course.CoursesPage;
+using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseFaq;
+using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseLearningMaterial;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetBasicInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetContent;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseDetailPage;
@@ -291,8 +293,26 @@ namespace BetelgeuseAPI.API.Controllers
             return Ok(response);
 
         }
-        
-    
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetCourseFaqList([FromQuery] GetCourseFaqQueryRequest model)
+        {
+            GetCourseFaqQueryResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+        [Authorize(Roles = "Moderator")]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetCourseLearningMaterialList([FromQuery] GetCourseLearningMaterialQueryRequest model)
+        {
+            GetCourseLearningMaterialQueryResponse response = await _mediator.Send(model);
+            return Ok(response);
+
+        }
+
+
         [HttpDelete("[action]")]
         public async Task<IActionResult> DeleteSection([FromBody] DeleteCourseSectionCommandRequest model)
         {

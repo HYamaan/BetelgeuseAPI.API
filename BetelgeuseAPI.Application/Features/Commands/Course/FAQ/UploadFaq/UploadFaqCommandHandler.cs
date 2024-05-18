@@ -18,6 +18,7 @@ public class UploadFaqCommandHandler: IRequestHandler<UploadFaqCommandRequest, U
 
         return new UploadFaqCommandResponse()
         {
+            FaqId = result.Data.FaqId,
             Message = result.Message,
             Succeeded = result.Succeeded
         };
