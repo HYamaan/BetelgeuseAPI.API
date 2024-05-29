@@ -14,6 +14,7 @@ public class GetBlogByPaginationCommandHandler: IRequestHandler<GetBlogByPaginat
 
     public async Task<GetBlogByPaginationCommandResponse> Handle(GetBlogByPaginationCommandRequest request, CancellationToken cancellationToken)
     {
+        request.Index = request.Index - 1;
         var result = await _blogService.GetBlogByPaginationAsync(request);
 
         return new GetBlogByPaginationCommandResponse

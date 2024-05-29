@@ -6,6 +6,7 @@ using BetelgeuseAPI.Application.DTOs.Response.Account;
 using BetelgeuseAPI.Application.Exceptions;
 using BetelgeuseAPI.Application.Features.Commands.AppUser.Auth.CreateTokenByRefreshToken;
 using BetelgeuseAPI.Application.Features.Commands.AppUser.Auth.LoginUser;
+using BetelgeuseAPI.Application.Features.Commands.AppUser.ForgetPassword;
 using BetelgeuseAPI.Application.Repositories;
 using BetelgeuseAPI.Application.Repositories.UserRefreshToken;
 using BetelgeuseAPI.Domain.Auth;
@@ -28,10 +29,11 @@ namespace BetelgeuseAPI.Persistence.Services
         private readonly ITokenHandler _tokenHandler;
         private readonly IUnitOfWork _unitOfWork;
         public readonly IUserRefreshTokenReadRepository _refreshTokenReadRepository;
+        public readonly IUserRefreshTokenWriteRepository _refreshTokenWriteRepository;
         private readonly IMailService _mailService;
         public readonly GoogleAuthSettings _googleAuthSettings;
 
-        public AuthService(UserManager<AppUser> userManager, IMailService mailService, IOptions<GoogleAuthSettings> googleAuth, IUserRefreshTokenReadRepository refreshTokenReadRepository, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager, IUnitOfWork unitOfWork)
+        public AuthService(UserManager<AppUser> userManager, IMailService mailService, IOptions<GoogleAuthSettings> googleAuth, IUserRefreshTokenReadRepository refreshTokenReadRepository, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager, IUnitOfWork unitOfWork, IUserRefreshTokenWriteRepository refreshTokenWriteRepository)
         {
             _userManager = userManager;
             _mailService = mailService;
@@ -39,6 +41,7 @@ namespace BetelgeuseAPI.Persistence.Services
             _tokenHandler = tokenHandler;
             _signInManager = signInManager;
             _unitOfWork = unitOfWork;
+            _refreshTokenWriteRepository = refreshTokenWriteRepository;
             _googleAuthSettings= googleAuth.Value;
         }
         private async Task<Response<TokenDto>> CreateUserExternalAsync(AppUser user, string email, UserLoginInfo info,string IPAddress )
@@ -85,15 +88,16 @@ namespace BetelgeuseAPI.Persistence.Services
             return await CreateUserExternalAsync(user, payload.Email, info, IpAddress);
         }
 
-        public async Task ForgotPassword(ForgetPasswordRequest model, string origin)
+        public async Task<Response<ForgetPasswordCommandResponse>> ForgotPassword(ForgetPasswordRequest model, string origin)
         {
             var account = await _userManager.FindByEmailAsync(model.Email);
             // always return ok response to prevent email enumeration
-            if (account == null) return;
+            if (account == null) return Response<ForgetPasswordCommandResponse>.Fail("Email address is incorrect");
             var token = await _userManager.GeneratePasswordResetTokenAsync(account);
-            var route = "api/account/reset-password";
+            var route = "auth/reset-password";
             var _enpointUri = new Uri(string.Concat($"{origin}/", route)).ToString();
             await _mailService.SendPasswordResetMailAsync(model.Email, account.Id, token, _enpointUri);
+            return Response<ForgetPasswordCommandResponse>.Success("Sent to your e-mail address");
         }
 
         public async Task<Response<LoginUserCommandResponse>> LoginAccountAsync(LoginAccountRequest request)
@@ -124,7 +128,10 @@ namespace BetelgeuseAPI.Persistence.Services
                      AccessToken = token.AccessToken,
                      RefreshToken = token.RefreshToken,
                      Roles = rolesList.ToList(),
-                     IsVerified = user.EmailConfirmed
+                     IsVerified = user.EmailConfirmed,
+                     AccessTokenExpiration = token.AccessTokenExpiration,
+                     RefreshTokenExpiration = token.RefreshTokenExpiration
+
                  };
                  var result = new LoginUserCommandResponse()
                  {
@@ -181,8 +188,8 @@ namespace BetelgeuseAPI.Persistence.Services
                 return Response<RefreshTokenLoginCommandResponse>.Fail("User Not Found");
             }
             var tokenDto = await _tokenHandler.GenerateJWToken(user);
-            existRefreshToken.Expires = tokenDto.RefreshTokenExpiration.ToUniversalTime();
-            await _unitOfWork.CommitIdentityAsync();
+            tokenDto.RefreshTokenExpiration = existRefreshToken.Expires;
+            await UpdateRefreshTokenAsync(tokenDto, user, request.IPAddress);
 
             var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
             var data = new LoginResponseDto()
@@ -192,7 +199,9 @@ namespace BetelgeuseAPI.Persistence.Services
                 AccessToken = tokenDto.AccessToken,
                 RefreshToken = tokenDto.RefreshToken,
                 Roles = rolesList.ToList(),
-                IsVerified = user.EmailConfirmed
+                IsVerified = user.EmailConfirmed,
+                AccessTokenExpiration = tokenDto.AccessTokenExpiration,
+                RefreshTokenExpiration = tokenDto.RefreshTokenExpiration
             };
             var result = new RefreshTokenLoginCommandResponse()
             {

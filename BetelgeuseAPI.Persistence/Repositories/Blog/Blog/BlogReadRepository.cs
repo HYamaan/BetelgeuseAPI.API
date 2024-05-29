@@ -34,9 +34,9 @@ namespace BetelgeuseAPI.Persistence.Repositories.Blog.CreateBlog
                     Title = ux.Title,
                     Description = ux.Description,
                     Content = ux.Content,
-                    BlogCategoryID = ux.BlogImageID,
+                    BlogCategoryID = ux.BlogCategoryId,
                     BlogImage = ux.BlogImage.Path,
-                    CreatedDate=ux.CreatedDate,
+                    CreatedDate=ux.CreatedDate.ToString("d MMM yyyy"),
                     ViewCount = ux.ViewCount,
                     Author = new BlogAppUserDto
                     {
@@ -44,7 +44,7 @@ namespace BetelgeuseAPI.Persistence.Repositories.Blog.CreateBlog
                         UserName = ux.BlogImage.AppUser.UserName,
                         Email = ux.BlogImage.AppUser.Email,
                         slug = ux.BlogImage.AppUser.Id,
-                        Image = ux.BlogImage.AppUser.UserProfileImage
+                        Image = ux.BlogImage.AppUser.UserProfileImage.Select(ux => ux.Path).FirstOrDefault()
                     },
                     BlogCategory = new GetAllCategoryResponseDto
                     {
@@ -63,6 +63,27 @@ namespace BetelgeuseAPI.Persistence.Repositories.Blog.CreateBlog
                     }
                 });
         }
+
+        public IQueryable<BlogAllResponseDto> GetBlogs(Expression<Func<Blogs, bool>> filterExpression)
+        {
+            return _context.Blogs
+                .Where(filterExpression)
+                .OrderByDescending(blog => blog.ViewCount)
+                .Select(ux => new BlogAllResponseDto
+                {
+                    Id = ux.Id,
+                    Title = ux.Title,
+                    Content = ux.Content,
+                    BlogCategoryId = ux.BlogCategoryId,
+                    CategoryName = ux.BlogCategory.Name,
+                    BlogImage = ux.BlogImage.Path,
+                    CreatedDate = ux.CreatedDate.ToString("d MMM yyyy"),
+                    ViewCount = ux.ViewCount,
+                    ReviewCount = 0,
+                    AuthorName = ux.BlogImage.AppUser.UserName
+                });
+        }
+
         public async Task<string> BlogUrlControl(string url)
         {
             var existingBlog = await _context.Blogs.Where(ux => ux.MetaData.Url == url).FirstOrDefaultAsync();

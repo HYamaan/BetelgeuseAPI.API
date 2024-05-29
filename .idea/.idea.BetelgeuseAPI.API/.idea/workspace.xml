@@ -10,8 +10,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1044f0ce-0174-433f-b398-f2f5cc693a64" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.BetelgeuseAPI.API/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BetelgeuseAPI.API/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/CourseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/CourseService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByCategory/GetBlogByCategoryCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByCategory/GetBlogByCategoryCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByPagination/GetBlogByPaginationCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByPagination/GetBlogByPaginationCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByUser/GetBlogByUserCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/BlogByUser/GetBlogByUserCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/GetAllBlogs/GetAllBlogsCommandResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Queries/Blog/GetAllBlogs/GetAllBlogsCommandResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogReadRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogReadRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogWriteRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Application/Repositories/Blog/Blog/IBlogWriteRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/Blogs.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Domain/Entities/Blog/Blogs.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/BetelgeuseAPI.Persistence.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/BetelgeuseAPI.Persistence.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Context/IdentityContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Context/IdentityContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240406203053_init.Designer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/20240406203053_init.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/IdentityContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Migrations/Identity/IdentityContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogReadRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogReadRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogWriteRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Repositories/Blog/Blog/BlogWriteRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/ServiceRegistration/ServiceRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/ServiceRegistration/ServiceRegistration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/BlogService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BetelgeuseAPI.Persistence/Services/BlogService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +71,8 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f4bc324a395d24ed12db75b0a81536b642509aa14825bf114d9b7c934e2b/Mediator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f91195dc1f983d6ec69125bd192fea551738920a3ae32077f21c5af5b9/UserManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f9749fe3576a687c3c42f3794cefe8f8d91e62f939c66c0a32dbb3f74255/ManualResetEventSlim.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.API/Controllers/CourseController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Application/Abstractions/Services/ICourseService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UpdateAccountAbout/UpdateAccountAboutCommandResponse.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/AddUserSkill/AddUserSkillCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/AddUserSkill/AddUserSkillCommandRequest.cs" root0="FORCE_HIGHLIGHTING" />
@@ -64,7 +80,8 @@
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/DeleteUserSkill/DeleteUserSkillCommandHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/DeleteUserSkill/DeleteUserSkillCommandRequest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BetelgeuseAPI.Application/Features/Commands/UserSettings/UserSkill/DeleteUserSkill/DeleteUserSkillCommandResponse.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Persistence/Services/CourseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Domain/Entities/Course/InclusiveCourse.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repos/Bitirme/betelgeuse/BetelgeuseAPI.API/BetelgeuseAPI.Persistence/Migrations/Identity/IdentityContextModelSnapshot.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
   <component name="ProblemsViewState">
@@ -163,6 +180,8 @@
       <workItem from="1709906753885" duration="21000" />
       <workItem from="1710103843954" duration="32000" />
       <workItem from="1710893613585" duration="61000" />
+      <workItem from="1712394141291" duration="513000" />
+      <workItem from="1712943236927" duration="1932000" />
     </task>
     <servers />
   </component>

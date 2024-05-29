@@ -24,7 +24,6 @@ using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountEducatio
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountExperiences;
 using BetelgeuseAPI.Application.Repositories;
 using BetelgeuseAPI.Application.Repositories.UserAccountSkill;
-using BetelgeuseAPI.Domain.Entities;
 using BetelgeuseAPI.Domain.Entities.File;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +35,11 @@ using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountEduc
 using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountAbout;
 using BetelgeuseAPI.Application.Repositories.UserAccountSettings.UserAccountSkills;
 using BetelgeuseAPI.Application.Abstractions.Services.Helpers;
+using BetelgeuseAPI.Application.DTOs.Response;
+using BetelgeuseAPI.Application.Features.Commands.AppUser.QuizInteraction;
+using BetelgeuseAPI.Application.Features.Queries.GetNotifications;
+using BetelgeuseAPI.Application.Repositories.UserQuizInteraction;
+using BetelgeuseAPI.Domain.Entities.User;
 
 
 namespace BetelgeuseAPI.Persistence.Services;
@@ -45,6 +49,7 @@ public class UserService:IUserService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserAccountInformationReadRepository _informationReadRepository;
     private readonly IUserAccountAboutReadRepository _aboutReadRepository;
+    private readonly INotificationService _notificationService;
 
     private readonly IUserAccountInformationWriteRepository _informationWriteRepository;
     private readonly IUserAccountExperiencesWriteRepository _experiencesWriteRepository;
@@ -59,6 +64,9 @@ public class UserService:IUserService
     private readonly IAllUserAccountSkillReadRepository _allUserAccountSkillReadRepository;
     private readonly IUserAccountSkillsWriteRepository _userAccountSkillWriteRepository;
     private readonly IUserAccountSkillsReadRepository _userAccountSkillReadRepository;
+    private readonly IUserQuizInteractionReadRepository _userQuizzesReadRepository;
+    private readonly IUserQuizInteractionWriteRepository _userQuizzesWriteRepository;
+
     private readonly IUnitOfWork _unitOfWork;
     private readonly IConfiguration _configuration;
 
@@ -79,7 +87,16 @@ public class UserService:IUserService
         IUserProfileImageFileReadRepository profileImageFileReadRepository, 
         IConfiguration configuration,
         IUserProfileBackgroundImageFileWriteRepository profileBackgroundImageFileWriteRepository,
-        IUserProfileBackgroundImageFileReadRepository profileBackgroundImageReadRepository, IServicesHelper servicesHelper, IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository, IUserAccountSkillsReadRepository userAccountSkillReadRepository, IUserAccountSkillsWriteRepository userAccountSkillWriteRepository, IImageService<UserProfileImage, IUserProfileImageFileReadRepository, IUserProfileImageFileWriteRepository> imageService, IImageService<UserProfileBackgroundImage, IUserProfileBackgroundImageFileReadRepository, IUserProfileBackgroundImageFileWriteRepository> imageBackgroundService)
+        IUserProfileBackgroundImageFileReadRepository profileBackgroundImageReadRepository,
+        IServicesHelper servicesHelper,
+        IAllUserAccountSkillReadRepository allUserAccountSkillReadRepository,
+        IUserAccountSkillsReadRepository userAccountSkillReadRepository, 
+        IUserAccountSkillsWriteRepository userAccountSkillWriteRepository, 
+        IImageService<UserProfileImage, IUserProfileImageFileReadRepository, IUserProfileImageFileWriteRepository> imageService,
+        IImageService<UserProfileBackgroundImage, IUserProfileBackgroundImageFileReadRepository, IUserProfileBackgroundImageFileWriteRepository> imageBackgroundService,
+        IUserQuizInteractionWriteRepository userQuizzesWriteRepository,
+        IUserQuizInteractionReadRepository userQuizzesReadRepository,
+        INotificationService notificationService)
     {
         _httpContextAccessor = httpContextAccessor;
         _informationReadRepository = informationReadRepository;
@@ -102,6 +119,9 @@ public class UserService:IUserService
         _userAccountSkillWriteRepository = userAccountSkillWriteRepository;
         _imageService = imageService;
         _imageBackgroundService = imageBackgroundService;
+        _userQuizzesWriteRepository = userQuizzesWriteRepository;
+        _userQuizzesReadRepository = userQuizzesReadRepository;
+        _notificationService = notificationService;
     }
 
     public async Task<Response<UpdateAccountCommandResponse>> UpdateAccountInformation(UpdateAccountCommandRequest request)
@@ -192,6 +212,40 @@ public class UserService:IUserService
         }
     }
 
+    public async Task<Response<QuizInteractionCommandResponse>> UpdateQuizInteraction(QuizInteractionCommandRequest request)
+    {
+        var userId = _servicesHelper.GetUserIdFromContext();
+
+        var userQuiz = await _userQuizzesReadRepository.GetWhere(x => x.UserId == userId && x.CourseQuiz.Id == request.CourseQuizId)
+            .FirstOrDefaultAsync();
+        if (userQuiz == null)
+        {
+            var newUserQuiz = new UserQuizInteraction()
+            {
+                UserId = userId,
+                IsCompleted = request.CourseQuizAnswerId != null ? true : false,
+                IsPassed = request.CourseQuizAnswerId != null ? false : true,
+                CourseQuizId = request.CourseQuizId,
+                CourseQuizAnswerId = request.CourseQuizAnswerId,
+                CourseQuestionId = request.CourseQuestionId,
+
+
+            };
+            userQuiz = newUserQuiz;
+            await _userQuizzesWriteRepository.AddAsync(newUserQuiz);
+        }
+        else
+        {
+            userQuiz.IsCompleted = request.CourseQuizAnswerId != null ? true : false;
+            userQuiz.IsPassed = request.CourseQuizAnswerId != null ? false : true;
+            userQuiz.CourseQuizAnswerId = request.CourseQuizAnswerId;
+            _userQuizzesWriteRepository.Update(userQuiz);
+        }
+
+        await _userQuizzesWriteRepository.SaveAsync();
+        return Response<QuizInteractionCommandResponse>.Success();
+    }
+
     public async Task<Response<AddAccountExperiencesCommandResponse>> AddAccountExperiences(AddAccountExperiencesCommandRequest request)
     {
         var userId = _servicesHelper.GetUserIdFromContext();
@@ -225,7 +279,7 @@ public class UserService:IUserService
         try
         {
             var userId = _servicesHelper.GetUserIdFromContext();
-            await _imageService.SaveImage(request.profileImage, userId);
+            await _imageService.UpdateImage(request.profileImage, userId);
             return Response<UploadProfileImageCommandResponse>.Success("Resim başarılı bir şekilde yüklendi.");
         }
         catch (Exception e)
@@ -239,7 +293,7 @@ public class UserService:IUserService
         try
         {
             var userId = _servicesHelper.GetUserIdFromContext();
-            await _imageBackgroundService.SaveImage(request.profileBackgroundImage, userId);    
+            await _imageBackgroundService.UpdateImage(request.profileBackgroundImage, userId);    
             return Response<UploadProfileBackgroundImageCommandResponse>.Success("Resim başarılı bir şekilde yüklendi.");
         }
         catch (Exception e)
@@ -397,6 +451,29 @@ public class UserService:IUserService
             return Response<List<AccountUserSkillsDto>>.Fail(e.Message);
         }
     }
+
+    public async Task<Response<GetNotificationsCommandResponse>> GetNotifications()
+    {
+        var userId = _servicesHelper.GetUserIdFromContext();
+        var result = await _notificationService.GetUnreadNotificationsAsync(userId);
+        var data = result.Select(x => new NotificationDto()
+        {
+            Title = x.Title,
+            Message = x.Message,
+            IsRead = x.IsRead,
+            Date = x.CreatedDate.ToString("d MMM yyyy"),
+            Clock = x.CreatedDate.ToString("HH:mm")
+        }).ToList();
+
+        var response = new GetNotificationsCommandResponse()
+        {
+            Data = data
+        };
+
+        return Response<GetNotificationsCommandResponse>.Success(response);
+    }
+
+
     public async Task<Response<DeleteAccountEducationCommandResponse>> DeleteAccountEducation(DeleteAccountEducationCommandRequest request)
     {
         try

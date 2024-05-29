@@ -12,5 +12,4 @@ public class UpdateAccountCommandRequest : IRequest<UpdateAccountCommandResponse
     public string? TimeZone { get; set; }
     public string? Currency { get; set; }
     public bool? EmailNews { get; set; }
-    
 }

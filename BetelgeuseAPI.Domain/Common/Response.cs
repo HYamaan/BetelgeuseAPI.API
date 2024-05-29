@@ -40,5 +40,12 @@ namespace BetelgeuseAPI.Domain.Common
                 Message = message,
             };
         }
+        public static Response<T> Success()
+        {
+            return new Response<T>
+            {
+                Succeeded = true
+            };
+        }
     }
 }

@@ -22,7 +22,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, 
         var response = await _authService.LoginAccountAsync(_mapper.Map<LoginAccountRequest>(request));
         return new LoginUserCommandResponse()
         {
-            Data = response.Data.Data,
+            Data = response.Data?.Data,
             Message = response.Message,
             Succeeded = response.Succeeded,
         };

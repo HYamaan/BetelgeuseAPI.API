@@ -5,5 +5,5 @@ namespace BetelgeuseAPI.Application.Features.Commands.Course.Upload.BasicInforma
 
 public class BasicInformationCommandResponse : ResponseMessageAndSucceeded
 {
-    public BasicInformationResponseDto Data { get; set; }
+    public BasicInformationResponsePostDto Data { get; set; }
 }

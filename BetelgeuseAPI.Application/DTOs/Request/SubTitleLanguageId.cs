@@ -4,5 +4,5 @@ namespace BetelgeuseAPI.Application.DTOs.Request;
 
 public class SubTitleLanguageId
 {
-    public Languages language { get; set; }
+    public int language { get; set; }
 }

@@ -5,5 +5,5 @@ namespace BetelgeuseAPI.Application.Features.Queries.Blog.BlogByPagination;
 
 public class GetBlogByPaginationCommandResponse:ResponseMessageAndSucceeded
 {
-    public List<BlogResponseDto> Data { get; set; }
+    public List<BlogAllResponseDto> Data { get; set; }
 }

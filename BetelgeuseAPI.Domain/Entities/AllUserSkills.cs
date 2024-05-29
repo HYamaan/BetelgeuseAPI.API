@@ -1,5 +1,6 @@
 ﻿using BetelgeuseAPI.Domain.Auth;
 using BetelgeuseAPI.Domain.Common;
+using BetelgeuseAPI.Domain.Entities.User;
 
 namespace BetelgeuseAPI.Domain.Entities;
 

@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Queries\GetQuiz\**" />
     <Compile Remove="Repositories\Admin\**" />
     <Compile Remove="Validators\**" />
+    <EmbeddedResource Remove="Features\Queries\GetQuiz\**" />
     <EmbeddedResource Remove="Repositories\Admin\**" />
     <EmbeddedResource Remove="Validators\**" />
+    <None Remove="Features\Queries\GetQuiz\**" />
     <None Remove="Repositories\Admin\**" />
     <None Remove="Validators\**" />
   </ItemGroup>
@@ -20,6 +23,9 @@
     <PackageReference Include="FluentValidation" Version="11.8.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.12" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.12" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.8" />
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.12" />
@@ -32,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Commands\Instructor\" />
+    <Folder Include="Features\Queries\Course\FAQSection\GetCourseLogo\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 

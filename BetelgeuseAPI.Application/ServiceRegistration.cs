@@ -6,6 +6,8 @@ using BetelgeuseAPI.Domain.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using BetelgeuseAPI.Domain.Common;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -77,6 +79,12 @@ namespace BetelgeuseAPI.Application
                 };
             });
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            services.AddHangfire(x => x.UsePostgreSqlStorage(configuration.GetConnectionString("PostgreSQL")));
+            services.AddHangfireServer(x =>
+            {
+                x.WorkerCount = 500;
+            });
 
         }
     }

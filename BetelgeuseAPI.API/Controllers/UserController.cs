@@ -1,4 +1,5 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Storage;
+using BetelgeuseAPI.Application.Features.Commands.AppUser.QuizInteraction;
 using BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.DeleteProfileBackgroundImage;
 using BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.DeleteProfileImage;
 using BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.UploadProfileBackgroundImage;
@@ -13,6 +14,7 @@ using BetelgeuseAPI.Application.Features.Commands.UserSettings.UpdateAccountAbou
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UploadAccountInformation;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UserSkill.AddUserSkill;
 using BetelgeuseAPI.Application.Features.Queries.GetAllUserSkills;
+using BetelgeuseAPI.Application.Features.Queries.GetNotifications;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileBackgroundImage;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileImage;
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountAbout;
@@ -103,6 +105,13 @@ namespace BetelgeuseAPI.API.Controllers
             UpdateAccountExperiencesCommandResponse response = await _mediator.Send(model);
             return Ok(response);
         }
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateQuizInteraction([FromBody] QuizInteractionCommandRequest model)
+        {
+            QuizInteractionCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+        }
   
         
         [HttpGet("[action]")]
@@ -154,6 +163,14 @@ namespace BetelgeuseAPI.API.Controllers
         {
             var model = new GetAccountSkillCommandRequest();
             GetAccountSkillCommandResponse response = await _mediator.Send(model);
+            return Ok(response);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetNotifications()
+        {
+            var model = new GetNotificationsCommandRequest();
+            GetNotificationsCommandResponse response = await _mediator.Send(model);
             return Ok(response);
         }
         [HttpDelete("[action]")]

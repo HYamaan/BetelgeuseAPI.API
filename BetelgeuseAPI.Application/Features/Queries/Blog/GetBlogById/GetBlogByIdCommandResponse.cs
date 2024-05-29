@@ -6,5 +6,5 @@ namespace BetelgeuseAPI.Application.Features.Queries.Blog.GetBlogById;
 
 public class GetBlogByIdCommandResponse : ResponseMessageAndSucceeded
 {
-    public List<BlogResponseDto> Data { get; set; }
+    public BlogResponseDto Data { get; set; }
 }

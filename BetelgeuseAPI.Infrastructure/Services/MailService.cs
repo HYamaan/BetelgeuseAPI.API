@@ -97,7 +97,7 @@ public class MailService : IMailService
         mailBody.AppendLine("password has been generated for you. To reset your password, click the");
         mailBody.AppendLine("following link and follow the instructions.");
         mailBody.AppendLine("</p>");
-        mailBody.AppendLine("<a href=\"" + endpoint + "/update-password/" + userId + "/" + resetToken + "\"");
+        mailBody.AppendLine("<a href=\"" + endpoint + "/" + userId + "/" + resetToken + "\"");
         mailBody.AppendLine("style=\"background:#20e277;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;\">Reset");
         mailBody.AppendLine("Password</a>");
         mailBody.AppendLine("</td>");

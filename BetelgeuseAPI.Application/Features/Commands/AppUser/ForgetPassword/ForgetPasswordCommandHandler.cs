@@ -25,7 +25,11 @@ namespace BetelgeuseAPI.Application.Features.Commands.AppUser.ForgetPassword;
                 Email = request.Email,
             };
 
-            await _authService.ForgotPassword(email,request.Headers);
-            return new ForgetPasswordCommandResponse();
+          var result =   await _authService.ForgotPassword(email,request.Headers);
+            return new ForgetPasswordCommandResponse()
+            {
+                Message = result.Message,
+                Succeeded = result.Succeeded
+            };
         }
     }

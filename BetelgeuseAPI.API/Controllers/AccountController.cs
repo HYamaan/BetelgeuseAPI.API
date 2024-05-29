@@ -33,14 +33,14 @@ namespace BetelgeuseAPI.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("forget-password")]
+        [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgetPasswordRequest ForgetPasswordRequest)
         {
             ForgetPasswordCommandRequest forgetPasswordCommandRequest = new ForgetPasswordCommandRequest();
             forgetPasswordCommandRequest.Headers = Request.Headers["origin"];
             forgetPasswordCommandRequest.Email = ForgetPasswordRequest.Email;
-            await _mediator.Send(forgetPasswordCommandRequest);
-           return Ok();
+          var response=  await _mediator.Send(forgetPasswordCommandRequest);
+           return Ok(response);
         }
 
         [HttpPost("reset-password")]

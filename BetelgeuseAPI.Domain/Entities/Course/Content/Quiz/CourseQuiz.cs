@@ -8,7 +8,7 @@ public class CourseQuiz : BaseEntity
     public int Order { get; set; }
     public Languages Language { get; set; }
     public required string Title { get; set; }
-    public int? Time { get; set; }
+    public int Time { get; set; }
     public int? Attempts { get; set; }
     public required int PassingScore { get; set; }
     public int? ExpiryDate { get; set; }
@@ -19,6 +19,6 @@ public class CourseQuiz : BaseEntity
     public bool Certificate { get; set; }
     public bool IsActive { get; set; }
 
-    public List<CourseQuestions>? CourseQuestions { get; set; }
+    public ICollection<CourseQuestions>? CourseQuestions { get; set; }
     public CourseSections CourseSections { get; set; }
 }

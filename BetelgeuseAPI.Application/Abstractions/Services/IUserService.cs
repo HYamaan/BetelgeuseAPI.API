@@ -1,4 +1,5 @@
 ﻿using BetelgeuseAPI.Application.DTOs.Response.Account;
+using BetelgeuseAPI.Application.Features.Commands.AppUser.QuizInteraction;
 using BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.DeleteProfileBackgroundImage;
 using BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.DeleteProfileImage;
 using BetelgeuseAPI.Application.Features.Commands.ProfileImageFile.UploadProfileBackgroundImage;
@@ -12,6 +13,7 @@ using BetelgeuseAPI.Application.Features.Commands.UserSettings.Experience.Update
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UpdateAccountAbout;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UploadAccountInformation;
 using BetelgeuseAPI.Application.Features.Commands.UserSettings.UserSkill.AddUserSkill;
+using BetelgeuseAPI.Application.Features.Queries.GetNotifications;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileBackgroundImage;
 using BetelgeuseAPI.Application.Features.Queries.ProfileImageFile.GetProfileImage;
 using BetelgeuseAPI.Application.Features.Queries.UserSettings.GetAccountAbout;
@@ -27,8 +29,10 @@ public interface IUserService
     Task<Response<UpdateAccountAboutCommandResponse>> UpdateAccountAbout(UpdateAccountAboutCommandRequest request);
     Task<Response<UpdateAccountEducationCommandResponse>> UpdateAccountEducation(UpdateAccountEducationCommandRequest request);
     Task<Response<UpdateAccountExperiencesCommandResponse>> UpdateAccountExperience(UpdateAccountExperiencesCommandRequest request);
-
     
+    Task<Response<QuizInteractionCommandResponse>> UpdateQuizInteraction(QuizInteractionCommandRequest request);
+
+
     Task<Response<AddAccountExperiencesCommandResponse>> AddAccountExperiences(AddAccountExperiencesCommandRequest request);
     Task<Response<AddAccountEducationCommandResponse>> AddAccountEducation(AddAccountEducationCommandRequest request);
     Task<Response<UploadProfileImageCommandResponse>> AddProfilePhoto(UploadProfileImageCommandRequest request);
@@ -42,6 +46,7 @@ public interface IUserService
     Task<Response<GetProfileBackgroundImageCommandResponse>> GetAccountProfileBackgroundImage();
     Task<Response<List<AccountUserSkillsDto>>> GetAllUserSkills();
     Task<Response<List<AccountUserSkillsDto>>> GetUserSkills();
+    Task<Response<GetNotificationsCommandResponse>> GetNotifications();
 
     Task<Response<DeleteAccountEducationCommandResponse>> DeleteAccountEducation(
         DeleteAccountEducationCommandRequest request);

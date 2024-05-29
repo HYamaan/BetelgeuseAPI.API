@@ -9,12 +9,15 @@ using BetelgeuseAPI.Domain.Entities.Course.FAQ;
 using BetelgeuseAPI.Domain.Entities.Course.Pricing;
 using BetelgeuseAPI.Domain.Entities.File;
 using BetelgeuseAPI.Domain.Entities.File.Quiz;
+using BetelgeuseAPI.Domain.Entities.Notifications;
 using BetelgeuseAPI.Domain.Entities.Purchase;
+using BetelgeuseAPI.Domain.Entities.User;
 using BetelgeuseAPI.Persistence.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using File = BetelgeuseAPI.Domain.Entities.File.File;
 
 namespace BetelgeuseAPI.Persistence.Context
 {
@@ -29,13 +32,15 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<UserAccountExperiences> UserAccountExperiences { get; set; }
         public DbSet<AllUserSkills> AllUserSkills { get; set; }
         public DbSet<UserSkills> UserSkills { get; set; }
-        
+        public DbSet<UserQuizInteraction> UserQuizInteraction { get; set; }
+
         public DbSet<Category> Category { get; set; }
         public DbSet<EBookCategory> EBookCategory { get; set; }
         public DbSet<CourseCategory> CourseCategory { get; set; }
         public DbSet<BlogCategory> BlogCategory { get; set; }
 
         public DbSet<Blogs> Blogs { get; set; }
+        public DbSet<BlogVisit> BlogVisits { get; set; }
         public DbSet<MetaData> MetaData { get; set; }
 
         public DbSet<Domain.Entities.File.File> File { get; set; }
@@ -67,11 +72,14 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<FaqUploadLogo> CourseFaqLogo { get; set; }
         public DbSet<FaqLearningMaterial> CourseFaqMaterial { get; set; }
         public DbSet<FaqRequirements> CourseFaqRequirements { get; set; }
-
         public DbSet<MessageToReviewer> CourseMessageToReviewer { get; set; }
+
+        public DbSet<ShoppingCartItem> ShoppingCartItem { get; set; }
+        public DbSet<CourseFavorite> CourseFavorite { get; set; }
 
 
         public DbSet<Purchase> Purchase { get; set; }
+        public DbSet<Notification> Notification { get; set; }
         public DbSet<Language> Language { get; set; }
 
 
@@ -115,9 +123,8 @@ namespace BetelgeuseAPI.Persistence.Context
             });
 
 
-
-             modelBuilder.Seed();
-            
+            modelBuilder.Seed();
+             
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

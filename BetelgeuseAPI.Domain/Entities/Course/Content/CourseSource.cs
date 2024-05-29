@@ -16,7 +16,7 @@ public class CourseSource:BaseEntity
     public CourseUploadFileType? FileType { get; set; }
 
     public Guid CourseSectionsId { get; set; }
-    public List<CourseUpload>? CourseUpload { get; set; }
+    public ICollection<CourseUpload>? CourseUpload { get; set; }
     public CourseSections CourseSections { get; set; }
 
 }

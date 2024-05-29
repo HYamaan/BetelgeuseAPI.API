@@ -11,6 +11,7 @@ public class CourseSections:BaseEntity
     public string Title { get; set; }
     public bool IsActive { get; set; }
     public bool PassAllParts { get; set; }
-  
-    public List<CourseType>? CourseTypes { get; set; }
+    public Guid InclusiveCourseId { get; set; }
+   public InclusiveCourse? InclusiveCourse { get; set; }
+    public ICollection<CourseType>? CourseTypes { get; set; }
 }
