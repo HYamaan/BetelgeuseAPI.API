@@ -8,5 +8,5 @@ public class LearningPageContentTypeResponseDto
     public int Order { get; set; }
 
     public LearningPageContentSourceResponseDto? contentSource { get; set; }
-    public LearningPageContentQuizzesResponseDto? contetnQuizzes { get; set; }
+   // public LearningPageContentQuizzesResponseDto? contetnQuizzes { get; set; }
 }

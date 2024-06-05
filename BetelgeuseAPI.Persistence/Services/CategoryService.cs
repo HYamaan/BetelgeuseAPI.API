@@ -69,33 +69,17 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var allCategories = await _blogCategoryReadRepository.GetWhere(x => x.Published).Select(ux => new GetAllCategoryResponseDto()
+            var allCategories = await _blogCategoryReadRepository.GetWhere(x => x.Published).Select(ux => new GetlBlogCategoryResponseDto()
             {
-                CategoryID = ux.Id,
+                Id = ux.Id,
                 Name = ux.Name,
-                ParentCategoryID = ux.ParentCategoryID,
-                ParentCategoryName = ux.ParentCategory.Name
             }).ToListAsync();
             
-            var groupedCategories = allCategories
-                .GroupBy(c => c.ParentCategoryID)
-                .Select(g => new GetCategories()
-                {
-                    ParentCategoryID = g.Key,
-                    ParentCategoryName = g.FirstOrDefault()?.ParentCategoryName,
-                    Categories = g.Select(c => new Categories()
-                    {
-                        CategoryID = c.CategoryID,
-                        Name = c.Name
-                    }).ToList()
-                })
-                .ToList();
-
 
 
             return Response<GetBlogCategoryCommandResponse>.Success(new GetBlogCategoryCommandResponse()
             {
-                Data = groupedCategories
+                Data = allCategories
             }, "Categoryler başarılı bir şekilde getirildi");
 
         }

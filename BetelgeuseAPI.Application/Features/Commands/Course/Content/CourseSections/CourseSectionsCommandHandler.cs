@@ -18,6 +18,7 @@ public class CourseSectionsCommandHandler : IRequestHandler<CourseSectionsComman
 
         return new CourseSectionsCommandResponse()
         {
+            Id = result.Data.Id,
             Message = result.Message,
             Succeeded = result.Succeeded
         };

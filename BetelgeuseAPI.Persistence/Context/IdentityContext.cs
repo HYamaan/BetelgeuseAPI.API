@@ -122,8 +122,19 @@ namespace BetelgeuseAPI.Persistence.Context
                 entity.ToTable("UserTokens");
             });
 
+            modelBuilder.Entity<CourseType>()
+                .HasOne(ct => ct.CourseSources)
+                .WithMany(cs => cs.CourseTypes)
+                .HasForeignKey(ct => ct.CourseSourcesId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Seed();
+            modelBuilder.Entity<CourseType>()
+                .HasOne(ct => ct.CourseQuizzes)
+                .WithMany(cs => cs.CourseTypes)
+                .HasForeignKey(ct => ct.CourseQuizzesId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+           // modelBuilder.Seed();
              
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

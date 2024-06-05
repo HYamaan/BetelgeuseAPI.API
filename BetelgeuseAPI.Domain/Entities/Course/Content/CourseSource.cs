@@ -19,4 +19,6 @@ public class CourseSource:BaseEntity
     public ICollection<CourseUpload>? CourseUpload { get; set; }
     public CourseSections CourseSections { get; set; }
 
+    public ICollection<CourseType>? CourseTypes { get; set; }
+
 }

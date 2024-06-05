@@ -18,6 +18,7 @@ public class UploadLearningMaterialCommandHandler:IRequestHandler<UploadLearning
 
         return new UploadLearningMaterialCommandResponse()
         {
+            Id = result.Data.Id,
             Message = result.Message,
             Succeeded = result.Succeeded
         };

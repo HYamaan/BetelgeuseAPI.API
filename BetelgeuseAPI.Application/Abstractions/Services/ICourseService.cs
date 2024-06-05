@@ -3,6 +3,7 @@ using BetelgeuseAPI.Application.Features.Commands.Course.Content.CourseQuiz;
 using BetelgeuseAPI.Application.Features.Commands.Course.Content.CourseSections;
 using BetelgeuseAPI.Application.Features.Commands.Course.Content.CourseSource;
 using BetelgeuseAPI.Application.Features.Commands.Course.Content.CourseTypeOrder;
+using BetelgeuseAPI.Application.Features.Commands.Course.Content.DeleteCourseSource;
 using BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.CourseQuestion.UpdateCourseQuestion;
 using BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.DeleteCourseQuestion;
 using BetelgeuseAPI.Application.Features.Commands.Course.CourseQuiz.UploadCourseQuiz;
@@ -25,6 +26,8 @@ using BetelgeuseAPI.Application.Features.Commands.Course.Upload.MessageToReview;
 using BetelgeuseAPI.Application.Features.Queries.Course.CoursesPage;
 using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseFaq;
 using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseLearningMaterial;
+using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseLogo;
+using BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetRequirements;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetBasicInformation;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetContent;
 using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseDetailPage;
@@ -61,6 +64,8 @@ public interface ICourseService
 
     Task<Response<GetCourseFaqQueryResponse>> GetCourseFaq(GetCourseFaqQueryRequest model);
     Task<Response<GetCourseLearningMaterialQueryResponse>> GetCourseLearningMaterial(GetCourseLearningMaterialQueryRequest model);
+    Task<Response<GetCourseLogoQueryResponse>> GetCourseLogo(GetCourseLogoQueryRequest model);
+    Task<Response<GetRequirementsQueryResponse>> GetRequirements(GetRequirementsQueryRequest model);
     Task<Response<GetBasicInformationCommandResponse>> GetCourseBasicInformation(GetBasicInformationCommandRequest model);
     Task<Response<GetExtraInformationCommandResponse>> GetExtraInformation(GetExtraInformationCommandRequest model);
     Task<Response<GetPricingCommandResponse>> GetPricing(GetPricingCommandRequest model);
@@ -78,6 +83,7 @@ public interface ICourseService
     Task<Response<DeleteRequirementsCommandResponse>> DeleteRequirements(DeleteRequirementsCommandRequest model);
     Task<Response<DeleteCompanyLogoCommandResponse>> DeleteCompanyLogo(DeleteCompanyLogoCommandRequest model);
     Task<Response<DeleteFaqLearningMaterialCommandResponse>> DeleteFaqLearningMaterial(DeleteFaqLearningMaterialCommandRequest model);
+    Task<Response<DeleteCourseSourceCommandResponse>> DeleteCourseSource(DeleteCourseSourceCommandRequest model);
 
 
 

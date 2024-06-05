@@ -20,6 +20,7 @@ public class CourseSourceCommandHandler : IRequestHandler<CourseSourceCommandReq
 
         return new CourseSourceCommandResponse()
         {
+            Data = result.Data?.Data,
             Message = result.Message,
             Succeeded = result.Succeeded
         };

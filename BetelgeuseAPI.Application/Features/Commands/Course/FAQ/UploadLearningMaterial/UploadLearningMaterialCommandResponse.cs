@@ -4,5 +4,5 @@ namespace BetelgeuseAPI.Application.Features.Commands.Course.FAQ.UploadLearningM
 
 public class UploadLearningMaterialCommandResponse:ResponseMessageAndSucceeded
 {
-    
+    public Guid Id { get; set; }
 }

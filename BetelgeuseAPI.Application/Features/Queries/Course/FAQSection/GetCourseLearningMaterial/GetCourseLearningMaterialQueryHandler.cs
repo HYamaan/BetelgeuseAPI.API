@@ -1,5 +1,4 @@
 ﻿using BetelgeuseAPI.Application.Abstractions.Services;
-using BetelgeuseAPI.Application.Features.Queries.Course.GetCourseFaq;
 using MediatR;
 
 namespace BetelgeuseAPI.Application.Features.Queries.Course.FAQSection.GetCourseLearningMaterial;

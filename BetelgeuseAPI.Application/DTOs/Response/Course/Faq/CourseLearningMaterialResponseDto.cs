@@ -1,6 +1,6 @@
 ﻿using BetelgeuseAPI.Domain.Enum;
 
-namespace BetelgeuseAPI.Application.DTOs.Response.Course;
+namespace BetelgeuseAPI.Application.DTOs.Response.Course.Faq;
 
 public class CourseLearningMaterialResponseDto
 {
