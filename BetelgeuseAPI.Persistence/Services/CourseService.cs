@@ -1694,7 +1694,8 @@ public class CourseService : ICourseService
                                             ux.CoursePricing.NewCoursePricingPlan.Any(x =>
                                                 x.StartDate <= currentDate && x.EndDate >= currentDate && x.Capacity > 0 && x.Discount > 0))) &&
             (model.IsDownloadable == null || (model.IsDownloadable == true && ux.CourseExtraInformation.IsDownloadable)) &&
-            (model.CourseType == null || ux.CourseBasicInformation.CourseType == model.CourseType)
+            (model.CourseType == null || ux.CourseBasicInformation.CourseType == model.CourseType) &&
+            ((model.DurationStart == null && model.DurationEnd == null) || (ux.CourseExtraInformation.Duration >= model.DurationStart  && ux.CourseExtraInformation.Duration <= model.DurationEnd))
         );
 
 
@@ -1782,6 +1783,8 @@ public class CourseService : ICourseService
                     IsDiscounted = isDiscounted,
                     IsDownloadable = ux.CourseExtraInformation.IsDownloadable,
                     CourseTitle = ux.CourseBasicInformation.Title,
+                    CourseDescription = ux.CourseBasicInformation.Description,
+                    Rating=0, //Todo: Rating is added after the implementation of the rating system
                     CourseSubLanguages = ux.CourseExtraInformation.CourseSubLanguages != null ?
                         ux.CourseExtraInformation.CourseSubLanguages.Select(x => new SubTitleLanguageId
                         {
