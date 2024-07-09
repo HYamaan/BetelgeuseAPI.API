@@ -4,5 +4,5 @@ namespace BetelgeuseAPI.Application.Features.Commands.Course.FAQ.UploadRequireme
 
 public class UploadRequirementsCommandResponse:ResponseMessageAndSucceeded
 {
-    
+    public Guid Id { get; set; }
 }

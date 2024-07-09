@@ -10,6 +10,7 @@ using BetelgeuseAPI.Application.Repositories.Course.CourseQuizAnswer;
 using BetelgeuseAPI.Application.Repositories.Course.CourseQuizUpload;
 using BetelgeuseAPI.Application.Repositories.Course.CourseSource;
 using BetelgeuseAPI.Application.Repositories.Course.CourseSubLanguage;
+using BetelgeuseAPI.Application.Repositories.Course.CourseType;
 using BetelgeuseAPI.Application.Repositories.Course.Faq;
 using BetelgeuseAPI.Application.Repositories.Course.FaqLearningMaterial;
 using BetelgeuseAPI.Application.Repositories.Course.FaqRequirements;
@@ -30,6 +31,7 @@ using BetelgeuseAPI.Persistence.Repositories.Course.CourseQuizAnswer;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseQuizUpload;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseSource;
 using BetelgeuseAPI.Persistence.Repositories.Course.CourseSubLanguage;
+using BetelgeuseAPI.Persistence.Repositories.Course.CourseType;
 using BetelgeuseAPI.Persistence.Repositories.Course.FaqLearningMaterial;
 using BetelgeuseAPI.Persistence.Repositories.Course.FaqOptions;
 using BetelgeuseAPI.Persistence.Repositories.Course.FaqRequirements;
@@ -108,9 +110,11 @@ public static class CourseRegistration
         services.AddScoped<ICourseSubLanguageReadRepository, CourseSubLanguageReadRepository>();
         services.AddScoped<ICourseSubLanguageWriteRepository, CourseSubLanguageWriteRepository>();
 
-
         services.AddScoped<ICourseNewPricingReadRepository, CourseNewPricingReadRepository>();
         services.AddScoped<ICourseNewPricingWriteRepository, CourseNewPricingWriteRepository>();
+
+        services.AddScoped<ICourseTypeReadRepository, CourseTypeReadRepository>();
+        services.AddScoped<ICourseTypeWriteRepository, CourseTypeWriteRepository>();
 
     }
 }

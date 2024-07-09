@@ -17,6 +17,7 @@ public class GetAllCoursesPage
     public string ModeratorImage { get; set; }
     public string ModeratorName { get; set; }
     public string CourseTitle { get; set; }
+    public string CourseDescription { get; set; }
     public int ReviewsCount { get; set; }
     public string CourseTime { get; set; }
     public string CreatedDate { get; set; }
@@ -28,6 +29,8 @@ public class GetAllCoursesPage
 
     public int Discount { get; set; }
     public bool IsDiscounted { get; set; }
+
+    public int Rating { get; set; }
 
     public List<SubTitleLanguageId>? CourseSubLanguages { get; set; }
 }

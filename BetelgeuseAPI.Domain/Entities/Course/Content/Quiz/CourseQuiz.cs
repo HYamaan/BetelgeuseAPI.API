@@ -21,4 +21,5 @@ public class CourseQuiz : BaseEntity
 
     public ICollection<CourseQuestions>? CourseQuestions { get; set; }
     public CourseSections CourseSections { get; set; }
+    public ICollection<CourseType>? CourseTypes { get; set; }
 }

@@ -11,6 +11,8 @@ public class GetCoursesPageCommandRequest:IRequest<GetCoursesPageCommandResponse
     public bool? IsFree { get; set; }
     public bool? IsDiscounted { get; set; }
     public bool? IsDownloadable { get; set; }
+    public int? DurationStart { get; set; }
+    public int? DurationEnd { get; set; }
     public CourseLevel? CourseLevel { get; set; }
     public CourseClassType? CourseType { get; set; }
 

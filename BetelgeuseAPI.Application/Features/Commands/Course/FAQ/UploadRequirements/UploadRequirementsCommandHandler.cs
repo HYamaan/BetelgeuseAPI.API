@@ -17,6 +17,7 @@ public class UploadRequirementsCommandHandler:IRequestHandler<UploadRequirements
         var result  = await _courseService.UploadRequirements(request);
         return new UploadRequirementsCommandResponse()
         {
+            Id = result.Data.Id,
             Message = result.Message,
             Succeeded = result.Succeeded
         };

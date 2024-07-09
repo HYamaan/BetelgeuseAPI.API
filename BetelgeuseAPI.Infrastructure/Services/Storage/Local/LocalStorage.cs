@@ -10,7 +10,8 @@ namespace BetelgeuseAPI.Infrastructure.Services.Storage.Local
     public class LocalStorage : Storage, ILocalStorage
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private string uploadPath = @"D:\Repos\Bitirme\betelgeuse\BetelgeuseClient.Client\public\assets\files\";
+        private string uploadPath = @"D:\Repos\Work\Accon-CMS\AcconClient\public\backendImage ";
+
         public LocalStorage(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;

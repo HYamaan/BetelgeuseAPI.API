@@ -4,5 +4,5 @@ namespace BetelgeuseAPI.Application.Features.Commands.Course.Content.CourseSecti
 
 public class CourseSectionsCommandResponse : ResponseMessageAndSucceeded
 {
-
+    public Guid Id { get; set; }
 }

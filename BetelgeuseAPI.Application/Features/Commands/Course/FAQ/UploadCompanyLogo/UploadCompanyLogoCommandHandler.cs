@@ -16,8 +16,10 @@ public class UploadCompanyLogoCommandHandler:IRequestHandler<UploadCompanyLogoCo
     {
         var result = await _courseService.UploadCompanyLogo(request);
 
+
         return new UploadCompanyLogoCommandResponse()
         {
+         Data = result.Data.Data,
             Message = result.Message,
             Succeeded = result.Succeeded
         };

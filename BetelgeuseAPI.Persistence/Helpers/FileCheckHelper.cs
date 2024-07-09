@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BetelgeuseAPI.Persistence.Helpers;
 
-public class FileCheckHelper: IFileCheckHelper
+public class FileCheckHelper : IFileCheckHelper
 {
     private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -29,7 +29,7 @@ public class FileCheckHelper: IFileCheckHelper
             {
                 await file.CopyToAsync(stream);
             }
-            
+
             bool isValidFormat = await CheckFormatWithFFprobe(tempFilePath);
             File.Delete(tempFilePath);
             return isValidFormat;
@@ -57,7 +57,7 @@ public class FileCheckHelper: IFileCheckHelper
             using (var reader = new BinaryReader(File.OpenRead(tempFilePath)))
             {
                 byte[] header = reader.ReadBytes(4);
-                string pdfHeader = Encoding.ASCII.GetString(header); 
+                string pdfHeader = Encoding.ASCII.GetString(header);
 
                 if (pdfHeader.StartsWith("%PDF"))
                 {
@@ -98,17 +98,17 @@ public class FileCheckHelper: IFileCheckHelper
                 await stream.ReadAsync(buffer, 0, buffer.Length);
                 if (buffer[0] == 0x50 && buffer[1] == 0x4B && buffer[2] == 0x03 && buffer[3] == 0x04)
                 {
-                    return true; 
+                    return true;
                 }
                 else
                 {
-                    return false; 
+                    return false;
                 }
             }
         }
         catch
         {
-            return false; 
+            return false;
         }
     }
 
@@ -161,7 +161,18 @@ public class FileCheckHelper: IFileCheckHelper
                         return true;
                     }
                 }
+                else if (fileExtension.ToLower() == ".svg")
+                {
+                    // Stream'in başındaki daha fazla baytı okuyun çünkü <?xml veya <svg etiketini kontrol etmeniz gerekebilir.
+                    var svgBuffer = new byte[5];
+                    await stream.ReadAsync(svgBuffer, 0, svgBuffer.Length);
 
+                    var header = System.Text.Encoding.UTF8.GetString(svgBuffer);
+                    if (header.StartsWith("<?xml") || header.StartsWith("<svg"))
+                    {
+                        return true;
+                    }
+                }
                 return false;
             }
         }
