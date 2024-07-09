@@ -1344,6 +1344,49 @@ public class CourseService : ICourseService
         return Response<GetRequirementsQueryResponse>.Success(data);
     }
 
+    public async Task<Response<GetCourseFaqQueryResponse>> GetCourseFaq(GetCourseFaqQueryRequest model)
+    {
+        var faqs = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Select(course => course.Faqs
+                .OrderBy(faq => faq.Order)
+                .Select(faq => new CourseFaqResponseDto
+                {
+                    Id = faq.Id,
+                    Title = faq.Title,
+                    Answer = faq.Answer,
+                    Order = faq.Order,
+                    LanguageId = faq.LanguageId
+                }).ToList())
+            .FirstOrDefaultAsync();
+   
+        var data = new GetCourseFaqQueryResponse
+        {
+            Data = faqs
+        };
+        return Response<GetCourseFaqQueryResponse>.Success(data);
+    }
+
+    public async Task<Response<GetCourseLearningMaterialQueryResponse>> GetCourseLearningMaterial(GetCourseLearningMaterialQueryRequest model)
+    {
+        var learningMaterial = await _inclusiveCourseRead.GetWhere(ux => ux.Id == model.CourseId)
+            .Select(course => course.FaqLearningMaterial
+                .OrderBy(faq => faq.Order)
+                .Select(faq => new CourseLearningMaterialResponseDto()
+                {
+                    Id = faq.Id,
+                    Title = faq.Title,
+                    Order = faq.Order,
+                    LanguageId = faq.LanguageId
+                }).ToList())
+            .FirstOrDefaultAsync();
+
+        var data = new GetCourseLearningMaterialQueryResponse
+        {
+            Data = learningMaterial
+        };
+        return Response<GetCourseLearningMaterialQueryResponse>.Success(data);
+    }
+
 
     public async Task<Response<GetBasicInformationCommandResponse>> GetCourseBasicInformation(GetBasicInformationCommandRequest model)
     {

@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Commands\Instructor\" />
+    <Folder Include="Features\Queries\Course\FAQSection\GetCourseLogo\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 

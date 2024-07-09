@@ -86,6 +86,7 @@ namespace BetelgeuseAPI.Application
                 x.WorkerCount = 500;
             });
 
+
         }
     }
 }

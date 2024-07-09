@@ -72,7 +72,8 @@ namespace BetelgeuseAPI.Persistence.Context
         public DbSet<FaqUploadLogo> CourseFaqLogo { get; set; }
         public DbSet<FaqLearningMaterial> CourseFaqMaterial { get; set; }
         public DbSet<FaqRequirements> CourseFaqRequirements { get; set; }
-        public DbSet<MessageToReviewer> CourseMessageToReviewer { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItem { get; set; }
+        public DbSet<CourseFavorite> CourseFavorite { get; set; }
 
         public DbSet<ShoppingCartItem> ShoppingCartItem { get; set; }
         public DbSet<CourseFavorite> CourseFavorite { get; set; }

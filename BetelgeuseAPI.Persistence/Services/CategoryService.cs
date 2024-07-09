@@ -79,7 +79,7 @@ public class CategoryService : ICategoryService
 
             return Response<GetBlogCategoryCommandResponse>.Success(new GetBlogCategoryCommandResponse()
             {
-                Data = allCategories
+                Data = groupedCategories
             }, "Categoryler başarılı bir şekilde getirildi");
 
         }
